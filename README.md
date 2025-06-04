@@ -6,8 +6,8 @@
 
 | Nombre                                | Carnet     |
 |---------------------------------------|------------|
-| Brandon Antonio Marroquín Pérez       | 202300813  |
-| Pablo Alejandro Marroquín Cutz        | 202200214  |
+| Brandon Antonio Marroquin Pérez       | 202300813  |
+| Pablo Alejandro Marroquin Cutz        | 202200214  |
 
 </div>
 
