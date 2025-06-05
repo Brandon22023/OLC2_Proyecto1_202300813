@@ -8,6 +8,7 @@
 |---------------------------------------|------------|
 | Brandon Antonio Marroquin Pérez       | 202300813  |
 | Pablo Alejandro Marroquin Cutz        | 202200214  |
+| Daniel Estuardo Salvatierra Macajola  | 202202768  |
 
 </div>
 
