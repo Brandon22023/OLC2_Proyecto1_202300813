@@ -33,16 +33,16 @@ fn main() {
     print(true || true, true || false, false || true, false || false)
     print(!true, !false)
 
-    if (i > 10) {
-    print("Mayor a 10")
-    }
 
-    if (i > 10) {
-    print("Mayor a 10")
+    mut x int = 10
+    print(x)
+    if x < 5 {
+        print("x es menor que 5")
+    } else if x < 10 {
+        print("x es menor que 10")
     } else {
-        print("Menor o igual a 10")
+        print("x es 10 o mayor")
     }
-
 
     if true {
       print("GANO GUATE")
@@ -52,8 +52,6 @@ fn main() {
     } else {
         print("GANO GUATE, VAMOS AL FIN GANAN UN COSA")
     }
-
-
 
     print("a ver")
 

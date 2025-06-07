@@ -63,6 +63,10 @@ func (v *BaseVlangVisitor) VisitIfDcl(ctx *IfDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitElseIfDcl(ctx *ElseIfDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitForClasico(ctx *ForClasicoContext) interface{} {
 	return v.VisitChildren(ctx)
 }

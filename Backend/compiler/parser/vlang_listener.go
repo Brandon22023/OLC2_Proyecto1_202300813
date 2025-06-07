@@ -49,6 +49,9 @@ type VlangListener interface {
 	// EnterIfDcl is called when entering the ifDcl production.
 	EnterIfDcl(c *IfDclContext)
 
+	// EnterElseIfDcl is called when entering the elseIfDcl production.
+	EnterElseIfDcl(c *ElseIfDclContext)
+
 	// EnterForClasico is called when entering the forClasico production.
 	EnterForClasico(c *ForClasicoContext)
 
@@ -195,6 +198,9 @@ type VlangListener interface {
 
 	// ExitIfDcl is called when exiting the ifDcl production.
 	ExitIfDcl(c *IfDclContext)
+
+	// ExitElseIfDcl is called when exiting the elseIfDcl production.
+	ExitElseIfDcl(c *ElseIfDclContext)
 
 	// ExitForClasico is called when exiting the forClasico production.
 	ExitForClasico(c *ForClasicoContext)

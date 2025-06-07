@@ -665,23 +665,12 @@ func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext)
 }
 
 // condicionales
-func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
-	//fmt.Println("========== [DEBUG IF_CONTEXT] ==========")
-	if ctx.IfDcl() != nil {
-		return v.Visit(ctx.IfDcl())
-	}
-	//fmt.Println("[DEBUG IF_CONTEXT] No se encontró ifDcl")
-	return nil
-}
-
 func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
-	// variables para condiciones y bloques
 	var conds []antlr.ParseTree
 	var blocks [][]antlr.ParseTree
 
 	ruleNames := ctx.GetParser().GetRuleNames()
 
-	// Recorremos todos los hijos para detectar condiciones y bloques
 	var currentBlock []antlr.ParseTree
 	var inBlock bool
 
@@ -691,7 +680,6 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 		if rule, ok := child.(antlr.RuleNode); ok {
 			ruleName := ruleNames[rule.GetRuleContext().GetRuleIndex()]
 			if ruleName == "expresion" && !inBlock {
-				// Nueva condición detectada (if o else if)
 				conds = append(conds, rule.(antlr.ParseTree))
 			}
 		}
@@ -719,23 +707,17 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 		}
 	}
 
-	// La cantidad de bloques puede ser mayor que las condiciones si hay un bloque else final sin condición
-	// Si hay más bloques que condiciones, el último bloque es el else
-
-	// Evaluamos las condiciones secuencialmente
 	for i, cond := range conds {
 		condVal := v.Visit(cond)
 		condBool := fmt.Sprint(condVal) == "true"
 		if condBool {
-			// Ejecutar bloque correspondiente a la condición i
 			for _, decl := range blocks[i] {
 				v.Visit(decl)
 			}
-			return nil // Ejecutamos solo el primer bloque que cumpla
+			return nil
 		}
 	}
 
-	// Si no se cumplió ninguna condición, y hay bloque else (bloque extra sin condición)
 	if len(blocks) > len(conds) {
 		for _, decl := range blocks[len(blocks)-1] {
 			v.Visit(decl)

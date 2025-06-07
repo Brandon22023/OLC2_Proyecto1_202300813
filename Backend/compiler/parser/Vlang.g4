@@ -46,7 +46,16 @@ sentencias_control
     ;
 
 ifDcl
-    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE ( CONDICIONAL_ETC LBRACE declaraciones* RBRACE )?
+
+    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE (elseIfDcl)* (ELSE LBRACE declaraciones* RBRACE)?
+
+    ;
+
+
+elseIfDcl
+
+    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE
+
     ;
 forDcl
     : CONDICIONAL_ETC (LPAREN)? (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block   #forClasico

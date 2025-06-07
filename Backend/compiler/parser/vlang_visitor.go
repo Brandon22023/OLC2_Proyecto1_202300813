@@ -49,6 +49,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#ifDcl.
 	VisitIfDcl(ctx *IfDclContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#elseIfDcl.
+	VisitElseIfDcl(ctx *ElseIfDclContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#forClasico.
 	VisitForClasico(ctx *ForClasicoContext) interface{}
 

@@ -104,6 +104,12 @@ func (s *BaseVlangListener) EnterIfDcl(ctx *IfDclContext) {}
 // ExitIfDcl is called when production ifDcl is exited.
 func (s *BaseVlangListener) ExitIfDcl(ctx *IfDclContext) {}
 
+// EnterElseIfDcl is called when production elseIfDcl is entered.
+func (s *BaseVlangListener) EnterElseIfDcl(ctx *ElseIfDclContext) {}
+
+// ExitElseIfDcl is called when production elseIfDcl is exited.
+func (s *BaseVlangListener) ExitElseIfDcl(ctx *ElseIfDclContext) {}
+
 // EnterForClasico is called when production forClasico is entered.
 func (s *BaseVlangListener) EnterForClasico(ctx *ForClasicoContext) {}
 
