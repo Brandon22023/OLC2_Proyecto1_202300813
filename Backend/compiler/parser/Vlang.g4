@@ -26,8 +26,13 @@ TIPO
     | TIPO_DECIMAL 
     | TIPO_CADENA 
     | TIPO_BOOLEANO
-    | TIPO_CHAR 
+    | TIPO_CHAR
     ;
+
+tipoSlice
+    : LBRACK RBRACK TIPO
+    ;
+
 stmt : PRINT LPAREN (expresion (COMMA expresion)*)? RPAREN #printStatement
      | expresion          #expresionStatement
      | sentencias_control    #controlStatement
@@ -35,7 +40,8 @@ stmt : PRINT LPAREN (expresion (COMMA expresion)*)? RPAREN #printStatement
 
 sentencias_control
     : ifDcl             #if_context 
-    | forDcl            #for_context 
+    | forDcl            #for_context
+    | switchDcl         #switch_context 
     | whileDcl          #while_context
     ;
 
@@ -43,8 +49,28 @@ ifDcl
     : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE ( CONDICIONAL_ETC LBRACE declaraciones* RBRACE )?
     ;
 forDcl
-    : 'for' LPAREN ID ASSIGN expresion COMMA expresion RPAREN LBRACK declaraciones* RBRACK 
+    : CONDICIONAL_ETC (LPAREN)? (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block   #forClasico
+    | CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? block                             #forCondicionUnica
     ;
+
+switchDcl
+    : CONDICIONAL_ETC expresion LBRACE caseBlock*  defaultBlock? RBRACE
+    ;
+
+caseBlock
+    : 'case' expresion COLON declaraciones*
+    ;
+
+defaultBlock
+    : 'default' COLON declaraciones*
+    ;
+
+llamadaFuncion
+    : INDEXOF LPAREN (expresion (COMMA expresion)*)? RPAREN
+    | JOIN LPAREN (expresion (COMMA expresion)*)? RPAREN
+    | ID LPAREN (expresion (COMMA expresion)*)? RPAREN
+    ;
+
 //esto se tiene que eliminar porque while y do-while no existen en Vlang, solo se usa for
 whileDcl
     : 'while' LPAREN expresion RPAREN LBRACK declaraciones* RBRACK 
@@ -53,12 +79,16 @@ whileDcl
 CONDICIONAL_ETC
     : IF 
     | ELSE
+    | FOR
+    | SWITCH
     ;
 // === Reglas de expresiones ===
 expresion
     : valor                                                #valorexpr         
     | LPAREN expresion RPAREN                              #parentesisexpre
     | LBRACK expresion RBRACK                              #corchetesexpre
+    | tipoSlice LBRACE listaExpresiones? RBRACE            #sliceCreacionv
+    | llamadaFuncion                                       #llamadaFuncionExpr
     | op=(NOT | MINUS) expresion                           #unario
     | expresion op=(AND | OR) expresion                    #OPERADORESLOGICOS
     | expresion op=(MUL | DIV | MOD) expresion             #multdivmod
@@ -88,6 +118,8 @@ valor
     | BOOLEANO  #valorBooleano
     | CARACTER  #valorCaracter
     ;
+// === Listas de expresiones ===
+listaExpresiones : expresion (COMMA expresion)* ;
 
 
 
@@ -103,6 +135,10 @@ CAP     : 'cap' ;
 APPEND  : 'append' ;
 IF      : 'if' ;
 ELSE    : 'else' ;
+FOR     : 'for' ;
+SWITCH  : 'switch' ;
+INDEXOF : 'indexOf' ;
+JOIN    : 'join' ;
 // === Literales ===
 BOOLEANO : 'true' | 'false' ;
 ENTERO   : [0-9]+ ;
@@ -116,6 +152,7 @@ TIPO_DECIMAL : 'float64' ;
 TIPO_CADENA : 'string' ;
 TIPO_BOOLEANO : 'bool' ;
 TIPO_CHAR : 'rune' ;
+//TIPO_SLICE : 'slice' ;
 // === Identificadores ===
 PRINT : 'print' ;
 ID : [a-zA-Z_][a-zA-Z0-9_]* ;

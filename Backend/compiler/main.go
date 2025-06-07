@@ -62,21 +62,24 @@ func main() {
 	// En tu gramatica tienes el axioma, o simbolo inicial
 	// Este es el que deberas agregar como parte del parser.
 	arbolito := parser.Programa()
-    // Imprime el árbol sintáctico para depuración
-    PrintVerticalTree(arbolito, parser.RuleNames)
+	// Imprime el árbol sintáctico para depuración
+	PrintVerticalTree(arbolito, parser.RuleNames)
 	// imprimimos los errores de sintaxis y léxicos
 	visitor := repl.NewReplVisitor()
 	visitor.Visit(arbolito)
 
 }
 
-/*func readStdin() (string, error) {
-	input, err := os.ReadFile("/dev/stdin")
-	return string(input), err
-}*/
+/*
+	func readStdin() (string, error) {
+		input, err := os.ReadFile("/dev/stdin")
+		return string(input), err
+	}
+*/
 func readStdin() (string, error) {
-    input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
-    return string(input), err
+	//input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	return string(input), err
 }
 
 // Funciones para visualizar nuestro arbol

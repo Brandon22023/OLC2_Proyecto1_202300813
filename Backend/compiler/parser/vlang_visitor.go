@@ -22,6 +22,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#variableDeclaration.
 	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#tipoSlice.
+	VisitTipoSlice(ctx *TipoSliceContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#printStatement.
 	VisitPrintStatement(ctx *PrintStatementContext) interface{}
 
@@ -37,14 +40,32 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#for_context.
 	VisitFor_context(ctx *For_contextContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#switch_context.
+	VisitSwitch_context(ctx *Switch_contextContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#while_context.
 	VisitWhile_context(ctx *While_contextContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#ifDcl.
 	VisitIfDcl(ctx *IfDclContext) interface{}
 
-	// Visit a parse tree produced by VlangParser#forDcl.
-	VisitForDcl(ctx *ForDclContext) interface{}
+	// Visit a parse tree produced by VlangParser#forClasico.
+	VisitForClasico(ctx *ForClasicoContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#forCondicionUnica.
+	VisitForCondicionUnica(ctx *ForCondicionUnicaContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#switchDcl.
+	VisitSwitchDcl(ctx *SwitchDclContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#caseBlock.
+	VisitCaseBlock(ctx *CaseBlockContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#defaultBlock.
+	VisitDefaultBlock(ctx *DefaultBlockContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#llamadaFuncion.
+	VisitLlamadaFuncion(ctx *LlamadaFuncionContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#whileDcl.
 	VisitWhileDcl(ctx *WhileDclContext) interface{}
@@ -66,6 +87,12 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#igualdad.
 	VisitIgualdad(ctx *IgualdadContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#sliceCreacionv.
+	VisitSliceCreacionv(ctx *SliceCreacionvContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#llamadaFuncionExpr.
+	VisitLlamadaFuncionExpr(ctx *LlamadaFuncionExprContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#expdotexp.
 	VisitExpdotexp(ctx *ExpdotexpContext) interface{}
@@ -117,6 +144,9 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#valorCaracter.
 	VisitValorCaracter(ctx *ValorCaracterContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#listaExpresiones.
+	VisitListaExpresiones(ctx *ListaExpresionesContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#incremento.
 	VisitIncremento(ctx *IncrementoContext) interface{}

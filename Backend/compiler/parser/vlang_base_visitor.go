@@ -27,6 +27,10 @@ func (v *BaseVlangVisitor) VisitVariableDeclaration(ctx *VariableDeclarationCont
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitTipoSlice(ctx *TipoSliceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitPrintStatement(ctx *PrintStatementContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -47,6 +51,10 @@ func (v *BaseVlangVisitor) VisitFor_context(ctx *For_contextContext) interface{}
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitSwitch_context(ctx *Switch_contextContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitWhile_context(ctx *While_contextContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -55,7 +63,27 @@ func (v *BaseVlangVisitor) VisitIfDcl(ctx *IfDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseVlangVisitor) VisitForDcl(ctx *ForDclContext) interface{} {
+func (v *BaseVlangVisitor) VisitForClasico(ctx *ForClasicoContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitForCondicionUnica(ctx *ForCondicionUnicaContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitSwitchDcl(ctx *SwitchDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitCaseBlock(ctx *CaseBlockContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitDefaultBlock(ctx *DefaultBlockContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitLlamadaFuncion(ctx *LlamadaFuncionContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -84,6 +112,14 @@ func (v *BaseVlangVisitor) VisitValorexpr(ctx *ValorexprContext) interface{} {
 }
 
 func (v *BaseVlangVisitor) VisitIgualdad(ctx *IgualdadContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitSliceCreacionv(ctx *SliceCreacionvContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitLlamadaFuncionExpr(ctx *LlamadaFuncionExprContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -152,6 +188,10 @@ func (v *BaseVlangVisitor) VisitValorBooleano(ctx *ValorBooleanoContext) interfa
 }
 
 func (v *BaseVlangVisitor) VisitValorCaracter(ctx *ValorCaracterContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitListaExpresiones(ctx *ListaExpresionesContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

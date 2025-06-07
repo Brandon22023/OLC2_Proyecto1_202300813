@@ -50,6 +50,12 @@ func (s *BaseVlangListener) EnterVariableDeclaration(ctx *VariableDeclarationCon
 // ExitVariableDeclaration is called when production variableDeclaration is exited.
 func (s *BaseVlangListener) ExitVariableDeclaration(ctx *VariableDeclarationContext) {}
 
+// EnterTipoSlice is called when production tipoSlice is entered.
+func (s *BaseVlangListener) EnterTipoSlice(ctx *TipoSliceContext) {}
+
+// ExitTipoSlice is called when production tipoSlice is exited.
+func (s *BaseVlangListener) ExitTipoSlice(ctx *TipoSliceContext) {}
+
 // EnterPrintStatement is called when production printStatement is entered.
 func (s *BaseVlangListener) EnterPrintStatement(ctx *PrintStatementContext) {}
 
@@ -80,6 +86,12 @@ func (s *BaseVlangListener) EnterFor_context(ctx *For_contextContext) {}
 // ExitFor_context is called when production for_context is exited.
 func (s *BaseVlangListener) ExitFor_context(ctx *For_contextContext) {}
 
+// EnterSwitch_context is called when production switch_context is entered.
+func (s *BaseVlangListener) EnterSwitch_context(ctx *Switch_contextContext) {}
+
+// ExitSwitch_context is called when production switch_context is exited.
+func (s *BaseVlangListener) ExitSwitch_context(ctx *Switch_contextContext) {}
+
 // EnterWhile_context is called when production while_context is entered.
 func (s *BaseVlangListener) EnterWhile_context(ctx *While_contextContext) {}
 
@@ -92,11 +104,41 @@ func (s *BaseVlangListener) EnterIfDcl(ctx *IfDclContext) {}
 // ExitIfDcl is called when production ifDcl is exited.
 func (s *BaseVlangListener) ExitIfDcl(ctx *IfDclContext) {}
 
-// EnterForDcl is called when production forDcl is entered.
-func (s *BaseVlangListener) EnterForDcl(ctx *ForDclContext) {}
+// EnterForClasico is called when production forClasico is entered.
+func (s *BaseVlangListener) EnterForClasico(ctx *ForClasicoContext) {}
 
-// ExitForDcl is called when production forDcl is exited.
-func (s *BaseVlangListener) ExitForDcl(ctx *ForDclContext) {}
+// ExitForClasico is called when production forClasico is exited.
+func (s *BaseVlangListener) ExitForClasico(ctx *ForClasicoContext) {}
+
+// EnterForCondicionUnica is called when production forCondicionUnica is entered.
+func (s *BaseVlangListener) EnterForCondicionUnica(ctx *ForCondicionUnicaContext) {}
+
+// ExitForCondicionUnica is called when production forCondicionUnica is exited.
+func (s *BaseVlangListener) ExitForCondicionUnica(ctx *ForCondicionUnicaContext) {}
+
+// EnterSwitchDcl is called when production switchDcl is entered.
+func (s *BaseVlangListener) EnterSwitchDcl(ctx *SwitchDclContext) {}
+
+// ExitSwitchDcl is called when production switchDcl is exited.
+func (s *BaseVlangListener) ExitSwitchDcl(ctx *SwitchDclContext) {}
+
+// EnterCaseBlock is called when production caseBlock is entered.
+func (s *BaseVlangListener) EnterCaseBlock(ctx *CaseBlockContext) {}
+
+// ExitCaseBlock is called when production caseBlock is exited.
+func (s *BaseVlangListener) ExitCaseBlock(ctx *CaseBlockContext) {}
+
+// EnterDefaultBlock is called when production defaultBlock is entered.
+func (s *BaseVlangListener) EnterDefaultBlock(ctx *DefaultBlockContext) {}
+
+// ExitDefaultBlock is called when production defaultBlock is exited.
+func (s *BaseVlangListener) ExitDefaultBlock(ctx *DefaultBlockContext) {}
+
+// EnterLlamadaFuncion is called when production llamadaFuncion is entered.
+func (s *BaseVlangListener) EnterLlamadaFuncion(ctx *LlamadaFuncionContext) {}
+
+// ExitLlamadaFuncion is called when production llamadaFuncion is exited.
+func (s *BaseVlangListener) ExitLlamadaFuncion(ctx *LlamadaFuncionContext) {}
 
 // EnterWhileDcl is called when production whileDcl is entered.
 func (s *BaseVlangListener) EnterWhileDcl(ctx *WhileDclContext) {}
@@ -139,6 +181,18 @@ func (s *BaseVlangListener) EnterIgualdad(ctx *IgualdadContext) {}
 
 // ExitIgualdad is called when production igualdad is exited.
 func (s *BaseVlangListener) ExitIgualdad(ctx *IgualdadContext) {}
+
+// EnterSliceCreacionv is called when production sliceCreacionv is entered.
+func (s *BaseVlangListener) EnterSliceCreacionv(ctx *SliceCreacionvContext) {}
+
+// ExitSliceCreacionv is called when production sliceCreacionv is exited.
+func (s *BaseVlangListener) ExitSliceCreacionv(ctx *SliceCreacionvContext) {}
+
+// EnterLlamadaFuncionExpr is called when production llamadaFuncionExpr is entered.
+func (s *BaseVlangListener) EnterLlamadaFuncionExpr(ctx *LlamadaFuncionExprContext) {}
+
+// ExitLlamadaFuncionExpr is called when production llamadaFuncionExpr is exited.
+func (s *BaseVlangListener) ExitLlamadaFuncionExpr(ctx *LlamadaFuncionExprContext) {}
 
 // EnterExpdotexp is called when production expdotexp is entered.
 func (s *BaseVlangListener) EnterExpdotexp(ctx *ExpdotexpContext) {}
@@ -241,6 +295,12 @@ func (s *BaseVlangListener) EnterValorCaracter(ctx *ValorCaracterContext) {}
 
 // ExitValorCaracter is called when production valorCaracter is exited.
 func (s *BaseVlangListener) ExitValorCaracter(ctx *ValorCaracterContext) {}
+
+// EnterListaExpresiones is called when production listaExpresiones is entered.
+func (s *BaseVlangListener) EnterListaExpresiones(ctx *ListaExpresionesContext) {}
+
+// ExitListaExpresiones is called when production listaExpresiones is exited.
+func (s *BaseVlangListener) ExitListaExpresiones(ctx *ListaExpresionesContext) {}
 
 // EnterIncremento is called when production incremento is entered.
 func (s *BaseVlangListener) EnterIncremento(ctx *IncrementoContext) {}

@@ -33,6 +33,17 @@ fn main() {
     print(true || true, true || false, false || true, false || false)
     print(!true, !false)
 
+    if (i > 10) {
+    print("Mayor a 10")
+    }
+
+    if (i > 10) {
+    print("Mayor a 10")
+    } else {
+        print("Menor o igual a 10")
+    }
+
+
     if true {
       print("GANO GUATE")
     } 
@@ -47,4 +58,24 @@ fn main() {
     print("a ver")
 
 
+    mut dia string = "sabado"
+    print(dia)
+    switch dia {
+      case "lunes":
+        print("Inicio de semana")
+      case "viernes":
+        print("Casi fin de semana")
+      default:
+        print("Día cualquiera")
+    }
+
+    palabras := []string{"hola", "mundo", "go"};
+    print(join(palabras, " "));
+
+
+    
+
+    for mut z int = 1; z <= 5; z++ {
+      print(z)
+    }
 }

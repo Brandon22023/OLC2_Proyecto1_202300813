@@ -22,6 +22,9 @@ type VlangListener interface {
 	// EnterVariableDeclaration is called when entering the variableDeclaration production.
 	EnterVariableDeclaration(c *VariableDeclarationContext)
 
+	// EnterTipoSlice is called when entering the tipoSlice production.
+	EnterTipoSlice(c *TipoSliceContext)
+
 	// EnterPrintStatement is called when entering the printStatement production.
 	EnterPrintStatement(c *PrintStatementContext)
 
@@ -37,14 +40,32 @@ type VlangListener interface {
 	// EnterFor_context is called when entering the for_context production.
 	EnterFor_context(c *For_contextContext)
 
+	// EnterSwitch_context is called when entering the switch_context production.
+	EnterSwitch_context(c *Switch_contextContext)
+
 	// EnterWhile_context is called when entering the while_context production.
 	EnterWhile_context(c *While_contextContext)
 
 	// EnterIfDcl is called when entering the ifDcl production.
 	EnterIfDcl(c *IfDclContext)
 
-	// EnterForDcl is called when entering the forDcl production.
-	EnterForDcl(c *ForDclContext)
+	// EnterForClasico is called when entering the forClasico production.
+	EnterForClasico(c *ForClasicoContext)
+
+	// EnterForCondicionUnica is called when entering the forCondicionUnica production.
+	EnterForCondicionUnica(c *ForCondicionUnicaContext)
+
+	// EnterSwitchDcl is called when entering the switchDcl production.
+	EnterSwitchDcl(c *SwitchDclContext)
+
+	// EnterCaseBlock is called when entering the caseBlock production.
+	EnterCaseBlock(c *CaseBlockContext)
+
+	// EnterDefaultBlock is called when entering the defaultBlock production.
+	EnterDefaultBlock(c *DefaultBlockContext)
+
+	// EnterLlamadaFuncion is called when entering the llamadaFuncion production.
+	EnterLlamadaFuncion(c *LlamadaFuncionContext)
 
 	// EnterWhileDcl is called when entering the whileDcl production.
 	EnterWhileDcl(c *WhileDclContext)
@@ -66,6 +87,12 @@ type VlangListener interface {
 
 	// EnterIgualdad is called when entering the igualdad production.
 	EnterIgualdad(c *IgualdadContext)
+
+	// EnterSliceCreacionv is called when entering the sliceCreacionv production.
+	EnterSliceCreacionv(c *SliceCreacionvContext)
+
+	// EnterLlamadaFuncionExpr is called when entering the llamadaFuncionExpr production.
+	EnterLlamadaFuncionExpr(c *LlamadaFuncionExprContext)
 
 	// EnterExpdotexp is called when entering the expdotexp production.
 	EnterExpdotexp(c *ExpdotexpContext)
@@ -118,6 +145,9 @@ type VlangListener interface {
 	// EnterValorCaracter is called when entering the valorCaracter production.
 	EnterValorCaracter(c *ValorCaracterContext)
 
+	// EnterListaExpresiones is called when entering the listaExpresiones production.
+	EnterListaExpresiones(c *ListaExpresionesContext)
+
 	// EnterIncremento is called when entering the incremento production.
 	EnterIncremento(c *IncrementoContext)
 
@@ -139,6 +169,9 @@ type VlangListener interface {
 	// ExitVariableDeclaration is called when exiting the variableDeclaration production.
 	ExitVariableDeclaration(c *VariableDeclarationContext)
 
+	// ExitTipoSlice is called when exiting the tipoSlice production.
+	ExitTipoSlice(c *TipoSliceContext)
+
 	// ExitPrintStatement is called when exiting the printStatement production.
 	ExitPrintStatement(c *PrintStatementContext)
 
@@ -154,14 +187,32 @@ type VlangListener interface {
 	// ExitFor_context is called when exiting the for_context production.
 	ExitFor_context(c *For_contextContext)
 
+	// ExitSwitch_context is called when exiting the switch_context production.
+	ExitSwitch_context(c *Switch_contextContext)
+
 	// ExitWhile_context is called when exiting the while_context production.
 	ExitWhile_context(c *While_contextContext)
 
 	// ExitIfDcl is called when exiting the ifDcl production.
 	ExitIfDcl(c *IfDclContext)
 
-	// ExitForDcl is called when exiting the forDcl production.
-	ExitForDcl(c *ForDclContext)
+	// ExitForClasico is called when exiting the forClasico production.
+	ExitForClasico(c *ForClasicoContext)
+
+	// ExitForCondicionUnica is called when exiting the forCondicionUnica production.
+	ExitForCondicionUnica(c *ForCondicionUnicaContext)
+
+	// ExitSwitchDcl is called when exiting the switchDcl production.
+	ExitSwitchDcl(c *SwitchDclContext)
+
+	// ExitCaseBlock is called when exiting the caseBlock production.
+	ExitCaseBlock(c *CaseBlockContext)
+
+	// ExitDefaultBlock is called when exiting the defaultBlock production.
+	ExitDefaultBlock(c *DefaultBlockContext)
+
+	// ExitLlamadaFuncion is called when exiting the llamadaFuncion production.
+	ExitLlamadaFuncion(c *LlamadaFuncionContext)
 
 	// ExitWhileDcl is called when exiting the whileDcl production.
 	ExitWhileDcl(c *WhileDclContext)
@@ -183,6 +234,12 @@ type VlangListener interface {
 
 	// ExitIgualdad is called when exiting the igualdad production.
 	ExitIgualdad(c *IgualdadContext)
+
+	// ExitSliceCreacionv is called when exiting the sliceCreacionv production.
+	ExitSliceCreacionv(c *SliceCreacionvContext)
+
+	// ExitLlamadaFuncionExpr is called when exiting the llamadaFuncionExpr production.
+	ExitLlamadaFuncionExpr(c *LlamadaFuncionExprContext)
 
 	// ExitExpdotexp is called when exiting the expdotexp production.
 	ExitExpdotexp(c *ExpdotexpContext)
@@ -234,6 +291,9 @@ type VlangListener interface {
 
 	// ExitValorCaracter is called when exiting the valorCaracter production.
 	ExitValorCaracter(c *ValorCaracterContext)
+
+	// ExitListaExpresiones is called when exiting the listaExpresiones production.
+	ExitListaExpresiones(c *ListaExpresionesContext)
 
 	// ExitIncremento is called when exiting the incremento production.
 	ExitIncremento(c *IncrementoContext)
