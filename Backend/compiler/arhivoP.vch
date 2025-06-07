@@ -38,7 +38,13 @@ fn main() {
     } 
     if false {
       print("no gano GUATE")
+    } else {
+        print("GANO GUATE, VAMOS AL FIN GANAN UN COSA")
     }
+
+
+
+    print("a ver")
 
 
 }

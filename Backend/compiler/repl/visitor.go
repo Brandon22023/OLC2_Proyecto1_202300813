@@ -610,54 +610,74 @@ func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext)
 }
 //condicionales
 func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
+    //fmt.Println("========== [DEBUG IF_CONTEXT] ==========")
+    if ctx.IfDcl() != nil {
+        return v.Visit(ctx.IfDcl())
+    }
+    //fmt.Println("[DEBUG IF_CONTEXT] No se encontró ifDcl")
+    return nil
+}
+
+func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
+    //fmt.Println("========== [DEBUG IFDCL] INICIO ==========")
     var cond antlr.ParseTree
     var ifBlock []antlr.ParseTree
     var elseBlock []antlr.ParseTree
     var inIfBlock, inElseBlock bool
 
+    ruleNames := ctx.GetParser().GetRuleNames()
+    //fmt.Printf("[DEBUG IFDCL] Total hijos del ifDcl: %d\n", ctx.GetChildCount())
+
     for i := 0; i < ctx.GetChildCount(); i++ {
         child := ctx.GetChild(i)
+        //fmt.Printf("[DEBUG IFDCL] Hijo #%d: %T\n", i, child)
 
-        // Detectar condición: primer hijo que sea RuleNode y no terminal ni llave ni palabra reservada
+        // Busca el primer hijo que sea una regla "expresion"
         if cond == nil {
             if rule, ok := child.(antlr.RuleNode); ok {
-                // Ignora llaves y palabras reservadas
-                text := ""
-                if t, ok := child.(antlr.TerminalNode); ok {
-                    text = t.GetText()
+                ruleName := ruleNames[rule.GetRuleContext().GetRuleIndex()]
+                //fmt.Printf("[DEBUG IFDCL]   Es RuleNode, ruleName: %s\n", ruleName)
+                if ruleName == "expresion" {
+                    cond = rule.(antlr.ParseTree)
+                    //fmt.Printf("[DEBUG IFDCL]   -> Se detectó la condición (expresion) en hijo #%d\n", i)
                 }
-                if text == "if" || text == "{" || text == "}" || text == "else" || text == "(" || text == ")" {
-                    continue
-                }
-                cond = rule.(antlr.ParseTree)
-                continue
+            } else {
+                //fmt.Printf("[DEBUG IFDCL]   No es RuleNode\n")
             }
         }
 
-        // Detectar inicio de bloque if
+        // Detectar inicio y fin de bloques IF y ELSE
         var text string
         if t, ok := child.(antlr.TerminalNode); ok {
             text = t.GetText()
+            //fmt.Printf("[DEBUG IFDCL]   Es TerminalNode, text: '%s'\n", text)
         } else {
             text = fmt.Sprintf("%T", child)
+            //fmt.Printf("[DEBUG IFDCL]   No es TerminalNode, tipo: %s\n", text)
         }
+
         if text == "{" && !inIfBlock && !inElseBlock {
             inIfBlock = true
+            //fmt.Printf("[DEBUG IFDCL]   -> INICIO bloque IF en hijo #%d\n", i)
             continue
         }
         if text == "}" && inIfBlock {
             inIfBlock = false
+            //fmt.Printf("[DEBUG IFDCL]   -> FIN bloque IF en hijo #%d\n", i)
             continue
         }
         if text == "else" {
             inElseBlock = true
+            //fmt.Printf("[DEBUG IFDCL]   -> INICIO bloque ELSE en hijo #%d\n", i)
             continue
         }
         if text == "{" && inElseBlock {
+            //fmt.Printf("[DEBUG IFDCL]   -> INICIO bloque ELSE (llave) en hijo #%d\n", i)
             continue
         }
         if text == "}" && inElseBlock {
             inElseBlock = false
+            //fmt.Printf("[DEBUG IFDCL]   -> FIN bloque ELSE en hijo #%d\n", i)
             continue
         }
 
@@ -665,37 +685,49 @@ func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{}
         if inIfBlock {
             if pt, ok := child.(parser.IDeclaracionesContext); ok {
                 ifBlock = append(ifBlock, pt)
+                //fmt.Printf("[DEBUG IFDCL]   -> Agregada declaración a IF en hijo #%d\n", i)
             }
         } else if inElseBlock {
             if pt, ok := child.(parser.IDeclaracionesContext); ok {
                 elseBlock = append(elseBlock, pt)
+                //fmt.Printf("[DEBUG IFDCL]   -> Agregada declaración a ELSE en hijo #%d\n", i)
             }
         }
     }
 
-    // Ahora sí, valida si se encontró la condición
     if cond == nil {
-        fmt.Println("[DEBUG IF] No se encontró condición en el if, se omite el bloque.")
+        //fmt.Println("[DEBUG IFDCL] No se encontró condición en el if, se omite el bloque.")
+        //fmt.Println("========== [DEBUG IFDCL] FIN ==========")
         return nil
     }
 
     // Evaluar condición
+    //fmt.Println("[DEBUG IFDCL] Evaluando condición...")
     condVal := v.Visit(cond)
-    fmt.Printf("[DEBUG IF] Valor de la condición: %v (tipo: %T)\n", condVal, condVal)
+    //fmt.Printf("[DEBUG IFDCL] Valor de la condición: %v (tipo: %T)\n", condVal, condVal)
     condBool := fmt.Sprint(condVal) == "true"
-    fmt.Printf("[DEBUG IF] ¿Condición evaluada como verdadera?: %v\n", condBool)
+    //fmt.Printf("[DEBUG IFDCL] ¿Condición evaluada como verdadera?: %v\n", condBool)
 
     // Ejecutar bloque correspondiente
     if condBool {
-        fmt.Println("[DEBUG IF] Ejecutando bloque IF")
-        for _, decl := range ifBlock {
+        //fmt.Println("[DEBUG IFDCL] Ejecutando bloque IF")
+        for idx, decl := range ifBlock {
+            var n = 1
+            if n == 0{
+                fmt.Printf("[DEBUG IFDCL]   Ejecutando declaración IF #%d\n", idx)
+            }
             v.Visit(decl)
         }
     } else {
-        fmt.Println("[DEBUG IF] Ejecutando bloque ELSE (si existe)")
-        for _, decl := range elseBlock {
+        //fmt.Println("[DEBUG IFDCL] Ejecutando bloque ELSE (si existe)")
+        for idx, decl := range elseBlock {
+            var n = 1
+            if n == 0{
+                fmt.Printf("[DEBUG IFDCL]   Ejecutando declaración IF #%d\n", idx)
+            }
             v.Visit(decl)
         }
     }
+    //fmt.Println("========== [DEBUG IFDCL] FIN ==========")
     return nil
 }

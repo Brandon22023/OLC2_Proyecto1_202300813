@@ -40,7 +40,7 @@ sentencias_control
     ;
 
 ifDcl
-    : 'if' (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE ( 'else' LBRACE declaraciones* RBRACE )?
+    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE ( CONDICIONAL_ETC LBRACE declaraciones* RBRACE )?
     ;
 forDcl
     : 'for' LPAREN ID ASSIGN expresion COMMA expresion RPAREN LBRACK declaraciones* RBRACK 
@@ -50,6 +50,10 @@ whileDcl
     : 'while' LPAREN expresion RPAREN LBRACK declaraciones* RBRACK 
     ;
 
+CONDICIONAL_ETC
+    : IF 
+    | ELSE
+    ;
 // === Reglas de expresiones ===
 expresion
     : valor                                                #valorexpr         
@@ -97,7 +101,8 @@ incredecre
 LEN     : 'len' ;
 CAP     : 'cap' ;
 APPEND  : 'append' ;
-
+IF      : 'if' ;
+ELSE    : 'else' ;
 // === Literales ===
 BOOLEANO : 'true' | 'false' ;
 ENTERO   : [0-9]+ ;
