@@ -34,6 +34,9 @@ type VlangListener interface {
 	// EnterControlStatement is called when entering the controlStatement production.
 	EnterControlStatement(c *ControlStatementContext)
 
+	// EnterTransfersentence is called when entering the transfersentence production.
+	EnterTransfersentence(c *TransfersentenceContext)
+
 	// EnterIf_context is called when entering the if_context production.
 	EnterIf_context(c *If_contextContext)
 
@@ -46,11 +49,23 @@ type VlangListener interface {
 	// EnterWhile_context is called when entering the while_context production.
 	EnterWhile_context(c *While_contextContext)
 
+	// EnterBreakStatement is called when entering the breakStatement production.
+	EnterBreakStatement(c *BreakStatementContext)
+
+	// EnterContinueStatement is called when entering the continueStatement production.
+	EnterContinueStatement(c *ContinueStatementContext)
+
+	// EnterReturnStatement is called when entering the returnStatement production.
+	EnterReturnStatement(c *ReturnStatementContext)
+
 	// EnterIfDcl is called when entering the ifDcl production.
 	EnterIfDcl(c *IfDclContext)
 
 	// EnterElseIfDcl is called when entering the elseIfDcl production.
 	EnterElseIfDcl(c *ElseIfDclContext)
+
+	// EnterElseCondicional is called when entering the elseCondicional production.
+	EnterElseCondicional(c *ElseCondicionalContext)
 
 	// EnterForClasico is called when entering the forClasico production.
 	EnterForClasico(c *ForClasicoContext)
@@ -81,9 +96,6 @@ type VlangListener interface {
 
 	// EnterOPERADORESLOGICOS is called when entering the OPERADORESLOGICOS production.
 	EnterOPERADORESLOGICOS(c *OPERADORESLOGICOSContext)
-
-	// EnterOr is called when entering the or production.
-	EnterOr(c *OrContext)
 
 	// EnterValorexpr is called when entering the valorexpr production.
 	EnterValorexpr(c *ValorexprContext)
@@ -184,6 +196,9 @@ type VlangListener interface {
 	// ExitControlStatement is called when exiting the controlStatement production.
 	ExitControlStatement(c *ControlStatementContext)
 
+	// ExitTransfersentence is called when exiting the transfersentence production.
+	ExitTransfersentence(c *TransfersentenceContext)
+
 	// ExitIf_context is called when exiting the if_context production.
 	ExitIf_context(c *If_contextContext)
 
@@ -196,11 +211,23 @@ type VlangListener interface {
 	// ExitWhile_context is called when exiting the while_context production.
 	ExitWhile_context(c *While_contextContext)
 
+	// ExitBreakStatement is called when exiting the breakStatement production.
+	ExitBreakStatement(c *BreakStatementContext)
+
+	// ExitContinueStatement is called when exiting the continueStatement production.
+	ExitContinueStatement(c *ContinueStatementContext)
+
+	// ExitReturnStatement is called when exiting the returnStatement production.
+	ExitReturnStatement(c *ReturnStatementContext)
+
 	// ExitIfDcl is called when exiting the ifDcl production.
 	ExitIfDcl(c *IfDclContext)
 
 	// ExitElseIfDcl is called when exiting the elseIfDcl production.
 	ExitElseIfDcl(c *ElseIfDclContext)
+
+	// ExitElseCondicional is called when exiting the elseCondicional production.
+	ExitElseCondicional(c *ElseCondicionalContext)
 
 	// ExitForClasico is called when exiting the forClasico production.
 	ExitForClasico(c *ForClasicoContext)
@@ -231,9 +258,6 @@ type VlangListener interface {
 
 	// ExitOPERADORESLOGICOS is called when exiting the OPERADORESLOGICOS production.
 	ExitOPERADORESLOGICOS(c *OPERADORESLOGICOSContext)
-
-	// ExitOr is called when exiting the or production.
-	ExitOr(c *OrContext)
 
 	// ExitValorexpr is called when exiting the valorexpr production.
 	ExitValorexpr(c *ValorexprContext)

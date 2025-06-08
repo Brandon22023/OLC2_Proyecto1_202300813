@@ -43,6 +43,10 @@ func (v *BaseVlangVisitor) VisitControlStatement(ctx *ControlStatementContext) i
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitTransfersentence(ctx *TransfersentenceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitIf_context(ctx *If_contextContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -59,11 +63,27 @@ func (v *BaseVlangVisitor) VisitWhile_context(ctx *While_contextContext) interfa
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitBreakStatement(ctx *BreakStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitContinueStatement(ctx *ContinueStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitReturnStatement(ctx *ReturnStatementContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitIfDcl(ctx *IfDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
 func (v *BaseVlangVisitor) VisitElseIfDcl(ctx *ElseIfDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitElseCondicional(ctx *ElseCondicionalContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -104,10 +124,6 @@ func (v *BaseVlangVisitor) VisitIncredecr(ctx *IncredecrContext) interface{} {
 }
 
 func (v *BaseVlangVisitor) VisitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseVlangVisitor) VisitOr(ctx *OrContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -34,14 +34,26 @@ fn main() {
     print(!true, !false)
 
 
-    mut x int = 10
+    mut x int = 70
+    mut y int = 500
     print(x)
+
     if x < 5 {
         print("x es menor que 5")
     } else if x < 10 {
         print("x es menor que 10")
-    } else {
-        print("x es 10 o mayor")
+    } else if x == 15 {
+        print("x es 15")
+    } else if x == 70 && y == 500 {
+        print("operador AND existo")
+        mut probando string = "entorno del if"
+        print(probando)
+    } else if x > 100 {
+        print("x mayor a 100")
+    }
+    
+      else {
+        print("x es 1000 o mayor")
     }
 
     if true {
@@ -53,6 +65,7 @@ fn main() {
         print("GANO GUATE, VAMOS AL FIN GANAN UN COSA")
     }
 
+    /*
     print("a ver")
 
 
@@ -76,4 +89,6 @@ fn main() {
     for mut z int = 1; z <= 5; z++ {
       print(z)
     }
+
+    */
 }

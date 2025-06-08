@@ -16,13 +16,17 @@ import (
 type ReplVisitor struct {
 	parser.BaseVlangVisitor            // Embebemos el visitor generado por ANTLR
 	Scope                   *BaseScope //este servira para obtener el valor de las variables declaradas xd
+    GlobalScope             *BaseScope // sera en si el entorno global
+    IfScope     []*BaseScope
 }
 
 var _ parser.VlangVisitor = &ReplVisitor{} // <-- Esto asegura la interfaz
 // Constructor del visitor
 func NewReplVisitor() *ReplVisitor {
+    global := NewBaseScope("GLOBAL", nil)
 	return &ReplVisitor{
-		Scope: NewBaseScope("global", nil),
+		Scope: global,
+        GlobalScope: global,
 	}
 }
 
@@ -55,6 +59,18 @@ func (v *ReplVisitor) VisitDeclaraciones(ctx *parser.DeclaracionesContext) inter
 	//fmt.Println("Entrando a VisitDeclaraciones")
 	return v.VisitChildren(ctx)
 }
+func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
+    return v.Visit(ctx.IfDcl())
+}
+func (v *ReplVisitor) VisitFor_context(ctx *parser.For_contextContext) interface{} {
+    return v.Visit(ctx.ForDcl())
+}
+func (v *ReplVisitor) VisitSwitch_context(ctx *parser.Switch_contextContext) interface{} {
+    return v.Visit(ctx.SwitchDcl())
+}
+func (v *ReplVisitor) VisitWhile_context(ctx *parser.While_contextContext) interface{} {
+    return v.Visit(ctx.WhileDcl())
+}
 
 func (v *ReplVisitor) VisitStmt(ctx *parser.StmtContext) interface{} {
 	//fmt.Println("Entrando a VisitStmt")
@@ -67,15 +83,20 @@ func (v *ReplVisitor) VisitFuncMain(ctx *parser.FuncMainContext) interface{} {
 }
 
 func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
-	//fmt.Println("Entrando a VisitBlock")
-	newScope := NewBaseScope("block", v.Scope)
-	v.Scope = newScope                          // Cambiamos el scope actual al nuevo bloque
-	defer func() { v.Scope = v.Scope.Parent }() // Al salir del bloque, volvemos al scope anterior
-	for _, decl := range ctx.AllDeclaraciones() {
-		//sfmt.Printf("Tipo de declaración: %T\n", decl)
-		v.Visit(decl)
-	}
-	return nil
+    //fmt.Println("[DEBUG] Entrando a un nuevo bloque. Scope actual:", v.Scope.Name)
+    //entorno global para todas las variables declaradas en el bloque
+    if v.Scope != v.GlobalScope {
+        newScope := NewBaseScope("block", v.Scope)
+        v.Scope = newScope
+        defer func()  {
+            v.Scope = v.Scope.Parent
+        }()
+    }
+    for _, decl := range ctx.AllDeclaraciones() {
+        v.Visit(decl)
+    }
+    //fmt.Println("[DEBUG] Saliendo del bloque. Scope actual:", v.Scope.Name)
+    return nil
 }
 
 // Visitamos declaraciones de variables
@@ -148,8 +169,8 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 	if n == 0 {
 		fmt.Println(varName, varType, valueObj)
 	}
-	// Usa valueObj aquí (por ejemplo, agrega al scope)
-	// scope.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+    //fmt.Printf("[DEBUG] Variable '%s' declarada en scope '%s'\n", varName, v.Scope.Name)
+
 
 	return nil
 }
@@ -333,7 +354,8 @@ func (v *ReplVisitor) VisitMultdivmod(ctx *parser.MultdivmodContext) interface{}
 }
 
 func (v *ReplVisitor) VisitRelacionales(ctx *parser.RelacionalesContext) interface{} {
-	left := v.Visit(ctx.Expresion(0))
+	//fmt.Println("[DEBUG] Entrando a VisitRelacionales:", ctx.GetText())
+    left := v.Visit(ctx.Expresion(0))
 	right := v.Visit(ctx.Expresion(1))
 	op := ctx.GetOp().GetText()
 
@@ -349,6 +371,7 @@ func (v *ReplVisitor) VisitRelacionales(ctx *parser.RelacionalesContext) interfa
 		case ">=":
 			return leftStr >= rightStr
 		case "<":
+            //fmt.Printf("[DEBUG] Comparando '%s' y '%s' con operador '%s'\n", leftStr, rightStr, op)
 			return leftStr < rightStr
 		case "<=":
 			return leftStr <= rightStr
@@ -453,18 +476,15 @@ func (v *ReplVisitor) VisitIgualdad(ctx *parser.IgualdadContext) interface{} {
 	return false
 }
 
-func (v *ReplVisitor) VisitOr(ctx *parser.OrContext) interface{} {
-	//fmt.Println("🚪 Operador OR lógico")
-	return v.VisitChildren(ctx)
-}
-
 func (v *ReplVisitor) VisitId(ctx *parser.IdContext) interface{} {
-	varName := ctx.GetText()
-	variable := v.Scope.GetVariable(varName)
-	if variable != nil && variable.Value != nil {
-		return variable.Value.Value()
-	}
-	return "<undef>"
+    varName := ctx.GetText()
+    variable := v.Scope.GetVariable(varName)
+    if variable != nil && variable.Value != nil {
+        //fmt.Printf("Accediendo variable '%s', valor: %v\n", varName, variable.Value.Value())
+        return variable.Value.Value()
+    }
+    fmt.Printf("Variable '%s' no encontrada\n", varName)
+    return "<undef>"
 }
 
 func (v *ReplVisitor) VisitIncredecr(ctx *parser.IncredecrContext) interface{} {
@@ -647,7 +667,7 @@ func (v *ReplVisitor) VisitOPERADORESLOGICOS(ctx *parser.OPERADORESLOGICOSContex
 	// Solo acepta booleanos
 	if (fmt.Sprint(left) != "true" && fmt.Sprint(left) != "false") ||
 		(fmt.Sprint(right) != "true" && fmt.Sprint(right) != "false") {
-		fmt.Printf("Error: operador lógico '%s' solo acepta booleanos\n", op)
+		//fmt.Printf("Error: operador lógico '%s' solo acepta booleanos\n", op)
 		return false
 	}
 
@@ -666,65 +686,45 @@ func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext)
 
 // condicionales
 func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
-	var conds []antlr.ParseTree
-	var blocks [][]antlr.ParseTree
+    //aqui manejaremos el entorno del if, tene en cuenta que es un scope nuevo
+    newScope := NewBaseScope("IF", v.Scope)
+    v.Scope = newScope
+    v.IfScope = append(v.IfScope, newScope)
+    defer func() { v.Scope = v.Scope.Parent }()
+    //fmt.Println("[DEBUG] Entrando a VisitIfDcl:", ctx.GetText())
+    condVal := v.Visit(ctx.Expresion())
+    //fmt.Printf("Valor de la condición del if: %v (tipo %T)\n", condVal, condVal)
+    condBool := fmt.Sprint(condVal) == "true"
 
-	ruleNames := ctx.GetParser().GetRuleNames()
 
-	var currentBlock []antlr.ParseTree
-	var inBlock bool
+    if condBool {
+        //fmt.Println("Condición verdadera, ejecutando declaraciones del if")
+        
+        for _, decl := range ctx.AllDeclaraciones() {
+            v.Visit(decl)
+        }
+        return nil
+    }
 
-	for i := 0; i < ctx.GetChildCount(); i++ {
-		child := ctx.GetChild(i)
+    // else if recursivo asi que no eliminar 
+    for _, elseIf := range ctx.AllElseIfDcl() {
+        elseIfCond := v.Visit(elseIf.Expresion())
+        if fmt.Sprint(elseIfCond) == "true" {
+            for _, decl := range elseIf.AllDeclaraciones() {
+                v.Visit(decl)
+            }
+            return nil
+        }
+    }
 
-		if rule, ok := child.(antlr.RuleNode); ok {
-			ruleName := ruleNames[rule.GetRuleContext().GetRuleIndex()]
-			if ruleName == "expresion" && !inBlock {
-				conds = append(conds, rule.(antlr.ParseTree))
-			}
-		}
+    // else
+    if ctx.ElseCondicional() != nil {
+        for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
+            v.Visit(decl)
+        }
+    }
 
-		text := ""
-		if t, ok := child.(antlr.TerminalNode); ok {
-			text = t.GetText()
-		}
-
-		if text == "{" {
-			inBlock = true
-			currentBlock = []antlr.ParseTree{}
-			continue
-		}
-		if text == "}" {
-			inBlock = false
-			blocks = append(blocks, currentBlock)
-			continue
-		}
-
-		if inBlock {
-			if decl, ok := child.(parser.IDeclaracionesContext); ok {
-				currentBlock = append(currentBlock, decl)
-			}
-		}
-	}
-
-	for i, cond := range conds {
-		condVal := v.Visit(cond)
-		condBool := fmt.Sprint(condVal) == "true"
-		if condBool {
-			for _, decl := range blocks[i] {
-				v.Visit(decl)
-			}
-			return nil
-		}
-	}
-
-	if len(blocks) > len(conds) {
-		for _, decl := range blocks[len(blocks)-1] {
-			v.Visit(decl)
-		}
-	}
-
-	return nil
+    return nil
 }
 
 // El For tiene error no repite el ciclo :') pero si lo lee el programa
@@ -798,9 +798,6 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 	return nil
 }
 
-func (v *ReplVisitor) VisitSwitch_context(ctx *parser.Switch_contextContext) interface{} {
-	return v.Visit(ctx.SwitchDcl())
-}
 
 func (v *ReplVisitor) VisitSwitchDcl(ctx *parser.SwitchDclContext) interface{} {
 	//fmt.Println("========== [DEBUG SWITCH_DCL] ==========")

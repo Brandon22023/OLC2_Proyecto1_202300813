@@ -36,6 +36,7 @@ tipoSlice
 stmt : PRINT LPAREN (expresion (COMMA expresion)*)? RPAREN #printStatement
      | expresion          #expresionStatement
      | sentencias_control    #controlStatement
+     | sentencias_transferencia  #transfersentence
      ; 
 
 sentencias_control
@@ -45,25 +46,32 @@ sentencias_control
     | whileDcl          #while_context
     ;
 
+sentencias_transferencia
+     : BREAK                     #breakStatement
+     | CONTINUE                  #continueStatement
+     | RETURN (expresion)?       #returnStatement
+     ;
+
 ifDcl
-
-    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE (elseIfDcl)* (ELSE LBRACE declaraciones* RBRACE)?
-
+    : IF expresion LBRACE declaraciones* RBRACE (elseIfDcl)* (elseCondicional)?
     ;
 
 
 elseIfDcl
-
-    : CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? LBRACE declaraciones* RBRACE
-
+    : ELSE IF expresion LBRACE declaraciones* RBRACE
     ;
+
+elseCondicional
+    :ELSE LBRACE declaraciones* RBRACE
+    ;
+
 forDcl
-    : CONDICIONAL_ETC (LPAREN)? (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block   #forClasico
-    | CONDICIONAL_ETC (LPAREN)? expresion (RPAREN)? block                             #forCondicionUnica
+    : FOR (LPAREN)? (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block   #forClasico
+    | FOR (LPAREN)? expresion (RPAREN)? block                             #forCondicionUnica
     ;
 
 switchDcl
-    : CONDICIONAL_ETC expresion LBRACE caseBlock*  defaultBlock? RBRACE
+    : SWITCH expresion LBRACE caseBlock*  defaultBlock? RBRACE
     ;
 
 caseBlock
@@ -85,26 +93,20 @@ whileDcl
     : 'while' LPAREN expresion RPAREN LBRACK declaraciones* RBRACK 
     ;
 
-CONDICIONAL_ETC
-    : IF 
-    | ELSE
-    | FOR
-    | SWITCH
-    ;
+
 // === Reglas de expresiones ===
 expresion
-    : valor                                                #valorexpr         
+    : expresion op=(LT | LE | GE | GT) expresion           #relacionales
+    | expresion op=(EQ | NEQ) expresion                    #igualdad
+    | expresion op=(AND | OR) expresion                    #OPERADORESLOGICOS
+    | expresion op=(MUL | DIV | MOD) expresion             #multdivmod
+    | expresion op=(PLUS | MINUS) expresion                #sumres
+    | op=(NOT | MINUS) expresion                           #unario
+    | valor                                                #valorexpr         
     | LPAREN expresion RPAREN                              #parentesisexpre
     | LBRACK expresion RBRACK                              #corchetesexpre
     | tipoSlice LBRACE listaExpresiones? RBRACE            #sliceCreacionv
     | llamadaFuncion                                       #llamadaFuncionExpr
-    | op=(NOT | MINUS) expresion                           #unario
-    | expresion op=(AND | OR) expresion                    #OPERADORESLOGICOS
-    | expresion op=(MUL | DIV | MOD) expresion             #multdivmod
-    | expresion op=(PLUS | MINUS) expresion                #sumres
-    | expresion op=(LT | LE | GE | GT) expresion           #relacionales
-    | expresion op=(EQ | NEQ) expresion                    #igualdad
-    | expresion OR expresion                               #or
     | ID                                                   #id              
     | incredecre                                           #incredecr      
     | ID DOT ID                                            #expdotexp1             
@@ -148,6 +150,9 @@ FOR     : 'for' ;
 SWITCH  : 'switch' ;
 INDEXOF : 'indexOf' ;
 JOIN    : 'join' ;
+BREAK   : 'break' ;
+CONTINUE: 'continue' ;
+RETURN  : 'return' ;
 // === Literales ===
 BOOLEANO : 'true' | 'false' ;
 ENTERO   : [0-9]+ ;

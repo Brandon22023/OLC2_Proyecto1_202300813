@@ -74,6 +74,12 @@ func (s *BaseVlangListener) EnterControlStatement(ctx *ControlStatementContext) 
 // ExitControlStatement is called when production controlStatement is exited.
 func (s *BaseVlangListener) ExitControlStatement(ctx *ControlStatementContext) {}
 
+// EnterTransfersentence is called when production transfersentence is entered.
+func (s *BaseVlangListener) EnterTransfersentence(ctx *TransfersentenceContext) {}
+
+// ExitTransfersentence is called when production transfersentence is exited.
+func (s *BaseVlangListener) ExitTransfersentence(ctx *TransfersentenceContext) {}
+
 // EnterIf_context is called when production if_context is entered.
 func (s *BaseVlangListener) EnterIf_context(ctx *If_contextContext) {}
 
@@ -98,6 +104,24 @@ func (s *BaseVlangListener) EnterWhile_context(ctx *While_contextContext) {}
 // ExitWhile_context is called when production while_context is exited.
 func (s *BaseVlangListener) ExitWhile_context(ctx *While_contextContext) {}
 
+// EnterBreakStatement is called when production breakStatement is entered.
+func (s *BaseVlangListener) EnterBreakStatement(ctx *BreakStatementContext) {}
+
+// ExitBreakStatement is called when production breakStatement is exited.
+func (s *BaseVlangListener) ExitBreakStatement(ctx *BreakStatementContext) {}
+
+// EnterContinueStatement is called when production continueStatement is entered.
+func (s *BaseVlangListener) EnterContinueStatement(ctx *ContinueStatementContext) {}
+
+// ExitContinueStatement is called when production continueStatement is exited.
+func (s *BaseVlangListener) ExitContinueStatement(ctx *ContinueStatementContext) {}
+
+// EnterReturnStatement is called when production returnStatement is entered.
+func (s *BaseVlangListener) EnterReturnStatement(ctx *ReturnStatementContext) {}
+
+// ExitReturnStatement is called when production returnStatement is exited.
+func (s *BaseVlangListener) ExitReturnStatement(ctx *ReturnStatementContext) {}
+
 // EnterIfDcl is called when production ifDcl is entered.
 func (s *BaseVlangListener) EnterIfDcl(ctx *IfDclContext) {}
 
@@ -109,6 +133,12 @@ func (s *BaseVlangListener) EnterElseIfDcl(ctx *ElseIfDclContext) {}
 
 // ExitElseIfDcl is called when production elseIfDcl is exited.
 func (s *BaseVlangListener) ExitElseIfDcl(ctx *ElseIfDclContext) {}
+
+// EnterElseCondicional is called when production elseCondicional is entered.
+func (s *BaseVlangListener) EnterElseCondicional(ctx *ElseCondicionalContext) {}
+
+// ExitElseCondicional is called when production elseCondicional is exited.
+func (s *BaseVlangListener) ExitElseCondicional(ctx *ElseCondicionalContext) {}
 
 // EnterForClasico is called when production forClasico is entered.
 func (s *BaseVlangListener) EnterForClasico(ctx *ForClasicoContext) {}
@@ -169,12 +199,6 @@ func (s *BaseVlangListener) EnterOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext
 
 // ExitOPERADORESLOGICOS is called when production OPERADORESLOGICOS is exited.
 func (s *BaseVlangListener) ExitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) {}
-
-// EnterOr is called when production or is entered.
-func (s *BaseVlangListener) EnterOr(ctx *OrContext) {}
-
-// ExitOr is called when production or is exited.
-func (s *BaseVlangListener) ExitOr(ctx *OrContext) {}
 
 // EnterValorexpr is called when production valorexpr is entered.
 func (s *BaseVlangListener) EnterValorexpr(ctx *ValorexprContext) {}

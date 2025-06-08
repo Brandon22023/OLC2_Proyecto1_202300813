@@ -6,6 +6,7 @@ import (
 
 	compiler "compiler/parser"
 	repl "compiler/repl"
+	"compiler/symbols"
 
 	//"main/cst"
 	"compiler/errors"
@@ -68,6 +69,26 @@ func main() {
 	visitor := repl.NewReplVisitor()
 	visitor.Visit(arbolito)
 
+
+	//visitor.GlobalScope.PrintVariables()
+	fmt.Println("=== Entornos IF ===")
+	for _, ifScope := range visitor.IfScope {
+		ifScope.PrintVariables()
+	}
+	//fmt.Println("aqui imprimire las variables de todos los entornos")
+	//visitor.Scope.PrintAllScopesUp()
+	//visitor.Scope.PrintAllEnvironments()
+
+	visitor.GlobalScope.PrintAllEnvironmentsRecursive(0)
+	// Al final del main:
+	tabla := symbols.NewSymbolTable()
+	visitor.GlobalScope.CollectSymbols(tabla)
+	err = tabla.ToHTML("tabla_simbolos.html")
+	if err != nil {
+		fmt.Println("Error al escribir la tabla de símbolos:", err)
+	} else {
+		fmt.Println("Tabla de símbolos generada en tabla_simbolos.html")
+	}
 }
 
 /*
@@ -77,8 +98,8 @@ func main() {
 	}
 */
 func readStdin() (string, error) {
-	//input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
-	input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	//input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
 	return string(input), err
 }
 

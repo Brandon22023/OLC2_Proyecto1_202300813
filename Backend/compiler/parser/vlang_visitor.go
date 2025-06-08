@@ -34,6 +34,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#controlStatement.
 	VisitControlStatement(ctx *ControlStatementContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#transfersentence.
+	VisitTransfersentence(ctx *TransfersentenceContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#if_context.
 	VisitIf_context(ctx *If_contextContext) interface{}
 
@@ -46,11 +49,23 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#while_context.
 	VisitWhile_context(ctx *While_contextContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#breakStatement.
+	VisitBreakStatement(ctx *BreakStatementContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#continueStatement.
+	VisitContinueStatement(ctx *ContinueStatementContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#returnStatement.
+	VisitReturnStatement(ctx *ReturnStatementContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#ifDcl.
 	VisitIfDcl(ctx *IfDclContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#elseIfDcl.
 	VisitElseIfDcl(ctx *ElseIfDclContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#elseCondicional.
+	VisitElseCondicional(ctx *ElseCondicionalContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#forClasico.
 	VisitForClasico(ctx *ForClasicoContext) interface{}
@@ -81,9 +96,6 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#OPERADORESLOGICOS.
 	VisitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) interface{}
-
-	// Visit a parse tree produced by VlangParser#or.
-	VisitOr(ctx *OrContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#valorexpr.
 	VisitValorexpr(ctx *ValorexprContext) interface{}
