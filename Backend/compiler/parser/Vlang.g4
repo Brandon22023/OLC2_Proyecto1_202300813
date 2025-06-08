@@ -66,8 +66,8 @@ elseCondicional
     ;
 
 forDcl
-    : FOR (LPAREN)? (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block   #forClasico
-    | FOR (LPAREN)? expresion (RPAREN)? block                             #forCondicionUnica
+    : FOR (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block  #forClasico
+    | FOR expresion block                                      #forCondicionUnica
     ;
 
 switchDcl

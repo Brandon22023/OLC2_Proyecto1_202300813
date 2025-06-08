@@ -65,7 +65,7 @@ fn main() {
         print("GANO GUATE, VAMOS AL FIN GANAN UN COSA")
     }
 
-    /*
+    
     print("a ver")
 
 
@@ -80,15 +80,21 @@ fn main() {
         print("Día cualquiera")
     }
 
+  print("==== Prueba For clasico ====")
+  mut z int = 0
+  for z ; z <= 5 ; z++ {
+      print(z)
+  }
+
+  print("==== Prueba For una condicion ====")
+  mut c int = 0
+  for c <= 3 {
+      print(c)
+      c++
+  }
+
+    /*
     palabras := []string{"hola", "mundo", "go"};
     print(join(palabras, " "));
-
-
-    
-
-    for mut z int = 1; z <= 5; z++ {
-      print(z)
-    }
-
     */
 }
