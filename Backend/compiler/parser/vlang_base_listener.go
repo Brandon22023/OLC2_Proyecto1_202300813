@@ -152,6 +152,12 @@ func (s *BaseVlangListener) EnterForCondicionUnica(ctx *ForCondicionUnicaContext
 // ExitForCondicionUnica is called when production forCondicionUnica is exited.
 func (s *BaseVlangListener) ExitForCondicionUnica(ctx *ForCondicionUnicaContext) {}
 
+// EnterAsignacion is called when production asignacion is entered.
+func (s *BaseVlangListener) EnterAsignacion(ctx *AsignacionContext) {}
+
+// ExitAsignacion is called when production asignacion is exited.
+func (s *BaseVlangListener) ExitAsignacion(ctx *AsignacionContext) {}
+
 // EnterSwitchDcl is called when production switchDcl is entered.
 func (s *BaseVlangListener) EnterSwitchDcl(ctx *SwitchDclContext) {}
 

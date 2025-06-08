@@ -95,6 +95,10 @@ func (v *BaseVlangVisitor) VisitForCondicionUnica(ctx *ForCondicionUnicaContext)
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitAsignacion(ctx *AsignacionContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitSwitchDcl(ctx *SwitchDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }

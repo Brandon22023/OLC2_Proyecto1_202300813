@@ -488,17 +488,21 @@ func (v *ReplVisitor) VisitId(ctx *parser.IdContext) interface{} {
 
 func (v *ReplVisitor) VisitIncredecr(ctx *parser.IncredecrContext) interface{} {
 	//fmt.Println("🔼 Incremento/Decremento:", ctx.GetText())
-	return v.VisitChildren(ctx)
+	child := ctx.GetChild(0)
+
+	switch node := child.(type) {
+	case *parser.IncrementoContext:
+		return v.VisitIncremento(node)
+	case *parser.DecrementoContext:
+		return v.VisitDecremento(node)
+	default:
+		fmt.Println("❌ Error: incremento/decremento no reconocido")
+		return nil
+	}
 }
 
 func (v *ReplVisitor) VisitIncremento(ctx *parser.IncrementoContext) interface{} {
-	varName := ""
-	if idNode, ok := ctx.GetChild(0).(antlr.TerminalNode); ok {
-		varName = idNode.GetText()
-	} else {
-		fmt.Println("Error: no se pudo obtener el ID del incremento/decremento")
-		return nil
-	}
+	varName := ctx.ID().GetText()
 	variable := v.Scope.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Error: variable '%s' no declarada\n", varName)
@@ -511,18 +515,13 @@ func (v *ReplVisitor) VisitIncremento(ctx *parser.IncrementoContext) interface{}
 		return nil
 	}
 
+	oldVal := val
 	variable.Value = value.NewIntValue(val + 1)
-	return nil
+	return oldVal
 }
 
 func (v *ReplVisitor) VisitDecremento(ctx *parser.DecrementoContext) interface{} {
-	varName := ""
-	if idNode, ok := ctx.GetChild(0).(antlr.TerminalNode); ok {
-		varName = idNode.GetText()
-	} else {
-		fmt.Println("Error: no se pudo obtener el ID del incremento/decremento")
-		return nil
-	}
+	varName := ctx.ID().GetText()
 	variable := v.Scope.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Error: variable '%s' no declarada\n", varName)
@@ -535,8 +534,9 @@ func (v *ReplVisitor) VisitDecremento(ctx *parser.DecrementoContext) interface{}
 		return nil
 	}
 
+	oldVal := val
 	variable.Value = value.NewIntValue(val - 1)
-	return nil
+	return oldVal
 }
 
 func (v *ReplVisitor) VisitChildren(node antlr.RuleNode) interface{} {
@@ -734,13 +734,40 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 		v.Scope = v.Scope.Parent
 	}()
 
-	// Ejecutar inicialización (stmt)?
-	if ctx.Stmt(0) != nil {
-		v.Visit(ctx.Stmt(0))
+	// 🔷 Inicialización (asignación implícita)
+	varName := ctx.Asignacion().ID().GetText()
+	initVal := v.Visit(ctx.Asignacion().Expresion())
+
+	// Crear la variable en el entorno del for
+	varType := value.IVOR_INT // Asumimos int
+	varVal := value.NewIntValue(0)
+
+	// Deducción básica del tipo
+	switch val := initVal.(type) {
+	case int:
+		varType = value.IVOR_INT
+		varVal = value.NewIntValue(val)
+	case float64:
+		varType = value.IVOR_FLOAT
+		varVal = value.NewFloatValue(val)
+	case string:
+		varType = value.IVOR_STRING
+		varVal = value.NewStringValue(val)
+	case bool:
+		varType = value.IVOR_BOOL
+		varVal = value.NewBoolValue(val)
+	case rune:
+		varType = value.IVOR_CHARACTER
+		varVal = value.NewCharValue(val)
+	default:
+		fmt.Printf("❌ Tipo no soportado para la variable '%s'\n", varName)
 	}
 
+	v.Scope.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
+
+	// Bucle for
 	for {
-		// Evaluar condición
+		// Evaluar la condición
 		condVal := v.Visit(ctx.Expresion())
 		if fmt.Sprint(condVal) != "true" {
 			break
@@ -755,12 +782,11 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 			v.Visit(decl)
 		}
 
-		// Restaurar entorno iteración
-		v.Scope = v.Scope.Parent
+		v.Scope = v.Scope.Parent // salir del bloque
 
-		// Ejecutar incremento (stmt)?
-		if ctx.Stmt(1) != nil {
-			v.Visit(ctx.Stmt(1))
+		// Ejecutar incremento
+		if ctx.Stmt() != nil {
+			v.Visit(ctx.Stmt())
 		}
 	}
 

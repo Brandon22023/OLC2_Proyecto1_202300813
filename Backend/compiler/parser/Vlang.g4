@@ -66,8 +66,11 @@ elseCondicional
     ;
 
 forDcl
-    : FOR (stmt)? SEMICOLON expresion SEMICOLON (stmt)? block  #forClasico
+    : FOR asignacion SEMICOLON expresion SEMICOLON (stmt)? block  #forClasico
     | FOR expresion block                                      #forCondicionUnica
+    ;
+asignacion
+    : ID ASSIGN expresion
     ;
 
 switchDcl

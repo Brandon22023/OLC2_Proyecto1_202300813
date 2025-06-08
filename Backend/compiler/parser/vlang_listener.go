@@ -73,6 +73,9 @@ type VlangListener interface {
 	// EnterForCondicionUnica is called when entering the forCondicionUnica production.
 	EnterForCondicionUnica(c *ForCondicionUnicaContext)
 
+	// EnterAsignacion is called when entering the asignacion production.
+	EnterAsignacion(c *AsignacionContext)
+
 	// EnterSwitchDcl is called when entering the switchDcl production.
 	EnterSwitchDcl(c *SwitchDclContext)
 
@@ -234,6 +237,9 @@ type VlangListener interface {
 
 	// ExitForCondicionUnica is called when exiting the forCondicionUnica production.
 	ExitForCondicionUnica(c *ForCondicionUnicaContext)
+
+	// ExitAsignacion is called when exiting the asignacion production.
+	ExitAsignacion(c *AsignacionContext)
 
 	// ExitSwitchDcl is called when exiting the switchDcl production.
 	ExitSwitchDcl(c *SwitchDclContext)

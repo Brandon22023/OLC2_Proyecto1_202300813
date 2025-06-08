@@ -80,10 +80,16 @@ fn main() {
         print("Día cualquiera")
     }
 
+  
+  mut z int = 1
+  print("Imprime 1: ", z++) // Imprime 1
+  print("Imprime 2: ", z)   // Imprime 2
+  print("Imprime 2: ", z--) // Imprime 2
+  print("Imprime 1: ", z)   // Imprime 1
+  
   print("==== Prueba For clasico ====")
-  mut z int = 0
-  for z ; z <= 5 ; z++ {
-      print(z)
+  for w = 0 ; w <= 5 ; w++ {
+      print(w)
   }
 
   print("==== Prueba For una condicion ====")
@@ -92,6 +98,13 @@ fn main() {
       print(c)
       c++
   }
+
+  print("==== Prueba For 3 ====")
+  for  g = 1 ; g <= 3; g++ {
+    for q = 1; q <= 2; q++ {
+        print("g: ", g, ", q: ", q)
+    }
+  }*/
 
     /*
     palabras := []string{"hola", "mundo", "go"};
