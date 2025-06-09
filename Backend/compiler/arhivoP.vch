@@ -111,3 +111,16 @@ fn main() {
     print(join(palabras, " "));
     */
 }
+*/
+fn main() {
+    print("== For con continue ==\n")
+    mut j int = 0
+    for j < 5 {
+        if j == 2 {
+            j++
+            continue
+        }
+        print(j)
+        j++
+    }
+}*/

@@ -18,6 +18,7 @@ type ReplVisitor struct {
 	Scope                   *BaseScope //este servira para obtener el valor de las variables declaradas xd
 	GlobalScope             *BaseScope // sera en si el entorno global
 	IfScope                 []*BaseScope
+	inForLoop               bool // Bandera para rastrear si estamos en un bucle for
 }
 
 var _ parser.VlangVisitor = &ReplVisitor{} // <-- Esto asegura la interfaz
@@ -27,6 +28,7 @@ func NewReplVisitor() *ReplVisitor {
 	return &ReplVisitor{
 		Scope:       global,
 		GlobalScope: global,
+		inForLoop:   false,
 	}
 }
 
@@ -82,6 +84,26 @@ func (v *ReplVisitor) VisitFuncMain(ctx *parser.FuncMainContext) interface{} {
 	return v.Visit(ctx.Block())
 }
 
+// REVISAR
+// Para el continue
+func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContext) interface{} {
+	if !v.inForLoop {
+		fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
+		return nil
+	}
+	return "continue" // Señal para saltar a la siguiente iteración
+}
+
+// Para el brake
+func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) interface{} {
+	if !v.inForLoop {
+		fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
+		return nil
+	}
+	return "break" // Señal para salir del bucle
+}
+
+// HASTA ACA
 func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 	//fmt.Println("[DEBUG] Entrando a un nuevo bloque. Scope actual:", v.Scope.Name)
 	//entorno global para todas las variables declaradas en el bloque
@@ -727,22 +749,23 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 
 // El For tiene error no repite el ciclo :') pero si lo lee el programa
 func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{} {
-	// Crear entorno externo
 	newScope := NewBaseScope("FOR_CLASICO", v.Scope)
 	v.Scope = newScope
 	defer func() {
 		v.Scope = v.Scope.Parent
 	}()
 
-	// 🔷 Inicialización (asignación implícita)
+	v.inForLoop = true // 🔹 Habilita el uso de "continue" y "break"
+	defer func() {
+		v.inForLoop = false // 🔹 Restaura estado
+	}()
+
 	varName := ctx.Asignacion().ID().GetText()
 	initVal := v.Visit(ctx.Asignacion().Expresion())
 
-	// Crear la variable en el entorno del for
-	varType := value.IVOR_INT // Asumimos int
+	varType := value.IVOR_INT
 	varVal := value.NewIntValue(0)
 
-	// Deducción básica del tipo
 	switch val := initVal.(type) {
 	case int:
 		varType = value.IVOR_INT
@@ -765,28 +788,34 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 
 	v.Scope.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
 
-	// Bucle for
 	for {
-		// Evaluar la condición
 		condVal := v.Visit(ctx.Expresion())
 		if fmt.Sprint(condVal) != "true" {
 			break
 		}
 
-		// Crear un nuevo scope por iteración
 		iterScope := NewBaseScope("FOR_ITER", v.Scope)
 		v.Scope = iterScope
 
-		// Ejecutar bloque
 		for _, decl := range ctx.Block().AllDeclaraciones() {
-			v.Visit(decl)
+			res := v.Visit(decl)
+
+			// 🔴 Controlar flujo con break o continue
+			if str, ok := res.(string); ok {
+				if str == "continue" {
+					v.Scope = v.Scope.Parent // salir del iterScope
+					break                    // salto a incremento y siguiente iteración
+				} else if str == "break" {
+					v.Scope = v.Scope.Parent
+					return nil // salimos del for
+				}
+			}
 		}
 
-		v.Scope = v.Scope.Parent // salir del bloque
+		v.Scope = v.Scope.Parent // salir del iterScope
 
-		// Ejecutar incremento
 		if ctx.Stmt() != nil {
-			v.Visit(ctx.Stmt())
+			v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
 		}
 	}
 
@@ -794,30 +823,40 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 }
 
 func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContext) interface{} {
-	// Crear entorno del for
 	newScope := NewBaseScope("FOR_SIMPLE", v.Scope)
 	v.Scope = newScope
 	defer func() {
 		v.Scope = v.Scope.Parent
 	}()
 
+	v.inForLoop = true
+	defer func() {
+		v.inForLoop = false
+	}()
+
 	for {
-		// Evaluar condición
 		condVal := v.Visit(ctx.Expresion())
 		if fmt.Sprint(condVal) != "true" {
 			break
 		}
 
-		// Crear entorno por iteración
 		iterScope := NewBaseScope("FOR_ITER", v.Scope)
 		v.Scope = iterScope
 
-		// Ejecutar bloque
 		for _, decl := range ctx.Block().AllDeclaraciones() {
-			v.Visit(decl)
+			res := v.Visit(decl)
+
+			if str, ok := res.(string); ok {
+				if str == "continue" {
+					v.Scope = v.Scope.Parent
+					break
+				} else if str == "break" {
+					v.Scope = v.Scope.Parent
+					return nil
+				}
+			}
 		}
 
-		// Restaurar entorno
 		v.Scope = v.Scope.Parent
 	}
 

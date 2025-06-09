@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/pablo/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -254,6 +254,16 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitForCondicionUnica(VlangParser.ForCondicionUnicaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#asignacion}.
+	 * @param ctx the parse tree
+	 */
+	void enterAsignacion(VlangParser.AsignacionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#asignacion}.
+	 * @param ctx the parse tree
+	 */
+	void exitAsignacion(VlangParser.AsignacionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link VlangParser#switchDcl}.
 	 * @param ctx the parse tree
