@@ -18,6 +18,8 @@ declaraciones : varDcl
 
 varDcl
     : 'mut' ID (TIPO)? (ASSIGN expresion)?  #variableDeclaration
+    | ID (ASSIGN expresion)?  #variableDeclarationImmutable
+    | ID ASSIGN CASTEOS LPAREN expresion RPAREN  #variableCastDeclaration
     ; 
 
 
@@ -51,6 +53,11 @@ sentencias_transferencia
      | CONTINUE                  #continueStatement
      | RETURN (expresion)?       #returnStatement
      ;
+
+CASTEOS
+    : ATOI                       
+    | PARSEFLOAT
+    ;
 
 ifDcl
     : IF expresion LBRACE declaraciones* RBRACE (elseIfDcl)* (elseCondicional)?
@@ -132,10 +139,14 @@ valor
     | BOOLEANO  #valorBooleano
     | CARACTER  #valorCaracter
     ;
+    // CASTEOS
+
 // === Listas de expresiones ===
 listaExpresiones : expresion (COMMA expresion)* ;
 
-
+//FUNCIONES que parecen casteos
+ATOI  : 'Atoi' ;
+PARSEFLOAT : 'parseFloat' ;
 
 // === Incremento / Decremento ===
 incredecre

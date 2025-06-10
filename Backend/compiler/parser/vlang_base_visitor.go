@@ -27,6 +27,14 @@ func (v *BaseVlangVisitor) VisitVariableDeclaration(ctx *VariableDeclarationCont
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitVariableCastDeclaration(ctx *VariableCastDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitTipoSlice(ctx *TipoSliceContext) interface{} {
 	return v.VisitChildren(ctx)
 }

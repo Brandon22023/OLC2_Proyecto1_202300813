@@ -71,7 +71,10 @@ valor
     | CARACTER  #valorCaracter
     ;
 
-
+FUNCIONES_PARECEN_CASTEO
+    :ATOI
+    
+    ;
 
 // === Incremento / Decremento ===
 incredecre
@@ -90,6 +93,10 @@ ENTERO   : [0-9]+ ;
 DECIMAL  : [0-9]+ '.' [0-9]+ ;
 CADENA   : '"' (~["\\] | '\\' .)* '"' ;
 CARACTER : '\'' . '\'' ;
+
+//FUNCIONES que parecen casteos
+ATOI  : 'Atoi' ;
+PARSEFLOAT : 'parseFloat' ;
 
 // === Identificadores ===
 ID : [a-zA-Z_][a-zA-Z0-9_]* ;

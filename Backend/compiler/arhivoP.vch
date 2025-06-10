@@ -3,6 +3,16 @@ fn main() {
     print("cadean1", "cadena2")
     print(10, true, 'A')
     print(1.00001)
+    mut puy int = 100
+    print("valor de puy: ", puy)
+    puy = 100+100
+    print("valor de puy: ", puy)
+    puy = "hola"
+    print("valor de puy: ", puy)
+    mut ttt string = "hola, PUM"
+    print("valor de ttt: ", ttt)
+    ttt = 23
+    print("valor de ttt: ", ttt)
     mut i int = 15
     mut j string = "como estas"
     mut k rune = 'B'
@@ -110,6 +120,21 @@ fn main() {
     palabras := []string{"hola", "mundo", "go"};
     print(join(palabras, " "));
     */
+
+  //casteos
+  mut numero int
+  numero = Atoi("123")
+  print("Número:", numero) // Salida: Número: 123
+  numero = Atoi("123.5")
+  print("Número:", numero) // Salida: Número: 123
+  print("ahora probar decimal")
+  mut numero1 float64
+  print("Número1:", numero1)
+  
+  numero1 = parseFloat("123.45")
+  print("Número1:", numero1) // Salida: Número: 123.45
+  numero1 = parseFloat("123.45")
+  print("Número1:", numero1) // Salida: Número: 123.45
 }
 */
 fn main() {

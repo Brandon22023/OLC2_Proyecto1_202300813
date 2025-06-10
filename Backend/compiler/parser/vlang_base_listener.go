@@ -50,6 +50,20 @@ func (s *BaseVlangListener) EnterVariableDeclaration(ctx *VariableDeclarationCon
 // ExitVariableDeclaration is called when production variableDeclaration is exited.
 func (s *BaseVlangListener) ExitVariableDeclaration(ctx *VariableDeclarationContext) {}
 
+// EnterVariableDeclarationImmutable is called when production variableDeclarationImmutable is entered.
+func (s *BaseVlangListener) EnterVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) {
+}
+
+// ExitVariableDeclarationImmutable is called when production variableDeclarationImmutable is exited.
+func (s *BaseVlangListener) ExitVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) {
+}
+
+// EnterVariableCastDeclaration is called when production variableCastDeclaration is entered.
+func (s *BaseVlangListener) EnterVariableCastDeclaration(ctx *VariableCastDeclarationContext) {}
+
+// ExitVariableCastDeclaration is called when production variableCastDeclaration is exited.
+func (s *BaseVlangListener) ExitVariableCastDeclaration(ctx *VariableCastDeclarationContext) {}
+
 // EnterTipoSlice is called when production tipoSlice is entered.
 func (s *BaseVlangListener) EnterTipoSlice(ctx *TipoSliceContext) {}
 

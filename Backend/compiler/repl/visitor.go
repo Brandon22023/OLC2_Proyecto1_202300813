@@ -195,6 +195,63 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 
 	return nil
 }
+
+func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDeclarationImmutableContext) interface{} {
+    varName := ctx.ID().GetText()
+
+    if ctx.ASSIGN() != nil && ctx.Expresion() != nil {
+        variable := v.Scope.GetVariable(varName)
+        if variable == nil {
+            fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
+            return nil
+        }
+        val := v.Visit(ctx.Expresion())
+
+        switch variable.Type {
+        case value.IVOR_INT:
+            intVal, ok := val.(int)
+            if !ok {
+                fmt.Printf("SEMANTICO valor '%v' no es int\n", val)
+                return nil
+            }
+            variable.Value = value.NewIntValue(intVal)
+        case value.IVOR_FLOAT:
+            floatVal, ok := val.(float64)
+            if !ok {
+                fmt.Printf("SEMANTICO: valor '%v' no es float64\n", val)
+                return nil
+            }
+            variable.Value = value.NewFloatValue(floatVal)
+        case value.IVOR_STRING:
+            strVal, ok := val.(string)
+            if !ok {
+                fmt.Printf("SEMANTICO: valor '%v' no es string\n", val)
+                return nil
+            }
+            variable.Value = value.NewStringValue(strVal)
+        case value.IVOR_BOOL:
+            boolVal, ok := val.(bool)
+            if !ok {
+                fmt.Printf("SEMANTICO: valor '%v' no es bool\n", val)
+                return nil
+            }
+            variable.Value = value.NewBoolValue(boolVal)
+        case value.IVOR_CHARACTER:
+            charVal, ok := val.(rune)
+            if !ok {
+                fmt.Printf("SEMANTICO: valor '%v' no es rune\n", val)
+                return nil
+            }
+            variable.Value = value.NewCharValue(charVal)
+        default:
+            fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación\n", variable.Type)
+        }
+        return nil
+    }
+
+    fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
+    return nil
+}
 func (v *ReplVisitor) VisitValorCadena(ctx *parser.ValorCadenaContext) interface{} {
 	//fmt.Println("Entrando a VisitValorCadena:", ctx.GetText())
 	text := ctx.GetText()
@@ -222,11 +279,16 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 		expr, ok := ctx.GetChild(i).(parser.IExpresionContext)
 		if ok {
 			val := v.Visit(expr)
-			//outputs = append(outputs, fmt.Sprint(val))
-			// Detecta si es rune (carácter)
 			switch v := val.(type) {
 			case int32: // rune en Go es int32
 				outputs = append(outputs, string(v))
+			case float64:
+                // Si es float pero es entero exacto, imprime con .0
+                if v == float64(int64(v)) {
+                    outputs = append(outputs, fmt.Sprintf("%.1f", v))
+                } else {
+                    outputs = append(outputs, fmt.Sprint(v))
+                }
 			default:
 				outputs = append(outputs, fmt.Sprint(val))
 			}
@@ -1002,4 +1064,66 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 		fmt.Printf("ℹ Llamando a función '%s' con argumentos: %v\n", nombreFunc, args)
 		return nil
 	}
+}
+
+//casteos
+func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDeclarationContext) interface{} {
+    varName := ctx.ID().GetText()
+    variable := v.Scope.GetVariable(varName)
+    if variable == nil {
+        fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
+        return nil
+    }
+
+    castType := ctx.CASTEOS().GetText()
+    val := v.Visit(ctx.Expresion())
+
+    switch castType {
+    case "Atoi":
+        // Solo se puede convertir de string a int
+        strVal, ok := val.(string)
+        if !ok {
+            fmt.Printf("SEMANTICO: Atoi solo puede convertir strings, recibido: %T\n", val)
+            return nil
+        }
+        // Verifica que no sea decimal
+        if strings.Contains(strVal, ".") {
+            fmt.Printf("SEMANTICO: Atoi no puede convertir decimales: '%s'\n", strVal)
+            return nil
+        }
+        intVal, err := strconv.Atoi(strVal)
+        if err != nil {
+            fmt.Printf("SEMANTICO: Atoi error al convertir '%s' a int\n", strVal)
+            return nil
+        }
+        // Solo permite si la variable es int
+        if variable.Type != value.IVOR_INT {
+            fmt.Printf("SEMANTICO: solo se puede asignar int a variable '%s' de tipo %s\n", varName, variable.Type)
+            return nil
+        }
+        variable.Value = value.NewIntValue(intVal)
+        return nil
+	case "parseFloat":
+		// Solo se puede convertir de string a float64
+        strVal, ok := val.(string)
+        if !ok {
+            fmt.Printf("SEMANTICO: parseFloat solo puede convertir strings, recibido: %T\n", val)
+            return nil
+        }
+        floatVal, err := strconv.ParseFloat(strVal, 64)
+        if err != nil {
+            fmt.Printf("SEMANTICO: parseFloat error al convertir '%s' a float64\n", strVal)
+            return nil
+        }
+        // Solo permite si la variable es float64
+        if variable.Type != value.IVOR_FLOAT {
+            fmt.Printf("SEMANTICO: solo se puede asignar float64 a variable '%s' de tipo %s\n", varName, variable.Type)
+            return nil
+        }
+        variable.Value = value.NewFloatValue(floatVal)
+        return nil
+    default:
+        fmt.Printf("SEMANTICO: casteo '%s' no soportado\n", castType)
+        return nil
+    }
 }

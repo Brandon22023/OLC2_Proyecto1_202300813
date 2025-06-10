@@ -22,6 +22,12 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#variableDeclaration.
 	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#variableDeclarationImmutable.
+	VisitVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#variableCastDeclaration.
+	VisitVariableCastDeclaration(ctx *VariableCastDeclarationContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#tipoSlice.
 	VisitTipoSlice(ctx *TipoSliceContext) interface{}
 

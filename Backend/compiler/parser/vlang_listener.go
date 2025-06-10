@@ -22,6 +22,12 @@ type VlangListener interface {
 	// EnterVariableDeclaration is called when entering the variableDeclaration production.
 	EnterVariableDeclaration(c *VariableDeclarationContext)
 
+	// EnterVariableDeclarationImmutable is called when entering the variableDeclarationImmutable production.
+	EnterVariableDeclarationImmutable(c *VariableDeclarationImmutableContext)
+
+	// EnterVariableCastDeclaration is called when entering the variableCastDeclaration production.
+	EnterVariableCastDeclaration(c *VariableCastDeclarationContext)
+
 	// EnterTipoSlice is called when entering the tipoSlice production.
 	EnterTipoSlice(c *TipoSliceContext)
 
@@ -186,6 +192,12 @@ type VlangListener interface {
 
 	// ExitVariableDeclaration is called when exiting the variableDeclaration production.
 	ExitVariableDeclaration(c *VariableDeclarationContext)
+
+	// ExitVariableDeclarationImmutable is called when exiting the variableDeclarationImmutable production.
+	ExitVariableDeclarationImmutable(c *VariableDeclarationImmutableContext)
+
+	// ExitVariableCastDeclaration is called when exiting the variableCastDeclaration production.
+	ExitVariableCastDeclaration(c *VariableCastDeclarationContext)
 
 	// ExitTipoSlice is called when exiting the tipoSlice production.
 	ExitTipoSlice(c *TipoSliceContext)
