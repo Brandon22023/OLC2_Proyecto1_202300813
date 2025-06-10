@@ -22,14 +22,26 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#variableDeclaration.
 	VisitVariableDeclaration(ctx *VariableDeclarationContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#sliceEmptyDeclaration.
+	VisitSliceEmptyDeclaration(ctx *SliceEmptyDeclarationContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#sliceInitDeclaration.
+	VisitSliceInitDeclaration(ctx *SliceInitDeclarationContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#sliceAssignment.
+	VisitSliceAssignment(ctx *SliceAssignmentContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#variableDeclarationImmutable.
 	VisitVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#variableCastDeclaration.
 	VisitVariableCastDeclaration(ctx *VariableCastDeclarationContext) interface{}
 
-	// Visit a parse tree produced by VlangParser#tipoSlice.
-	VisitTipoSlice(ctx *TipoSliceContext) interface{}
+	// Visit a parse tree produced by VlangParser#sliceTipo.
+	VisitSliceTipo(ctx *SliceTipoContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#sliceInit.
+	VisitSliceInit(ctx *SliceInitContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#printStatement.
 	VisitPrintStatement(ctx *PrintStatementContext) interface{}
@@ -111,9 +123,6 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#igualdad.
 	VisitIgualdad(ctx *IgualdadContext) interface{}
-
-	// Visit a parse tree produced by VlangParser#sliceCreacionv.
-	VisitSliceCreacionv(ctx *SliceCreacionvContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#llamadaFuncionExpr.
 	VisitLlamadaFuncionExpr(ctx *LlamadaFuncionExprContext) interface{}

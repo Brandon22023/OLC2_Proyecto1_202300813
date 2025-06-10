@@ -1,4 +1,4 @@
-// Generated from /home/pablo/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -58,6 +58,30 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariableDeclaration(VlangParser.VariableDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code variableDeclarationImmutable}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableDeclarationImmutable(VlangParser.VariableDeclarationImmutableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code variableDeclarationImmutable}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableDeclarationImmutable(VlangParser.VariableDeclarationImmutableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code variableCastDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterVariableCastDeclaration(VlangParser.VariableCastDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code variableCastDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitVariableCastDeclaration(VlangParser.VariableCastDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link VlangParser#tipoSlice}.
 	 * @param ctx the parse tree

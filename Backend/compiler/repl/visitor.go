@@ -197,60 +197,60 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 }
 
 func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDeclarationImmutableContext) interface{} {
-    varName := ctx.ID().GetText()
+	varName := ctx.ID().GetText()
 
-    if ctx.ASSIGN() != nil && ctx.Expresion() != nil {
-        variable := v.Scope.GetVariable(varName)
-        if variable == nil {
-            fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
-            return nil
-        }
-        val := v.Visit(ctx.Expresion())
+	if ctx.ASSIGN() != nil && ctx.Expresion() != nil {
+		variable := v.Scope.GetVariable(varName)
+		if variable == nil {
+			fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
+			return nil
+		}
+		val := v.Visit(ctx.Expresion())
 
-        switch variable.Type {
-        case value.IVOR_INT:
-            intVal, ok := val.(int)
-            if !ok {
-                fmt.Printf("SEMANTICO valor '%v' no es int\n", val)
-                return nil
-            }
-            variable.Value = value.NewIntValue(intVal)
-        case value.IVOR_FLOAT:
-            floatVal, ok := val.(float64)
-            if !ok {
-                fmt.Printf("SEMANTICO: valor '%v' no es float64\n", val)
-                return nil
-            }
-            variable.Value = value.NewFloatValue(floatVal)
-        case value.IVOR_STRING:
-            strVal, ok := val.(string)
-            if !ok {
-                fmt.Printf("SEMANTICO: valor '%v' no es string\n", val)
-                return nil
-            }
-            variable.Value = value.NewStringValue(strVal)
-        case value.IVOR_BOOL:
-            boolVal, ok := val.(bool)
-            if !ok {
-                fmt.Printf("SEMANTICO: valor '%v' no es bool\n", val)
-                return nil
-            }
-            variable.Value = value.NewBoolValue(boolVal)
-        case value.IVOR_CHARACTER:
-            charVal, ok := val.(rune)
-            if !ok {
-                fmt.Printf("SEMANTICO: valor '%v' no es rune\n", val)
-                return nil
-            }
-            variable.Value = value.NewCharValue(charVal)
-        default:
-            fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación\n", variable.Type)
-        }
-        return nil
-    }
+		switch variable.Type {
+		case value.IVOR_INT:
+			intVal, ok := val.(int)
+			if !ok {
+				fmt.Printf("SEMANTICO valor '%v' no es int\n", val)
+				return nil
+			}
+			variable.Value = value.NewIntValue(intVal)
+		case value.IVOR_FLOAT:
+			floatVal, ok := val.(float64)
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es float64\n", val)
+				return nil
+			}
+			variable.Value = value.NewFloatValue(floatVal)
+		case value.IVOR_STRING:
+			strVal, ok := val.(string)
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es string\n", val)
+				return nil
+			}
+			variable.Value = value.NewStringValue(strVal)
+		case value.IVOR_BOOL:
+			boolVal, ok := val.(bool)
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es bool\n", val)
+				return nil
+			}
+			variable.Value = value.NewBoolValue(boolVal)
+		case value.IVOR_CHARACTER:
+			charVal, ok := val.(rune)
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es rune\n", val)
+				return nil
+			}
+			variable.Value = value.NewCharValue(charVal)
+		default:
+			fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación\n", variable.Type)
+		}
+		return nil
+	}
 
-    fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
-    return nil
+	fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
+	return nil
 }
 func (v *ReplVisitor) VisitValorCadena(ctx *parser.ValorCadenaContext) interface{} {
 	//fmt.Println("Entrando a VisitValorCadena:", ctx.GetText())
@@ -283,12 +283,19 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 			case int32: // rune en Go es int32
 				outputs = append(outputs, string(v))
 			case float64:
-                // Si es float pero es entero exacto, imprime con .0
-                if v == float64(int64(v)) {
-                    outputs = append(outputs, fmt.Sprintf("%.1f", v))
-                } else {
-                    outputs = append(outputs, fmt.Sprint(v))
-                }
+				// Si es float pero es entero exacto, imprime con .0
+				if v == float64(int64(v)) {
+					outputs = append(outputs, fmt.Sprintf("%.1f", v))
+				} else {
+					outputs = append(outputs, fmt.Sprint(v))
+				}
+			case *value.SliceValue:
+				var elems []string
+				for _, e := range val.(*value.SliceValue).Elements {
+					elems = append(elems, fmt.Sprint(e.Value()))
+				}
+				outputs = append(outputs, "["+strings.Join(elems, ", ")+"]")
+
 			default:
 				outputs = append(outputs, fmt.Sprint(val))
 			}
@@ -564,6 +571,10 @@ func (v *ReplVisitor) VisitId(ctx *parser.IdContext) interface{} {
 	variable := v.Scope.GetVariable(varName)
 	if variable != nil && variable.Value != nil {
 		//fmt.Printf("Accediendo variable '%s', valor: %v\n", varName, variable.Value.Value())
+		// 🔍 Si es slice, devolvemos el objeto completo para poder acceder a sus elementos después
+		if strings.HasPrefix(variable.Type, "slice_") {
+			return variable.Value // devuelve *SliceValue
+		}
 		return variable.Value.Value()
 	}
 	fmt.Printf("Variable '%s' no encontrada\n", varName)
@@ -953,177 +964,156 @@ func (v *ReplVisitor) VisitSwitchDcl(ctx *parser.SwitchDclContext) interface{} {
 	return nil
 }
 
-func (v *ReplVisitor) VisitSliceCreacion(ctx *parser.SliceCreacionvContext) interface{} {
-	tipo := ctx.TipoSlice().TIPO().GetText()
-	var elementos []interface{}
-
-	if ctx.ListaExpresiones() != nil {
-		for _, expr := range ctx.ListaExpresiones().AllExpresion() {
-			val := v.Visit(expr)
-			elementos = append(elementos, val)
-		}
-	}
-
-	switch tipo {
-	case "int":
-		var list []int
-		for _, e := range elementos {
-			val, _ := strconv.Atoi(fmt.Sprint(e))
-			list = append(list, val)
-		}
-		return list
-
-	case "float64":
-		var list []float64
-		for _, e := range elementos {
-			val, _ := strconv.ParseFloat(fmt.Sprint(e), 64)
-			list = append(list, val)
-		}
-		return list
-
-	case "string":
-		var list []string
-		for _, e := range elementos {
-			list = append(list, fmt.Sprint(e))
-		}
-		return list
-
-	case "bool":
-		var list []bool
-		for _, e := range elementos {
-			b := fmt.Sprint(e) == "true"
-			list = append(list, b)
-		}
-		return list
-
-	case "rune":
-		var list []rune
-		for _, e := range elementos {
-			text := fmt.Sprint(e)
-			if len(text) > 0 {
-				list = append(list, rune(text[0]))
-			}
-		}
-		return list
-	}
-
+// Slices
+func (v *ReplVisitor) VisitSliceEmptyDeclaration(ctx *parser.SliceEmptyDeclarationContext) interface{} {
+	varName := ctx.ID().GetText()
+	tipo := ctx.SliceTipo().TIPO().GetText()
+	sliceType := "slice_" + tipo
+	sliceVal := value.NewSliceValue(tipo, []value.IVOR{})
+	v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
 	return nil
 }
 
-// Codigo de los slices funciona el crear slice el de arriba pero el Join da error por tipos invalidos este comentado
-func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) interface{} {
-	if ctx.GetChildCount() < 3 {
-		fmt.Println("❌ Error: llamada de función mal formada")
-		return nil
-	}
+func (v *ReplVisitor) VisitSliceInitDeclaration(ctx *parser.SliceInitDeclarationContext) interface{} {
+	varName := ctx.ID().GetText()
+	tipo := ctx.SliceTipo().TIPO().GetText()
+	sliceType := "slice_" + tipo
 
-	// Obtener el nombre de la función (JOIN, INDEXOF o ID)
-	nombreNode := ctx.GetChild(0)
-	nombreFunc := ""
-	if token, ok := nombreNode.(antlr.TerminalNode); ok {
-		nombreFunc = token.GetText()
-	} else {
-		fmt.Println("❌ Error: no se pudo obtener el nombre de la función")
-		return nil
-	}
-
-	// Obtener los argumentos
-	args := []interface{}{}
-	for i := 2; i < ctx.GetChildCount()-1; i += 2 {
-		child := ctx.GetChild(i)
-		if expr, ok := child.(parser.IExpresionContext); ok {
+	var elements []value.IVOR
+	if ctx.SliceInit().ListaExpresiones() != nil {
+		for _, expr := range ctx.SliceInit().ListaExpresiones().AllExpresion() {
 			val := v.Visit(expr)
-			args = append(args, val)
+			switch tipo {
+			case "int":
+				valInt := int(value.ToFloat(val)) // conversión segura
+				elements = append(elements, value.NewIntValue(valInt))
+			case "float64":
+				elements = append(elements, value.NewFloatValue(value.ToFloat(val)))
+			case "string":
+				elements = append(elements, value.NewStringValue(fmt.Sprint(val)))
+			case "bool":
+				elements = append(elements, value.NewBoolValue(fmt.Sprint(val) == "true"))
+			case "rune":
+				r := []rune(fmt.Sprint(val))
+				if len(r) > 0 {
+					elements = append(elements, value.NewCharValue(r[0]))
+				}
+			}
 		}
 	}
+	sliceVal := value.NewSliceValue(tipo, elements)
+	v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+	return nil
+}
 
-	// Ejecutar la función correspondiente
-	switch nombreFunc {
-	case "join":
-		if len(args) != 2 {
-			fmt.Println("❌ Error: join requiere 2 argumentos")
-			return ""
-		}
+func (v *ReplVisitor) VisitSliceAssignment(ctx *parser.SliceAssignmentContext) interface{} {
+	left := ctx.ID(0).GetText()
+	right := ctx.ID(1).GetText()
 
-		sliceRaw := args[0]
-		sep := fmt.Sprint(args[1])
+	sliceRight := v.Scope.GetVariable(right)
+	if sliceRight == nil || !strings.HasPrefix(sliceRight.Type, "slice_") {
+		fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", right)
+		return nil
+	}
 
-		strSlice, ok := sliceRaw.([]string)
-		if !ok {
-			fmt.Printf("❌ Error: el primer argumento no es []string, es %T\n", sliceRaw)
-			return ""
-		}
+	sliceType := sliceRight.Type
+	copyVal := sliceRight.Value.Copy() // ← asegúrate de que el método Copy exista
+	v.Scope.AddVariable(left, sliceType, copyVal, false, false, ctx.GetStart())
+	return nil
+}
 
-		return strings.Join(strSlice, sep)
+// Indexof Slice no funciona imprime nil
+func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) interface{} {
+	funcName := ctx.GetStart().GetText()
 
+	switch funcName {
 	case "indexOf":
-		// TFalta logica para index OF
+		args := ctx.AllExpresion()
+		if len(args) != 2 {
+			fmt.Printf("SEMANTICO: indexOf espera 2 argumentos (slice, valor), recibidos: %d\n", len(args))
+			return -1
+		}
+
+		sliceArg := v.Visit(args[0])
+		searchVal := v.Visit(args[1])
+
+		slice, ok := sliceArg.(*value.SliceValue)
+		if !ok {
+			fmt.Println("SEMANTICO: el primer argumento de indexOf debe ser un slice")
+			return -1
+		}
+
+		for i, elem := range slice.Elements {
+			if fmt.Sprint(elem.Value()) == fmt.Sprint(searchVal) {
+				return i
+			}
+		}
 		return -1
 
 	default:
-		fmt.Printf("ℹ Llamando a función '%s' con argumentos: %v\n", nombreFunc, args)
+		fmt.Printf("SEMANTICO: función '%s' no implementada\n", funcName)
 		return nil
 	}
 }
 
-//casteos
+// casteos
 func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDeclarationContext) interface{} {
-    varName := ctx.ID().GetText()
-    variable := v.Scope.GetVariable(varName)
-    if variable == nil {
-        fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
-        return nil
-    }
+	varName := ctx.ID().GetText()
+	variable := v.Scope.GetVariable(varName)
+	if variable == nil {
+		fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
+		return nil
+	}
 
-    castType := ctx.CASTEOS().GetText()
-    val := v.Visit(ctx.Expresion())
+	castType := ctx.CASTEOS().GetText()
+	val := v.Visit(ctx.Expresion())
 
-    switch castType {
-    case "Atoi":
-        // Solo se puede convertir de string a int
-        strVal, ok := val.(string)
-        if !ok {
-            fmt.Printf("SEMANTICO: Atoi solo puede convertir strings, recibido: %T\n", val)
-            return nil
-        }
-        // Verifica que no sea decimal
-        if strings.Contains(strVal, ".") {
-            fmt.Printf("SEMANTICO: Atoi no puede convertir decimales: '%s'\n", strVal)
-            return nil
-        }
-        intVal, err := strconv.Atoi(strVal)
-        if err != nil {
-            fmt.Printf("SEMANTICO: Atoi error al convertir '%s' a int\n", strVal)
-            return nil
-        }
-        // Solo permite si la variable es int
-        if variable.Type != value.IVOR_INT {
-            fmt.Printf("SEMANTICO: solo se puede asignar int a variable '%s' de tipo %s\n", varName, variable.Type)
-            return nil
-        }
-        variable.Value = value.NewIntValue(intVal)
-        return nil
+	switch castType {
+	case "Atoi":
+		// Solo se puede convertir de string a int
+		strVal, ok := val.(string)
+		if !ok {
+			fmt.Printf("SEMANTICO: Atoi solo puede convertir strings, recibido: %T\n", val)
+			return nil
+		}
+		// Verifica que no sea decimal
+		if strings.Contains(strVal, ".") {
+			fmt.Printf("SEMANTICO: Atoi no puede convertir decimales: '%s'\n", strVal)
+			return nil
+		}
+		intVal, err := strconv.Atoi(strVal)
+		if err != nil {
+			fmt.Printf("SEMANTICO: Atoi error al convertir '%s' a int\n", strVal)
+			return nil
+		}
+		// Solo permite si la variable es int
+		if variable.Type != value.IVOR_INT {
+			fmt.Printf("SEMANTICO: solo se puede asignar int a variable '%s' de tipo %s\n", varName, variable.Type)
+			return nil
+		}
+		variable.Value = value.NewIntValue(intVal)
+		return nil
 	case "parseFloat":
 		// Solo se puede convertir de string a float64
-        strVal, ok := val.(string)
-        if !ok {
-            fmt.Printf("SEMANTICO: parseFloat solo puede convertir strings, recibido: %T\n", val)
-            return nil
-        }
-        floatVal, err := strconv.ParseFloat(strVal, 64)
-        if err != nil {
-            fmt.Printf("SEMANTICO: parseFloat error al convertir '%s' a float64\n", strVal)
-            return nil
-        }
-        // Solo permite si la variable es float64
-        if variable.Type != value.IVOR_FLOAT {
-            fmt.Printf("SEMANTICO: solo se puede asignar float64 a variable '%s' de tipo %s\n", varName, variable.Type)
-            return nil
-        }
-        variable.Value = value.NewFloatValue(floatVal)
-        return nil
-    default:
-        fmt.Printf("SEMANTICO: casteo '%s' no soportado\n", castType)
-        return nil
-    }
+		strVal, ok := val.(string)
+		if !ok {
+			fmt.Printf("SEMANTICO: parseFloat solo puede convertir strings, recibido: %T\n", val)
+			return nil
+		}
+		floatVal, err := strconv.ParseFloat(strVal, 64)
+		if err != nil {
+			fmt.Printf("SEMANTICO: parseFloat error al convertir '%s' a float64\n", strVal)
+			return nil
+		}
+		// Solo permite si la variable es float64
+		if variable.Type != value.IVOR_FLOAT {
+			fmt.Printf("SEMANTICO: solo se puede asignar float64 a variable '%s' de tipo %s\n", varName, variable.Type)
+			return nil
+		}
+		variable.Value = value.NewFloatValue(floatVal)
+		return nil
+	default:
+		fmt.Printf("SEMANTICO: casteo '%s' no soportado\n", castType)
+		return nil
+	}
 }

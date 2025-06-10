@@ -114,12 +114,7 @@ fn main() {
     for q = 1; q <= 2; q++ {
         print("g: ", g, ", q: ", q)
     }
-  }*/
-
-    /*
-    palabras := []string{"hola", "mundo", "go"};
-    print(join(palabras, " "));
-    */
+  }
 
   //casteos
   mut numero int
@@ -135,8 +130,34 @@ fn main() {
   print("Número1:", numero1) // Salida: Número: 123.45
   numero1 = parseFloat("123.45")
   print("Número1:", numero1) // Salida: Número: 123.45
+
+  //Slices
+  numeros = []int {1, 2, 3, 4}
+  print(numeros) // salida: [1, 2, 3, 4]
+
+  palabras = []string {"hola", "mundo"}
+  print(palabras) // salida: [hola, mundo]
+
+  decimales = []float64 {1.5, 2.75, 3.1416}
+  print(decimales) // salida esperada: [1.5, 2.75, 3.1416]
+
+  condiciones = []bool {true, false, true}
+  print(condiciones) // salida esperada: [true, false, true]
+
+  letras = []rune {'a', 'b', 'c'}
+  print(letras) // salida esperada: [a, b, c]
+
+  mut vacio []float64
+  print(vacio) // salida: []
+
+  //Slices indexof falta arreglar porque imprime nil
+  numeros1 = []int  {100, 200, 300}
+  print((indexOf(numeros1, 300))) // salida: 2
+  print((indexOf(numeros1, 500))) // salida: -1
+
 }
-*/
+
+/*
 fn main() {
     print("== For con continue ==\n")
     mut j int = 0

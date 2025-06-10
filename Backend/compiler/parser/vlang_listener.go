@@ -22,14 +22,26 @@ type VlangListener interface {
 	// EnterVariableDeclaration is called when entering the variableDeclaration production.
 	EnterVariableDeclaration(c *VariableDeclarationContext)
 
+	// EnterSliceEmptyDeclaration is called when entering the sliceEmptyDeclaration production.
+	EnterSliceEmptyDeclaration(c *SliceEmptyDeclarationContext)
+
+	// EnterSliceInitDeclaration is called when entering the sliceInitDeclaration production.
+	EnterSliceInitDeclaration(c *SliceInitDeclarationContext)
+
+	// EnterSliceAssignment is called when entering the sliceAssignment production.
+	EnterSliceAssignment(c *SliceAssignmentContext)
+
 	// EnterVariableDeclarationImmutable is called when entering the variableDeclarationImmutable production.
 	EnterVariableDeclarationImmutable(c *VariableDeclarationImmutableContext)
 
 	// EnterVariableCastDeclaration is called when entering the variableCastDeclaration production.
 	EnterVariableCastDeclaration(c *VariableCastDeclarationContext)
 
-	// EnterTipoSlice is called when entering the tipoSlice production.
-	EnterTipoSlice(c *TipoSliceContext)
+	// EnterSliceTipo is called when entering the sliceTipo production.
+	EnterSliceTipo(c *SliceTipoContext)
+
+	// EnterSliceInit is called when entering the sliceInit production.
+	EnterSliceInit(c *SliceInitContext)
 
 	// EnterPrintStatement is called when entering the printStatement production.
 	EnterPrintStatement(c *PrintStatementContext)
@@ -112,9 +124,6 @@ type VlangListener interface {
 	// EnterIgualdad is called when entering the igualdad production.
 	EnterIgualdad(c *IgualdadContext)
 
-	// EnterSliceCreacionv is called when entering the sliceCreacionv production.
-	EnterSliceCreacionv(c *SliceCreacionvContext)
-
 	// EnterLlamadaFuncionExpr is called when entering the llamadaFuncionExpr production.
 	EnterLlamadaFuncionExpr(c *LlamadaFuncionExprContext)
 
@@ -193,14 +202,26 @@ type VlangListener interface {
 	// ExitVariableDeclaration is called when exiting the variableDeclaration production.
 	ExitVariableDeclaration(c *VariableDeclarationContext)
 
+	// ExitSliceEmptyDeclaration is called when exiting the sliceEmptyDeclaration production.
+	ExitSliceEmptyDeclaration(c *SliceEmptyDeclarationContext)
+
+	// ExitSliceInitDeclaration is called when exiting the sliceInitDeclaration production.
+	ExitSliceInitDeclaration(c *SliceInitDeclarationContext)
+
+	// ExitSliceAssignment is called when exiting the sliceAssignment production.
+	ExitSliceAssignment(c *SliceAssignmentContext)
+
 	// ExitVariableDeclarationImmutable is called when exiting the variableDeclarationImmutable production.
 	ExitVariableDeclarationImmutable(c *VariableDeclarationImmutableContext)
 
 	// ExitVariableCastDeclaration is called when exiting the variableCastDeclaration production.
 	ExitVariableCastDeclaration(c *VariableCastDeclarationContext)
 
-	// ExitTipoSlice is called when exiting the tipoSlice production.
-	ExitTipoSlice(c *TipoSliceContext)
+	// ExitSliceTipo is called when exiting the sliceTipo production.
+	ExitSliceTipo(c *SliceTipoContext)
+
+	// ExitSliceInit is called when exiting the sliceInit production.
+	ExitSliceInit(c *SliceInitContext)
 
 	// ExitPrintStatement is called when exiting the printStatement production.
 	ExitPrintStatement(c *PrintStatementContext)
@@ -282,9 +303,6 @@ type VlangListener interface {
 
 	// ExitIgualdad is called when exiting the igualdad production.
 	ExitIgualdad(c *IgualdadContext)
-
-	// ExitSliceCreacionv is called when exiting the sliceCreacionv production.
-	ExitSliceCreacionv(c *SliceCreacionvContext)
 
 	// ExitLlamadaFuncionExpr is called when exiting the llamadaFuncionExpr production.
 	ExitLlamadaFuncionExpr(c *LlamadaFuncionExprContext)

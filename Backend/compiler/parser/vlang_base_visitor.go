@@ -27,6 +27,18 @@ func (v *BaseVlangVisitor) VisitVariableDeclaration(ctx *VariableDeclarationCont
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitSliceEmptyDeclaration(ctx *SliceEmptyDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitSliceInitDeclaration(ctx *SliceInitDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitSliceAssignment(ctx *SliceAssignmentContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitVariableDeclarationImmutable(ctx *VariableDeclarationImmutableContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -35,7 +47,11 @@ func (v *BaseVlangVisitor) VisitVariableCastDeclaration(ctx *VariableCastDeclara
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseVlangVisitor) VisitTipoSlice(ctx *TipoSliceContext) interface{} {
+func (v *BaseVlangVisitor) VisitSliceTipo(ctx *SliceTipoContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitSliceInit(ctx *SliceInitContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
@@ -144,10 +160,6 @@ func (v *BaseVlangVisitor) VisitValorexpr(ctx *ValorexprContext) interface{} {
 }
 
 func (v *BaseVlangVisitor) VisitIgualdad(ctx *IgualdadContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseVlangVisitor) VisitSliceCreacionv(ctx *SliceCreacionvContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

@@ -17,11 +17,21 @@ declaraciones : varDcl
               ; 
 
 varDcl
-    : 'mut' ID (TIPO)? (ASSIGN expresion)?  #variableDeclaration
-    | ID (ASSIGN expresion)?  #variableDeclarationImmutable
+    : 'mut' ID (TIPO)? (ASSIGN expresion)?       #variableDeclaration
+    | 'mut' ID sliceTipo                         #sliceEmptyDeclaration
+    | ID ASSIGN sliceTipo sliceInit        #sliceInitDeclaration
+    | ID ASSIGN ID                               #sliceAssignment
+    | ID (ASSIGN expresion)?                     #variableDeclarationImmutable
     | ID ASSIGN CASTEOS LPAREN expresion RPAREN  #variableCastDeclaration
     ; 
 
+sliceTipo
+    : LBRACK RBRACK TIPO  // ejemplo: []int
+    ;
+
+sliceInit
+    : LBRACE listaExpresiones? RBRACE  // ejemplo: []int{1, 2, 3}
+    ;
 
 TIPO
     : TIPO_ENTERO  
@@ -31,9 +41,6 @@ TIPO
     | TIPO_CHAR
     ;
 
-tipoSlice
-    : LBRACK RBRACK TIPO
-    ;
 
 stmt : PRINT LPAREN (expresion (COMMA expresion)*)? RPAREN #printStatement
      | expresion          #expresionStatement
@@ -115,7 +122,6 @@ expresion
     | valor                                                #valorexpr         
     | LPAREN expresion RPAREN                              #parentesisexpre
     | LBRACK expresion RBRACK                              #corchetesexpre
-    | tipoSlice LBRACE listaExpresiones? RBRACE            #sliceCreacionv
     | llamadaFuncion                                       #llamadaFuncionExpr
     | ID                                                   #id              
     | incredecre                                           #incredecr      
