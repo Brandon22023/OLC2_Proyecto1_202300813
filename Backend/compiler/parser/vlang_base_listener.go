@@ -226,6 +226,36 @@ func (s *BaseVlangListener) EnterLlamadaFuncion(ctx *LlamadaFuncionContext) {}
 // ExitLlamadaFuncion is called when production llamadaFuncion is exited.
 func (s *BaseVlangListener) ExitLlamadaFuncion(ctx *LlamadaFuncionContext) {}
 
+// EnterFuncDcl is called when production funcDcl is entered.
+func (s *BaseVlangListener) EnterFuncDcl(ctx *FuncDclContext) {}
+
+// ExitFuncDcl is called when production funcDcl is exited.
+func (s *BaseVlangListener) ExitFuncDcl(ctx *FuncDclContext) {}
+
+// EnterFuncCall is called when production funcCall is entered.
+func (s *BaseVlangListener) EnterFuncCall(ctx *FuncCallContext) {}
+
+// ExitFuncCall is called when production funcCall is exited.
+func (s *BaseVlangListener) ExitFuncCall(ctx *FuncCallContext) {}
+
+// EnterParametrosFormales is called when production parametrosFormales is entered.
+func (s *BaseVlangListener) EnterParametrosFormales(ctx *ParametrosFormalesContext) {}
+
+// ExitParametrosFormales is called when production parametrosFormales is exited.
+func (s *BaseVlangListener) ExitParametrosFormales(ctx *ParametrosFormalesContext) {}
+
+// EnterParametro is called when production parametro is entered.
+func (s *BaseVlangListener) EnterParametro(ctx *ParametroContext) {}
+
+// ExitParametro is called when production parametro is exited.
+func (s *BaseVlangListener) ExitParametro(ctx *ParametroContext) {}
+
+// EnterParametrosReales is called when production parametrosReales is entered.
+func (s *BaseVlangListener) EnterParametrosReales(ctx *ParametrosRealesContext) {}
+
+// ExitParametrosReales is called when production parametrosReales is exited.
+func (s *BaseVlangListener) ExitParametrosReales(ctx *ParametrosRealesContext) {}
+
 // EnterWhileDcl is called when production whileDcl is entered.
 func (s *BaseVlangListener) EnterWhileDcl(ctx *WhileDclContext) {}
 

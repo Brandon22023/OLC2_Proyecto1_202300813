@@ -143,6 +143,26 @@ func (v *BaseVlangVisitor) VisitLlamadaFuncion(ctx *LlamadaFuncionContext) inter
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitFuncDcl(ctx *FuncDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitFuncCall(ctx *FuncCallContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitParametrosFormales(ctx *ParametrosFormalesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitParametro(ctx *ParametroContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitParametrosReales(ctx *ParametrosRealesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitWhileDcl(ctx *WhileDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }

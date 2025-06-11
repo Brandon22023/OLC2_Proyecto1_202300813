@@ -170,4 +170,31 @@ fn main() {
   numerosappend[2] = 100
   // Salida esperada: [1, 2, 100, 4]
   print("Slice después de la modificación:", numerosappend)
+
+  //prueba funciones
+  imprimirSuma(10, 20)
+  saludar()
+  print("El cuadrado de 5 es:", cuadrado(5))
+  print(esPar(4)) // true
+  print(esPar(5)) // false
+}
+
+func imprimirSuma(a int, b int) {
+  print("La suma es:", a + b)
+}
+
+func saludar() {
+  print("Hola desde una función!")
+}
+
+func cuadrado(n int) int {
+  return n * n
+}
+
+func saludar(nombre string) string {
+  return "Hola, " + nombre
+}
+
+func esPar(n int) bool {
+  return n % 2 == 0
 }

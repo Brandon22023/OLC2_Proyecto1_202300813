@@ -109,6 +109,21 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#llamadaFuncion.
 	VisitLlamadaFuncion(ctx *LlamadaFuncionContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#funcDcl.
+	VisitFuncDcl(ctx *FuncDclContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#funcCall.
+	VisitFuncCall(ctx *FuncCallContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#parametrosFormales.
+	VisitParametrosFormales(ctx *ParametrosFormalesContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#parametro.
+	VisitParametro(ctx *ParametroContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#parametrosReales.
+	VisitParametrosReales(ctx *ParametrosRealesContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#whileDcl.
 	VisitWhileDcl(ctx *WhileDclContext) interface{}
 

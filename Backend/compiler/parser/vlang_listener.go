@@ -109,6 +109,21 @@ type VlangListener interface {
 	// EnterLlamadaFuncion is called when entering the llamadaFuncion production.
 	EnterLlamadaFuncion(c *LlamadaFuncionContext)
 
+	// EnterFuncDcl is called when entering the funcDcl production.
+	EnterFuncDcl(c *FuncDclContext)
+
+	// EnterFuncCall is called when entering the funcCall production.
+	EnterFuncCall(c *FuncCallContext)
+
+	// EnterParametrosFormales is called when entering the parametrosFormales production.
+	EnterParametrosFormales(c *ParametrosFormalesContext)
+
+	// EnterParametro is called when entering the parametro production.
+	EnterParametro(c *ParametroContext)
+
+	// EnterParametrosReales is called when entering the parametrosReales production.
+	EnterParametrosReales(c *ParametrosRealesContext)
+
 	// EnterWhileDcl is called when entering the whileDcl production.
 	EnterWhileDcl(c *WhileDclContext)
 
@@ -294,6 +309,21 @@ type VlangListener interface {
 
 	// ExitLlamadaFuncion is called when exiting the llamadaFuncion production.
 	ExitLlamadaFuncion(c *LlamadaFuncionContext)
+
+	// ExitFuncDcl is called when exiting the funcDcl production.
+	ExitFuncDcl(c *FuncDclContext)
+
+	// ExitFuncCall is called when exiting the funcCall production.
+	ExitFuncCall(c *FuncCallContext)
+
+	// ExitParametrosFormales is called when exiting the parametrosFormales production.
+	ExitParametrosFormales(c *ParametrosFormalesContext)
+
+	// ExitParametro is called when exiting the parametro production.
+	ExitParametro(c *ParametroContext)
+
+	// ExitParametrosReales is called when exiting the parametrosReales production.
+	ExitParametrosReales(c *ParametrosRealesContext)
 
 	// ExitWhileDcl is called when exiting the whileDcl production.
 	ExitWhileDcl(c *WhileDclContext)

@@ -2,7 +2,7 @@ grammar Vlang;
 
 
 // === Axioma principal ===
-programa : funcMain* EOF ;
+programa : (funcDcl|funcMain)* EOF ;
 
 funcMain
     : 'fn' 'main' LPAREN RPAREN block
@@ -13,7 +13,8 @@ block
     ;
 // /home/sebas/Desktop/Compiladores 2/OLC2_EVJUNIO2025/Clase2/compiler/errors/error_strategy.go
 declaraciones : varDcl   
-              | stmt    
+              | stmt
+              | funcDcl    
               ; 
 
 varDcl
@@ -44,9 +45,9 @@ TIPO
 
 
 stmt : PRINT LPAREN (expresion (COMMA expresion)*)? RPAREN #printStatement
-     | expresion          #expresionStatement
-     | sentencias_control    #controlStatement
-     | sentencias_transferencia  #transfersentence
+     | expresion                    #expresionStatement
+     | sentencias_control           #controlStatement
+     | sentencias_transferencia     #transfersentence
      ; 
 
 sentencias_control
@@ -106,6 +107,28 @@ llamadaFuncion
     | ID LPAREN (expresion (COMMA expresion)*)? RPAREN
     | LEN LPAREN (expresion (COMMA expresion)*)? RPAREN
     | APPEND LPAREN (expresion (COMMA expresion)*)? RPAREN
+    ;
+
+//Declaracion funciones
+funcDcl
+    : 'func' ID LPAREN parametrosFormales? RPAREN (TIPO)? block
+    ;
+
+// Llamada funcion y parametros normales
+funcCall
+    : ID LPAREN parametrosReales? RPAREN
+    ;
+
+parametrosFormales
+    : parametro (COMMA parametro)*
+    ;
+
+parametro 
+    : ID TIPO
+    ;
+
+parametrosReales
+    : expresion (COMMA expresion)*
     ;
 
 //esto se tiene que eliminar porque while y do-while no existen en Vlang, solo se usa for
