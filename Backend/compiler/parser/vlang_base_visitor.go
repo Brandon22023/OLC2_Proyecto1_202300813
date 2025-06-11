@@ -47,6 +47,10 @@ func (v *BaseVlangVisitor) VisitVariableCastDeclaration(ctx *VariableCastDeclara
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitSliceAssignmentIndex(ctx *SliceAssignmentIndexContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitSliceTipo(ctx *SliceTipoContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -192,6 +196,10 @@ func (v *BaseVlangVisitor) VisitIMCPLICIT(ctx *IMCPLICITContext) interface{} {
 }
 
 func (v *BaseVlangVisitor) VisitSumres(ctx *SumresContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitPARAPRINTSLICE(ctx *PARAPRINTSLICEContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

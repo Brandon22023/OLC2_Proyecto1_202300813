@@ -37,6 +37,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#variableCastDeclaration.
 	VisitVariableCastDeclaration(ctx *VariableCastDeclarationContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#sliceAssignmentIndex.
+	VisitSliceAssignmentIndex(ctx *SliceAssignmentIndexContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#sliceTipo.
 	VisitSliceTipo(ctx *SliceTipoContext) interface{}
 
@@ -147,6 +150,9 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#sumres.
 	VisitSumres(ctx *SumresContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#PARAPRINTSLICE.
+	VisitPARAPRINTSLICE(ctx *PARAPRINTSLICEContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#asignacionLUEGO.
 	VisitAsignacionLUEGO(ctx *AsignacionLUEGOContext) interface{}

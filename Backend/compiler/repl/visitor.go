@@ -244,7 +244,17 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			}
 			variable.Value = value.NewCharValue(charVal)
 		default:
-			fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación\n", variable.Type)
+			// Soporte para slices
+            if strings.HasPrefix(variable.Type, "slice_") {
+                sliceVal, ok := val.(*value.SliceValue)
+                if !ok {
+                    fmt.Printf("SEMANTICO: valor '%v' no es un slice válido\n", val)
+                    return nil
+                }
+                variable.Value = sliceVal
+            } else {
+                fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación: \n", variable.Type)
+            }
 		}
 		return nil
 	}
@@ -275,6 +285,7 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 
 	// Intenta obtener el número de hijos de tipo expresion
 	n := ctx.GetChildCount()
+	
 	for i := 0; i < n; i++ {
 		expr, ok := ctx.GetChild(i).(parser.IExpresionContext)
 		if ok {
@@ -291,9 +302,30 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 				}
 			case *value.SliceValue:
 				var elems []string
-				for _, e := range val.(*value.SliceValue).Elements {
-					elems = append(elems, fmt.Sprint(e.Value()))
+				slice := val.(*value.SliceValue)
+				//fmt.Println("el tipo eso---: ", slice.ElementType)
+				//fmt.Printf("slice.Elements (print): len=%d %#v\n", len(slice.Elements), slice.Elements)
+				if slice.ElementType == "rune" || slice.ElementType == value.IVOR_CHARACTER {
+					//fmt.Println("es un slice de runes")
+					// Es un slice de caracteres/runes
+					for _, e := range slice.Elements {
+						// Siempre imprime como letra
+						if r, ok := e.Value().(rune); ok {
+							elems = append(elems, fmt.Sprintf("%c", r))
+						} else if i, ok := e.Value().(int32); ok {
+							elems = append(elems, fmt.Sprintf("%c", i))
+						} else {
+							elems = append(elems, fmt.Sprint(e.Value()))
+						}
+					}
+				} else {
+					// Otros tipos de slice
+					//fmt.Printf("slice.Elements (print): len=%d %#v\n", len(slice.Elements), slice.Elements)
+					for _, e := range slice.Elements {
+						elems = append(elems, fmt.Sprint(e.Value()))
+					}
 				}
+				//fmt.Printf("slice.Elements (print): len=%d %#v\n", len(slice.Elements), slice.Elements)
 				outputs = append(outputs, "["+strings.Join(elems, ", ")+"]")
 
 			default:
@@ -990,19 +1022,49 @@ func (v *ReplVisitor) VisitSliceInitDeclaration(ctx *parser.SliceInitDeclaration
 			case "float64":
 				elements = append(elements, value.NewFloatValue(value.ToFloat(val)))
 			case "string":
-				elements = append(elements, value.NewStringValue(fmt.Sprint(val)))
+				// val puede ser string o cualquier cosa convertible a string
+				strVal, ok := val.(string)
+				if !ok {
+					strVal = fmt.Sprint(val)
+				}
+				//fmt.Printf("Agregando al slice de string: %s\n", strVal)
+				elements = append(elements, value.NewStringValue(strVal))
+				//fmt.Println("Elementos del slice:", elements)
 			case "bool":
 				elements = append(elements, value.NewBoolValue(fmt.Sprint(val) == "true"))
 			case "rune":
-				r := []rune(fmt.Sprint(val))
-				if len(r) > 0 {
-					elements = append(elements, value.NewCharValue(r[0]))
+				switch v := val.(type) {
+				case int32:
+					elements = append(elements, value.NewCharValue(rune(v)))
+				case string:
+					runes := []rune(v)
+					if len(runes) > 0 {
+						elements = append(elements, value.NewCharValue(runes[0]))
+					}
+				case int:
+					elements = append(elements, value.NewCharValue(rune(v)))
+				default:
+					// Si no es ninguno de los anteriores, intenta convertir a string y tomar el primer rune
+					runes := []rune(fmt.Sprint(v))
+					if len(runes) > 0 {
+						elements = append(elements, value.NewCharValue(runes[0]))
+					}
 				}
 			}
 		}
 	}
 	sliceVal := value.NewSliceValue(tipo, elements)
 	v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+	/*
+	por si la misma palabra se quiere cambiar de valor dentro del slice 
+    existing := v.Scope.GetVariable(varName)
+    if existing != nil {
+        existing.Type = sliceType
+        existing.Value = sliceVal
+    } else {
+        v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+    }
+	*/
 	return nil
 }
 
@@ -1049,7 +1111,110 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 			}
 		}
 		return -1
+    case "join":
+        args := ctx.AllExpresion()
+        if len(args) != 2 {
+            fmt.Printf("SEMANTICO: join espera 2 argumentos (slice, separador), recibidos: %d\n", len(args))
+            return ""
+        }
 
+        sliceArg := v.Visit(args[0])
+        sepArg := v.Visit(args[1])
+
+        slice, ok := sliceArg.(*value.SliceValue)
+        if !ok {
+            fmt.Println("SEMANTICO: el primer argumento de join debe ser un slice")
+            return ""
+        }
+        if slice.ElementType != "string" {
+            fmt.Println("SEMANTICO: join solo soporta slices de string")
+            return ""
+        }
+        sep, ok := sepArg.(string)
+        if !ok {
+            fmt.Println("SEMANTICO: el separador de join debe ser un string")
+            return ""
+        }
+
+        var strElems []string
+        for _, elem := range slice.Elements {
+			//fmt.Printf("Elemento %d: tipo=%T valor=%#v\n", i, elem.Value(), elem.Value())
+            strVal, ok := elem.Value().(string)
+            if !ok {
+                fmt.Println("SEMANTICO: todos los elementos del slice deben ser string")
+                return ""
+            }
+            strElems = append(strElems, strVal)
+        }
+        return strings.Join(strElems, sep)
+	case "len":
+		args := ctx.AllExpresion()
+		if len(args) != 1 {
+			fmt.Printf("SEMANTICO: len espera 1 argumento (slice), recibidos: %d\n", len(args))
+			return -1
+		}
+		sliceArg := v.Visit(args[0])
+		slice, ok := sliceArg.(*value.SliceValue)
+		if !ok {
+			fmt.Println("SEMANTICO: el argumento de len debe ser un slice")
+			return -1
+		}
+		return len(slice.Elements)
+	case "append":
+    args := ctx.AllExpresion()
+    if len(args) < 2 {
+        fmt.Println("SEMANTICO: append espera al menos 2 argumentos (slice, elemento1, ...)")
+        return nil
+    }
+    sliceArg := v.Visit(args[0])
+    slice, ok := sliceArg.(*value.SliceValue)
+    if !ok {
+        fmt.Println("SEMANTICO: el primer argumento de append debe ser un slice")
+        return nil
+    }
+    // Copia los elementos actuales
+    newElements := make([]value.IVOR, len(slice.Elements))
+    copy(newElements, slice.Elements)
+    // Agrega los nuevos elementos, verificando tipo
+    for i := 1; i < len(args); i++ {
+        elem := v.Visit(args[i])
+		// Normaliza a IVOR si es primitivo
+		switch e := elem.(type) {
+		case int:
+			elem = value.NewIntValue(e)
+		case float64:
+			elem = value.NewFloatValue(e)
+		case string:
+			elem = value.NewStringValue(e)
+		case bool:
+			elem = value.NewBoolValue(e)
+		case int32:
+			elem = value.NewCharValue(e)
+		}
+        tipoSlice := slice.ElementType
+        tipoElem := ""
+        switch elem.(type) {
+        case *value.IntValue:
+            tipoElem = "int"
+        case *value.FloatValue:
+            tipoElem = "float64"
+        case *value.StringValue:
+            tipoElem = "string"
+        case *value.BoolValue:
+            tipoElem = "bool"
+        case *value.CharValue:
+            tipoElem = "rune"
+        default:
+            fmt.Printf("SEMANTICO: tipo de elemento no soportado para append: %T\n", elem)
+            return nil
+        }
+        if tipoElem != tipoSlice {
+            fmt.Printf("SEMANTICO: tipo del elemento '%s' no coincide con el tipo del slice '%s'\n", tipoElem, tipoSlice)
+            return nil
+        }
+        newElements = append(newElements, elem.(value.IVOR))
+    }
+    return value.NewSliceValue(slice.ElementType, newElements)
 	default:
 		fmt.Printf("SEMANTICO: función '%s' no implementada\n", funcName)
 		return nil
@@ -1116,4 +1281,83 @@ func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDecla
 		fmt.Printf("SEMANTICO: casteo '%s' no soportado\n", castType)
 		return nil
 	}
+}
+
+func (v *ReplVisitor) VisitLlamadaFuncionExpr(ctx *parser.LlamadaFuncionExprContext) interface{} {
+    return v.Visit(ctx.LlamadaFuncion())
+}
+
+func (v *ReplVisitor) VisitPARAPRINTSLICE(ctx *parser.PARAPRINTSLICEContext) interface{} {
+    varName := ctx.ID().GetText()
+    index := v.Visit(ctx.Expresion())
+    variable := v.Scope.GetVariable(varName)
+    if variable == nil || !strings.HasPrefix(variable.Type, "slice_") {
+        fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", varName)
+        return nil
+    }
+    slice := variable.Value.(*value.SliceValue)
+    idx, ok := index.(int)
+    if !ok || idx < 0 || idx >= len(slice.Elements) {
+        fmt.Printf("SEMANTICO: índice fuera de rango para slice '%s'\n", varName)
+        return nil
+    }
+    return slice.Elements[idx].Value()
+}
+
+func (v *ReplVisitor) VisitSliceAssignmentIndex(ctx *parser.SliceAssignmentIndexContext) interface{} {
+    varName := ctx.ID().GetText()
+    index := v.Visit(ctx.Expresion(0))
+    newVal := v.Visit(ctx.Expresion(1))
+
+    variable := v.Scope.GetVariable(varName)
+    if variable == nil || !strings.HasPrefix(variable.Type, "slice_") {
+        fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", varName)
+        return nil
+    }
+    slice := variable.Value.(*value.SliceValue)
+    idx, ok := index.(int)
+    if !ok || idx < 0 || idx >= len(slice.Elements) {
+        fmt.Printf("SEMANTICO: índice fuera de rango para slice '%s'\n", varName)
+        return nil
+    }
+
+    // Verifica el tipo del nuevo valor
+    tipoSlice := slice.ElementType
+    tipoVal := ""
+    switch newVal.(type) {
+    case int, *value.IntValue:
+        tipoVal = "int"
+    case float64, *value.FloatValue:
+        tipoVal = "float64"
+    case string, *value.StringValue:
+        tipoVal = "string"
+    case bool, *value.BoolValue:
+        tipoVal = "bool"
+    case int32, *value.CharValue:
+        tipoVal = "rune"
+    default:
+        fmt.Printf("SEMANTICO: tipo de valor no soportado para asignación en slice: %T\n", newVal)
+        return nil
+    }
+    if tipoVal != tipoSlice {
+        fmt.Printf("SEMANTICO: tipo del valor '%s' no coincide con el tipo del slice '%s'\n", tipoVal, tipoSlice)
+        return nil
+    }
+
+    // Normaliza el valor a IVOR si es primitivo
+    switch v := newVal.(type) {
+    case int:
+        newVal = value.NewIntValue(v)
+    case float64:
+        newVal = value.NewFloatValue(v)
+    case string:
+        newVal = value.NewStringValue(v)
+    case bool:
+        newVal = value.NewBoolValue(v)
+    case int32:
+        newVal = value.NewCharValue(v)
+    }
+
+    slice.Elements[idx] = newVal.(value.IVOR)
+    return nil
 }

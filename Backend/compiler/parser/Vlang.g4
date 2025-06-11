@@ -23,6 +23,7 @@ varDcl
     | ID ASSIGN ID                               #sliceAssignment
     | ID (ASSIGN expresion)?                     #variableDeclarationImmutable
     | ID ASSIGN CASTEOS LPAREN expresion RPAREN  #variableCastDeclaration
+    | ID LBRACK expresion RBRACK ASSIGN expresion  #sliceAssignmentIndex
     ; 
 
 sliceTipo
@@ -100,9 +101,11 @@ defaultBlock
     ;
 
 llamadaFuncion
-    : INDEXOF LPAREN (expresion (COMMA expresion)*)? RPAREN
+    : INDEXOF LPAREN (expresion (COMMA expresion)*)? RPAREN 
     | JOIN LPAREN (expresion (COMMA expresion)*)? RPAREN
     | ID LPAREN (expresion (COMMA expresion)*)? RPAREN
+    | LEN LPAREN (expresion (COMMA expresion)*)? RPAREN
+    | APPEND LPAREN (expresion (COMMA expresion)*)? RPAREN
     ;
 
 //esto se tiene que eliminar porque while y do-while no existen en Vlang, solo se usa for
@@ -122,6 +125,7 @@ expresion
     | valor                                                #valorexpr         
     | LPAREN expresion RPAREN                              #parentesisexpre
     | LBRACK expresion RBRACK                              #corchetesexpre
+    | ID LBRACK expresion RBRACK                           #PARAPRINTSLICE
     | llamadaFuncion                                       #llamadaFuncionExpr
     | ID                                                   #id              
     | incredecre                                           #incredecr      

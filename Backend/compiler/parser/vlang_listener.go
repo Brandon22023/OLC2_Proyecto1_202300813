@@ -37,6 +37,9 @@ type VlangListener interface {
 	// EnterVariableCastDeclaration is called when entering the variableCastDeclaration production.
 	EnterVariableCastDeclaration(c *VariableCastDeclarationContext)
 
+	// EnterSliceAssignmentIndex is called when entering the sliceAssignmentIndex production.
+	EnterSliceAssignmentIndex(c *SliceAssignmentIndexContext)
+
 	// EnterSliceTipo is called when entering the sliceTipo production.
 	EnterSliceTipo(c *SliceTipoContext)
 
@@ -148,6 +151,9 @@ type VlangListener interface {
 	// EnterSumres is called when entering the sumres production.
 	EnterSumres(c *SumresContext)
 
+	// EnterPARAPRINTSLICE is called when entering the PARAPRINTSLICE production.
+	EnterPARAPRINTSLICE(c *PARAPRINTSLICEContext)
+
 	// EnterAsignacionLUEGO is called when entering the asignacionLUEGO production.
 	EnterAsignacionLUEGO(c *AsignacionLUEGOContext)
 
@@ -216,6 +222,9 @@ type VlangListener interface {
 
 	// ExitVariableCastDeclaration is called when exiting the variableCastDeclaration production.
 	ExitVariableCastDeclaration(c *VariableCastDeclarationContext)
+
+	// ExitSliceAssignmentIndex is called when exiting the sliceAssignmentIndex production.
+	ExitSliceAssignmentIndex(c *SliceAssignmentIndexContext)
 
 	// ExitSliceTipo is called when exiting the sliceTipo production.
 	ExitSliceTipo(c *SliceTipoContext)
@@ -327,6 +336,9 @@ type VlangListener interface {
 
 	// ExitSumres is called when exiting the sumres production.
 	ExitSumres(c *SumresContext)
+
+	// ExitPARAPRINTSLICE is called when exiting the PARAPRINTSLICE production.
+	ExitPARAPRINTSLICE(c *PARAPRINTSLICEContext)
 
 	// ExitAsignacionLUEGO is called when exiting the asignacionLUEGO production.
 	ExitAsignacionLUEGO(c *AsignacionLUEGOContext)

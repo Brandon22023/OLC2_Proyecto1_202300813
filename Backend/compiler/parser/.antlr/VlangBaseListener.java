@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -76,6 +76,42 @@ public class VlangBaseListener implements VlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSliceEmptyDeclaration(VlangParser.SliceEmptyDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSliceEmptyDeclaration(VlangParser.SliceEmptyDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSliceInitDeclaration(VlangParser.SliceInitDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSliceInitDeclaration(VlangParser.SliceInitDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSliceAssignment(VlangParser.SliceAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSliceAssignment(VlangParser.SliceAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVariableDeclarationImmutable(VlangParser.VariableDeclarationImmutableContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -100,13 +136,25 @@ public class VlangBaseListener implements VlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTipoSlice(VlangParser.TipoSliceContext ctx) { }
+	@Override public void enterSliceTipo(VlangParser.SliceTipoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTipoSlice(VlangParser.TipoSliceContext ctx) { }
+	@Override public void exitSliceTipo(VlangParser.SliceTipoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSliceInit(VlangParser.SliceInitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSliceInit(VlangParser.SliceInitContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -431,18 +479,6 @@ public class VlangBaseListener implements VlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitIgualdad(VlangParser.IgualdadContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSliceCreacionv(VlangParser.SliceCreacionvContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSliceCreacionv(VlangParser.SliceCreacionvContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

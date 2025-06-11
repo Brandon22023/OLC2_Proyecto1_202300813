@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -59,6 +59,42 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitVariableDeclaration(VlangParser.VariableDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code sliceEmptyDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterSliceEmptyDeclaration(VlangParser.SliceEmptyDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sliceEmptyDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitSliceEmptyDeclaration(VlangParser.SliceEmptyDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code sliceInitDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterSliceInitDeclaration(VlangParser.SliceInitDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sliceInitDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitSliceInitDeclaration(VlangParser.SliceInitDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code sliceAssignment}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterSliceAssignment(VlangParser.SliceAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sliceAssignment}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitSliceAssignment(VlangParser.SliceAssignmentContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code variableDeclarationImmutable}
 	 * labeled alternative in {@link VlangParser#varDcl}.
 	 * @param ctx the parse tree
@@ -83,15 +119,25 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitVariableCastDeclaration(VlangParser.VariableCastDeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link VlangParser#tipoSlice}.
+	 * Enter a parse tree produced by {@link VlangParser#sliceTipo}.
 	 * @param ctx the parse tree
 	 */
-	void enterTipoSlice(VlangParser.TipoSliceContext ctx);
+	void enterSliceTipo(VlangParser.SliceTipoContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link VlangParser#tipoSlice}.
+	 * Exit a parse tree produced by {@link VlangParser#sliceTipo}.
 	 * @param ctx the parse tree
 	 */
-	void exitTipoSlice(VlangParser.TipoSliceContext ctx);
+	void exitSliceTipo(VlangParser.SliceTipoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#sliceInit}.
+	 * @param ctx the parse tree
+	 */
+	void enterSliceInit(VlangParser.SliceInitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#sliceInit}.
+	 * @param ctx the parse tree
+	 */
+	void exitSliceInit(VlangParser.SliceInitContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code printStatement}
 	 * labeled alternative in {@link VlangParser#stmt}.
@@ -398,18 +444,6 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIgualdad(VlangParser.IgualdadContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code sliceCreacionv}
-	 * labeled alternative in {@link VlangParser#expresion}.
-	 * @param ctx the parse tree
-	 */
-	void enterSliceCreacionv(VlangParser.SliceCreacionvContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code sliceCreacionv}
-	 * labeled alternative in {@link VlangParser#expresion}.
-	 * @param ctx the parse tree
-	 */
-	void exitSliceCreacionv(VlangParser.SliceCreacionvContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code llamadaFuncionExpr}
 	 * labeled alternative in {@link VlangParser#expresion}.

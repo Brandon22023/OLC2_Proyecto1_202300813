@@ -150,23 +150,24 @@ fn main() {
   mut vacio []float64
   print(vacio) // salida: []
 
-  //Slices indexof falta arreglar porque imprime nil
+  //Slices indexof 
   numeros1 = []int  {100, 200, 300}
   print((indexOf(numeros1, 300))) // salida: 2
   print((indexOf(numeros1, 500))) // salida: -1
+  //Slices join
+  word = []string {"hola", "mundoooo2", "go"}
+  print(join(word, " ")) // Salida: "hola mundo go"
 
+  //Slices len
+  print(len(numeros)) // Salida: 4
+  //slices append
+  numerosappend = []int {1, 2, 3}
+  print(numerosappend) // Salida: [1 2 3]
+  numerosappend = append(numerosappend, 4)
+  print(numerosappend) // Salida: [1 2 3 4]
+  print("Elemento en índice 2:", numerosappend[2]) // Salida: 3
+  // Modificación de un elemento existente
+  numerosappend[2] = 100
+  // Salida esperada: [1, 2, 100, 4]
+  print("Slice después de la modificación:", numerosappend)
 }
-
-/*
-fn main() {
-    print("== For con continue ==\n")
-    mut j int = 0
-    for j < 5 {
-        if j == 2 {
-            j++
-            continue
-        }
-        print(j)
-        j++
-    }
-}*/

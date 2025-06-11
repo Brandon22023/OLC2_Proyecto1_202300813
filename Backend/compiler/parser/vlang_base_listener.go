@@ -82,6 +82,12 @@ func (s *BaseVlangListener) EnterVariableCastDeclaration(ctx *VariableCastDeclar
 // ExitVariableCastDeclaration is called when production variableCastDeclaration is exited.
 func (s *BaseVlangListener) ExitVariableCastDeclaration(ctx *VariableCastDeclarationContext) {}
 
+// EnterSliceAssignmentIndex is called when production sliceAssignmentIndex is entered.
+func (s *BaseVlangListener) EnterSliceAssignmentIndex(ctx *SliceAssignmentIndexContext) {}
+
+// ExitSliceAssignmentIndex is called when production sliceAssignmentIndex is exited.
+func (s *BaseVlangListener) ExitSliceAssignmentIndex(ctx *SliceAssignmentIndexContext) {}
+
 // EnterSliceTipo is called when production sliceTipo is entered.
 func (s *BaseVlangListener) EnterSliceTipo(ctx *SliceTipoContext) {}
 
@@ -303,6 +309,12 @@ func (s *BaseVlangListener) EnterSumres(ctx *SumresContext) {}
 
 // ExitSumres is called when production sumres is exited.
 func (s *BaseVlangListener) ExitSumres(ctx *SumresContext) {}
+
+// EnterPARAPRINTSLICE is called when production PARAPRINTSLICE is entered.
+func (s *BaseVlangListener) EnterPARAPRINTSLICE(ctx *PARAPRINTSLICEContext) {}
+
+// ExitPARAPRINTSLICE is called when production PARAPRINTSLICE is exited.
+func (s *BaseVlangListener) ExitPARAPRINTSLICE(ctx *PARAPRINTSLICEContext) {}
 
 // EnterAsignacionLUEGO is called when production asignacionLUEGO is entered.
 func (s *BaseVlangListener) EnterAsignacionLUEGO(ctx *AsignacionLUEGOContext) {}
