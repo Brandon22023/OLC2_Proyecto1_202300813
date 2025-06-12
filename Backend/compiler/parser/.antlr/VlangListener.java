@@ -1,4 +1,4 @@
-// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -26,6 +26,16 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFuncMain(VlangParser.FuncMainContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#funcDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncDcl(VlangParser.FuncDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#funcDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncDcl(VlangParser.FuncDclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link VlangParser#block}.
 	 * @param ctx the parse tree
@@ -386,16 +396,6 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLlamadaFuncion(VlangParser.LlamadaFuncionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link VlangParser#funcDcl}.
-	 * @param ctx the parse tree
-	 */
-	void enterFuncDcl(VlangParser.FuncDclContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link VlangParser#funcDcl}.
-	 * @param ctx the parse tree
-	 */
-	void exitFuncDcl(VlangParser.FuncDclContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link VlangParser#funcCall}.
 	 * @param ctx the parse tree

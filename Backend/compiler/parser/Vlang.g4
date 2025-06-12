@@ -20,7 +20,8 @@ block
 declaraciones : varDcl   
               | stmt
               | funcDcl
-              | funcMain    
+              | funcMain
+              | structDcl    
               ; 
 
 varDcl
@@ -134,6 +135,20 @@ parametrosReales
     : expresion (COMMA expresion)*
     ;
 
+// === Declaraciones de Structs ===
+structDcl
+    : 'struct' ID LBRACE atributosStruct RBRACE
+    ;
+
+atributosStruct
+    : atributoStruct+
+    ;
+
+atributoStruct
+    : TIPO ID
+    ;
+
+
 //esto se tiene que eliminar porque while y do-while no existen en Vlang, solo se usa for
 whileDcl
     : 'while' LPAREN expresion RPAREN LBRACK declaraciones* RBRACK 
@@ -153,6 +168,7 @@ expresion
     | LBRACK expresion RBRACK                              #corchetesexpre
     | ID LBRACK expresion RBRACK                           #PARAPRINTSLICE
     | llamadaFuncion                                       #llamadaFuncionExpr
+    | ID DOT ID ASSIGN expresion                           #structAttrAssign
     | ID                                                   #id              
     | incredecre                                           #incredecr      
     | ID DOT ID                                            #expdotexp1             

@@ -3,6 +3,12 @@ mut hola1 string = "hola plebeyos"
 print(hola1)
 print("hello, probando global")
 
+struct Persona {
+  string Nombre
+  int Edad
+  bool EsEstudiante
+}
+
 fn imprimirSuma(a int, b int) {
   print("La suma es:", a + b)
 }
@@ -197,5 +203,16 @@ fn main() {
   imprimirSuma(10, 20)
   saludar()
   print("El cuadrado de 5 es:", cuadrado(5))
+
+  //Prueba Struct
+  /*mut r = Persona{
+  Nombre: "Alice"
+  Edad: 25
+  EsEstudiante: false
+  }
+
+  print(r.Nombre)
+  r.Edad = 30
+  print(r.Edad)*/
 }
 

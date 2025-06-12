@@ -15,11 +15,12 @@ import (
 
 // Visitor personalizado para recorrer el árbol de sintaxis
 type ReplVisitor struct {
-	parser.BaseVlangVisitor            // Embebemos el visitor generado por ANTLR
-	ScopeTrace *ScopeTrace
+	parser.BaseVlangVisitor // Embebemos el visitor generado por ANTLR
+	ScopeTrace              *ScopeTrace
 	IfScope                 []*BaseScope
-	inForLoop               bool                       // Bandera para rastrear si estamos en un bucle for
-	functions               map[string]*StoredFunction // Mapa para almacenar funciones definidas
+	inForLoop               bool                         // Bandera para rastrear si estamos en un bucle for
+	functions               map[string]*StoredFunction   // Mapa para almacenar funciones definidas
+	structs                 map[string]map[string]string // Mapa structs -> mapa (atributos)
 }
 
 type StoredFunction struct {
@@ -32,12 +33,13 @@ type StoredFunction struct {
 var _ parser.VlangVisitor = &ReplVisitor{} // <-- Esto asegura la interfaz
 // Constructor del visitor
 func NewReplVisitor() *ReplVisitor {
-    scopeTrace := NewScopeTrace()
-    return &ReplVisitor{
-        ScopeTrace: scopeTrace,
-        inForLoop:  false,
-        functions:  make(map[string]*StoredFunction),
-    }
+	scopeTrace := NewScopeTrace()
+	return &ReplVisitor{
+		ScopeTrace: scopeTrace,
+		inForLoop:  false,
+		functions:  make(map[string]*StoredFunction),
+		structs:    make(map[string]map[string]string),
+	}
 }
 
 /*
@@ -58,36 +60,36 @@ func (v *ReplVisitor) Visit(tree antlr.ParseTree) interface{} {
 }
 
 func (v *ReplVisitor) VisitPrograma(ctx *parser.ProgramaContext) interface{} {
-    // 1. Registrar funciones y variables globales
-    for _, decl := range ctx.AllDeclaraciones() {
-        if decl.FuncDcl() != nil {
-            v.VisitFuncDcl(decl.FuncDcl().(*parser.FuncDclContext))
-        } else if decl.FuncMain() != nil {
-            //v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
-        } else {
-            v.Visit(decl)
-        }
-    }
-    // 2. Ejecutar SOLO el main
-    for _, decl := range ctx.AllDeclaraciones() {
-        if decl.FuncMain() != nil {
-            return v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
-        }
-    }
-    return nil
+	// 1. Registrar funciones y variables globales
+	for _, decl := range ctx.AllDeclaraciones() {
+		if decl.FuncDcl() != nil {
+			v.VisitFuncDcl(decl.FuncDcl().(*parser.FuncDclContext))
+		} else if decl.FuncMain() != nil {
+			//v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
+		} else {
+			v.Visit(decl)
+		}
+	}
+	// 2. Ejecutar SOLO el main
+	for _, decl := range ctx.AllDeclaraciones() {
+		if decl.FuncMain() != nil {
+			return v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
+		}
+	}
+	return nil
 }
 
 func (v *ReplVisitor) VisitDeclaraciones(ctx *parser.DeclaracionesContext) interface{} {
 	for i := 0; i < ctx.GetChildCount(); i++ {
-        child := ctx.GetChild(i)
-        if node, ok := child.(antlr.ParseTree); ok {
-            res := node.Accept(v)
-            if ret, ok := res.(ReturnValue); ok {
-                return ret
-            }
-        }
-    }
-    return nil
+		child := ctx.GetChild(i)
+		if node, ok := child.(antlr.ParseTree); ok {
+			res := node.Accept(v)
+			if ret, ok := res.(ReturnValue); ok {
+				return ret
+			}
+		}
+	}
+	return nil
 }
 func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
 	return v.Visit(ctx.IfDcl())
@@ -104,18 +106,18 @@ func (v *ReplVisitor) VisitWhile_context(ctx *parser.While_contextContext) inter
 
 func (v *ReplVisitor) VisitStmt(ctx *parser.StmtContext) interface{} {
 	res := v.VisitChildren(ctx)
-    if ret, ok := res.(ReturnValue); ok {
-        return ret
-    }
-    return nil
+	if ret, ok := res.(ReturnValue); ok {
+		return ret
+	}
+	return nil
 }
 
 func (v *ReplVisitor) VisitFuncMain(ctx *parser.FuncMainContext) interface{} {
-    v.ScopeTrace.PushScope("fn_main")
+	v.ScopeTrace.PushScope("fn_main")
 	v.ScopeTrace.AddFunction("main", nil)
-    defer v.ScopeTrace.PopScope()
-	
-    return v.Visit(ctx.Block())
+	defer v.ScopeTrace.PopScope()
+
+	return v.Visit(ctx.Block())
 }
 
 // REVISAR
@@ -139,26 +141,26 @@ func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) int
 
 // HASTA ACA
 func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
-    // Si el scope actual ya es de función, no hagas push de "block"
-    if strings.HasPrefix(v.ScopeTrace.CurrentScope.name, "fn_") || v.ScopeTrace.CurrentScope.name == "main" {
-        for _, decl := range ctx.AllDeclaraciones() {
-            res := v.Visit(decl)
-            if ret, ok := res.(ReturnValue); ok {
-                return ret
-            }
-        }
-        return nil
-    }
-    // Si no, sí crea un nuevo scope "block"
-    v.ScopeTrace.PushScope("block")
-    defer v.ScopeTrace.PopScope()
-    for _, decl := range ctx.AllDeclaraciones() {
-        res := v.Visit(decl)
-        if _, ok := res.(ReturnValue); ok {
-            return res
-        }
-    }
-    return nil
+	// Si el scope actual ya es de función, no hagas push de "block"
+	if strings.HasPrefix(v.ScopeTrace.CurrentScope.name, "fn_") || v.ScopeTrace.CurrentScope.name == "main" {
+		for _, decl := range ctx.AllDeclaraciones() {
+			res := v.Visit(decl)
+			if ret, ok := res.(ReturnValue); ok {
+				return ret
+			}
+		}
+		return nil
+	}
+	// Si no, sí crea un nuevo scope "block"
+	v.ScopeTrace.PushScope("block")
+	defer v.ScopeTrace.PopScope()
+	for _, decl := range ctx.AllDeclaraciones() {
+		res := v.Visit(decl)
+		if _, ok := res.(ReturnValue); ok {
+			return res
+		}
+	}
+	return nil
 }
 
 // Visitamos declaraciones de variables
@@ -166,29 +168,34 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 	varName := ctx.ID().GetText()
 	var varType string
 	var valueObj value.IVOR
-	
 
 	// 1. Detectar tipo explícito y asignar valor por defecto
 	if ctx.TIPO() != nil {
 		tipoText := ctx.TIPO().GetText()
-		switch tipoText {
-		case "int":
-			varType = value.IVOR_INT
-			valueObj = value.NewIntValue(0)
-		case "float64":
-			varType = value.IVOR_FLOAT
-			valueObj = value.NewFloatValue(0.0)
-		case "string":
-			varType = value.IVOR_STRING
-			valueObj = value.NewStringValue("")
-		case "bool":
-			varType = value.IVOR_BOOL
-			valueObj = value.NewBoolValue(false)
-		case "rune":
-			varType = value.IVOR_CHARACTER
-			valueObj = value.NewCharValue('\x00')
-		default:
-			return nil
+
+		if structDef, exists := v.structs[tipoText]; exists {
+			varType = "struct_" + tipoText
+			valueObj = value.NewStructValue(tipoText, structDef)
+		} else {
+			switch tipoText {
+			case "int":
+				varType = value.IVOR_INT
+				valueObj = value.NewIntValue(0)
+			case "float64":
+				varType = value.IVOR_FLOAT
+				valueObj = value.NewFloatValue(0.0)
+			case "string":
+				varType = value.IVOR_STRING
+				valueObj = value.NewStringValue("")
+			case "bool":
+				varType = value.IVOR_BOOL
+				valueObj = value.NewBoolValue(false)
+			case "rune":
+				varType = value.IVOR_CHARACTER
+				valueObj = value.NewCharValue('\x00')
+			default:
+				return nil
+			}
 		}
 	}
 
@@ -228,13 +235,12 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 	}
 
 	// ⬇️ Aquí revisa si ya existe y muestra error
-    _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
-    if errMsg != "" {
-        fmt.Printf("SEMANTICO: La variable '%s' ya está declarada en este ámbito\n", varName)
+	_, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+	if errMsg != "" {
+		fmt.Printf("SEMANTICO: La variable '%s' ya está declarada en este ámbito\n", varName)
 		os.Exit(1) // Termina el programa inmediatamente
-        return nil
-    }
-	
+		return nil
+	}
 
 	return nil
 }
@@ -301,7 +307,6 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 		}
 		return nil
 	}
-	
 
 	fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
 	return nil
@@ -325,12 +330,12 @@ func (v *ReplVisitor) VisitValorEntero(ctx *parser.ValorEnteroContext) interface
 	return val
 }
 func unescapeString(s string) string {
-    // Agrega comillas para que Unquote lo procese como literal
-    unquoted, err := strconv.Unquote(`"` + s + `"`)
-    if err != nil {
-        return s // Si falla, regresa el original
-    }
-    return unquoted
+	// Agrega comillas para que Unquote lo procese como literal
+	unquoted, err := strconv.Unquote(`"` + s + `"`)
+	if err != nil {
+		return s // Si falla, regresa el original
+	}
+	return unquoted
 }
 
 func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) interface{} {
@@ -346,7 +351,7 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 
 		switch v := val.(type) {
 		case string:
-            outputs = append(outputs, unescapeString(v))
+			outputs = append(outputs, unescapeString(v))
 		case int32:
 			outputs = append(outputs, string(v))
 		case float64:
@@ -645,7 +650,7 @@ func (v *ReplVisitor) VisitIgualdad(ctx *parser.IgualdadContext) interface{} {
 }
 
 func (v *ReplVisitor) VisitId(ctx *parser.IdContext) interface{} {
-	
+
 	varName := ctx.GetText()
 	variable := v.ScopeTrace.GetVariable(varName)
 	//fmt.Println("[DEBUG] VisitID:", ctx.GetText())
@@ -715,16 +720,16 @@ func (v *ReplVisitor) VisitDecremento(ctx *parser.DecrementoContext) interface{}
 }
 
 func (v *ReplVisitor) VisitChildren(node antlr.RuleNode) interface{} {
-    for i := 0; i < node.GetChildCount(); i++ {
-        child := node.GetChild(i)
-        if childNode, ok := child.(antlr.ParseTree); ok {
-            res := childNode.Accept(v)
-            if ret, ok := res.(ReturnValue); ok {
-                return ret
-            }
-        }
-    }
-    return nil
+	for i := 0; i < node.GetChildCount(); i++ {
+		child := node.GetChild(i)
+		if childNode, ok := child.(antlr.ParseTree); ok {
+			res := childNode.Accept(v)
+			if ret, ok := res.(ReturnValue); ok {
+				return ret
+			}
+		}
+	}
+	return nil
 }
 func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{} {
 	//fmt.Println("📌 Acceso punto ID.ID:", ctx.GetText())
@@ -784,7 +789,7 @@ func (v *ReplVisitor) VisitValorDecimal(ctx *parser.ValorDecimalContext) interfa
 
 func (v *ReplVisitor) VisitValorBooleano(ctx *parser.ValorBooleanoContext) interface{} {
 	text := ctx.GetText()
-    return text == "true"
+	return text == "true"
 }
 
 func (v *ReplVisitor) VisitValorCaracter(ctx *parser.ValorCaracterContext) interface{} {
@@ -797,18 +802,18 @@ func (v *ReplVisitor) VisitValorCaracter(ctx *parser.ValorCaracterContext) inter
 
 // NO ELIMINES ESTA FUNCION SI NO TE CARGAS TODO LITERALMENTE xD
 func (v *ReplVisitor) VisitExpresionStatement(ctx *parser.ExpresionStatementContext) interface{} {
-    res := v.Visit(ctx.Expresion())
-    if ret, ok := res.(ReturnValue); ok {
-        return ret
-    }
-    return res
+	res := v.Visit(ctx.Expresion())
+	if ret, ok := res.(ReturnValue); ok {
+		return ret
+	}
+	return res
 }
 func (v *ReplVisitor) VisitTransfersentence(ctx *parser.TransfersentenceContext) interface{} {
-    res := v.VisitChildren(ctx)
-    if ret, ok := res.(ReturnValue); ok {
-        return ret
-    }
-    return nil
+	res := v.VisitChildren(ctx)
+	if ret, ok := res.(ReturnValue); ok {
+		return ret
+	}
+	return nil
 }
 
 func (v *ReplVisitor) VisitIMCPLICIT(ctx *parser.IMCPLICITContext) interface{} {
@@ -850,11 +855,11 @@ func (v *ReplVisitor) VisitOPERADORESLOGICOS(ctx *parser.OPERADORESLOGICOSContex
 	op := ctx.GetOp().GetText()
 
 	leftBool, lok := left.(bool)
-    rightBool, rok := right.(bool)
-    if !lok || !rok {
-        fmt.Printf("Error: Operador lógico solo acepta booleanos, recibidos: %T y %T\n", left, right)
-        return false
-    }
+	rightBool, rok := right.(bool)
+	if !lok || !rok {
+		fmt.Printf("Error: Operador lógico solo acepta booleanos, recibidos: %T y %T\n", left, right)
+		return false
+	}
 	switch op {
 	case "&&":
 		return leftBool && rightBool
@@ -865,59 +870,59 @@ func (v *ReplVisitor) VisitOPERADORESLOGICOS(ctx *parser.OPERADORESLOGICOSContex
 }
 
 func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext) interface{} {
-    res := v.VisitChildren(ctx)
-    if ret, ok := res.(ReturnValue); ok {
-        return ret
-    }
-    return nil
+	res := v.VisitChildren(ctx)
+	if ret, ok := res.(ReturnValue); ok {
+		return ret
+	}
+	return nil
 }
 
 // condicionales
 func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
-    v.ScopeTrace.PushScope("IF")
-    defer v.ScopeTrace.PopScope()
-    condVal := v.Visit(ctx.Expresion())
-    condBool := fmt.Sprint(condVal) == "true"
+	v.ScopeTrace.PushScope("IF")
+	defer v.ScopeTrace.PopScope()
+	condVal := v.Visit(ctx.Expresion())
+	condBool := fmt.Sprint(condVal) == "true"
 
-    if condBool {
-        for _, decl := range ctx.AllDeclaraciones() {
-            res := v.Visit(decl)
-            if ret, ok := res.(ReturnValue); ok {
-                return ret
-            }
-        }
-        return nil
-    }
+	if condBool {
+		for _, decl := range ctx.AllDeclaraciones() {
+			res := v.Visit(decl)
+			if ret, ok := res.(ReturnValue); ok {
+				return ret
+			}
+		}
+		return nil
+	}
 
-    for _, elseIf := range ctx.AllElseIfDcl() {
-        elseIfCond := v.Visit(elseIf.Expresion())
-        if fmt.Sprint(elseIfCond) == "true" {
-            for _, decl := range elseIf.AllDeclaraciones() {
-                res := v.Visit(decl)
-                if ret, ok := res.(ReturnValue); ok {
-                    return ret
-                }
-            }
-            return nil
-        }
-    }
+	for _, elseIf := range ctx.AllElseIfDcl() {
+		elseIfCond := v.Visit(elseIf.Expresion())
+		if fmt.Sprint(elseIfCond) == "true" {
+			for _, decl := range elseIf.AllDeclaraciones() {
+				res := v.Visit(decl)
+				if ret, ok := res.(ReturnValue); ok {
+					return ret
+				}
+			}
+			return nil
+		}
+	}
 
-    if ctx.ElseCondicional() != nil {
-        for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
-            res := v.Visit(decl)
-            if ret, ok := res.(ReturnValue); ok {
-                return ret
-            }
-        }
-    }
+	if ctx.ElseCondicional() != nil {
+		for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
+			res := v.Visit(decl)
+			if ret, ok := res.(ReturnValue); ok {
+				return ret
+			}
+		}
+	}
 
-    return nil
+	return nil
 }
 
 // El For tiene error no repite el ciclo :') pero si lo lee el programa
 func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{} {
 	v.ScopeTrace.PushScope("FOR_CLASICO")
-    defer v.ScopeTrace.PopScope()
+	defer v.ScopeTrace.PopScope()
 
 	v.inForLoop = true // 🔹 Habilita el uso de "continue" y "break"
 	defer func() {
@@ -953,63 +958,63 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 	v.ScopeTrace.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
 
 	for {
-        condVal := v.Visit(ctx.Expresion())
-        if fmt.Sprint(condVal) != "true" {
-            break
-        }
+		condVal := v.Visit(ctx.Expresion())
+		if fmt.Sprint(condVal) != "true" {
+			break
+		}
 
-        // ⬇️ Aquí usa PushScope y PopScope para el scope de la iteración
-        v.ScopeTrace.PushScope("FOR_ITER")
-        for _, decl := range ctx.Block().AllDeclaraciones() {
-            res := v.Visit(decl)
-            if str, ok := res.(string); ok {
-                if str == "continue" {
-                    break // salto a incremento y siguiente iteración
-                } else if str == "break" {
-                    v.ScopeTrace.PopScope()
-                    return nil // salimos del for
-                }
-            }
-        }
-        v.ScopeTrace.PopScope()
+		// ⬇️ Aquí usa PushScope y PopScope para el scope de la iteración
+		v.ScopeTrace.PushScope("FOR_ITER")
+		for _, decl := range ctx.Block().AllDeclaraciones() {
+			res := v.Visit(decl)
+			if str, ok := res.(string); ok {
+				if str == "continue" {
+					break // salto a incremento y siguiente iteración
+				} else if str == "break" {
+					v.ScopeTrace.PopScope()
+					return nil // salimos del for
+				}
+			}
+		}
+		v.ScopeTrace.PopScope()
 
-        if ctx.Stmt() != nil {
-            v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
-        }
-    }
+		if ctx.Stmt() != nil {
+			v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
+		}
+	}
 
 	return nil
 }
 
 func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContext) interface{} {
-    v.ScopeTrace.PushScope("FOR_SIMPLE")
-    defer v.ScopeTrace.PopScope()
+	v.ScopeTrace.PushScope("FOR_SIMPLE")
+	defer v.ScopeTrace.PopScope()
 
-    v.inForLoop = true
-    defer func() { v.inForLoop = false }()
+	v.inForLoop = true
+	defer func() { v.inForLoop = false }()
 
-    for {
-        condVal := v.Visit(ctx.Expresion())
-        if fmt.Sprint(condVal) != "true" {
-            break
-        }
+	for {
+		condVal := v.Visit(ctx.Expresion())
+		if fmt.Sprint(condVal) != "true" {
+			break
+		}
 
-        v.ScopeTrace.PushScope("FOR_ITER")
-        for _, decl := range ctx.Block().AllDeclaraciones() {
-            res := v.Visit(decl)
-            if str, ok := res.(string); ok {
-                if str == "continue" {
-                    break
-                } else if str == "break" {
-                    v.ScopeTrace.PopScope()
-                    return nil
-                }
-            }
-        }
-        v.ScopeTrace.PopScope()
-    }
+		v.ScopeTrace.PushScope("FOR_ITER")
+		for _, decl := range ctx.Block().AllDeclaraciones() {
+			res := v.Visit(decl)
+			if str, ok := res.(string); ok {
+				if str == "continue" {
+					break
+				} else if str == "break" {
+					v.ScopeTrace.PopScope()
+					return nil
+				}
+			}
+		}
+		v.ScopeTrace.PopScope()
+	}
 
-    return nil
+	return nil
 }
 
 func (v *ReplVisitor) VisitSwitchDcl(ctx *parser.SwitchDclContext) interface{} {
@@ -1131,55 +1136,55 @@ func (v *ReplVisitor) VisitSliceAssignment(ctx *parser.SliceAssignmentContext) i
 // Indexof Slice no funciona imprime nil
 func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) interface{} {
 	funcName := ctx.GetStart().GetText()
-    //fmt.Printf("[LLAMADAFUNCION] Llamando a función '%s'\n", funcName)
+	//fmt.Printf("[LLAMADAFUNCION] Llamando a función '%s'\n", funcName)
 
-    // 🔹 Primero verificamos si es una función definida por el usuario
-    if userFunc, exists := v.functions[funcName]; exists {
-        // Evaluar los argumentos enviados
-        argVals := []interface{}{}
-        if len(ctx.AllExpresion()) > 0 {
-            for _, expr := range ctx.AllExpresion() {
-                val := v.Visit(expr)
-                //fmt.Printf("[LLAMADAFUNCION]  Argumento #%d: %v (tipo: %T)\n", i, val, val)
-                argVals = append(argVals, val)
-            }
-        }
+	// 🔹 Primero verificamos si es una función definida por el usuario
+	if userFunc, exists := v.functions[funcName]; exists {
+		// Evaluar los argumentos enviados
+		argVals := []interface{}{}
+		if len(ctx.AllExpresion()) > 0 {
+			for _, expr := range ctx.AllExpresion() {
+				val := v.Visit(expr)
+				//fmt.Printf("[LLAMADAFUNCION]  Argumento #%d: %v (tipo: %T)\n", i, val, val)
+				argVals = append(argVals, val)
+			}
+		}
 
-        // Validar cantidad de parámetros
-        if len(argVals) != len(userFunc.ParamNames) {
-            fmt.Printf("[LLAMADAFUNCION] ❌ La función '%s' esperaba %d argumentos, recibió %d\n",
-                funcName, len(userFunc.ParamNames), len(argVals))
-            return nil
-        }
+		// Validar cantidad de parámetros
+		if len(argVals) != len(userFunc.ParamNames) {
+			fmt.Printf("[LLAMADAFUNCION] ❌ La función '%s' esperaba %d argumentos, recibió %d\n",
+				funcName, len(userFunc.ParamNames), len(argVals))
+			return nil
+		}
 
-        // Crear nuevo scope para la función
-        //fmt.Printf("[LLAMADAFUNCION]  PushScope(func_%s)\n", funcName)
-        v.ScopeTrace.PushScope("func_" + funcName)
-        defer func() {
-            //fmt.Printf("[LLAMADAFUNCION]  PopScope(func_%s)\n", funcName)
-            v.ScopeTrace.PopScope()
-        }()
+		// Crear nuevo scope para la función
+		//fmt.Printf("[LLAMADAFUNCION]  PushScope(func_%s)\n", funcName)
+		v.ScopeTrace.PushScope("func_" + funcName)
+		defer func() {
+			//fmt.Printf("[LLAMADAFUNCION]  PopScope(func_%s)\n", funcName)
+			v.ScopeTrace.PopScope()
+		}()
 
-        // Declarar parámetros en el nuevo scope
-        for i, paramName := range userFunc.ParamNames {
-            ivorVal := wrapToIVOR(argVals[i], userFunc.ParamTypes[i])
-            //fmt.Printf("[LLAMADAFUNCION]  Declarando parámetro '%s' tipo '%s' valor '%v'\n", paramName, userFunc.ParamTypes[i], ivorVal)
-            v.ScopeTrace.AddVariable(paramName, userFunc.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
-        }
+		// Declarar parámetros en el nuevo scope
+		for i, paramName := range userFunc.ParamNames {
+			ivorVal := wrapToIVOR(argVals[i], userFunc.ParamTypes[i])
+			//fmt.Printf("[LLAMADAFUNCION]  Declarando parámetro '%s' tipo '%s' valor '%v'\n", paramName, userFunc.ParamTypes[i], ivorVal)
+			v.ScopeTrace.AddVariable(paramName, userFunc.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
+		}
 
-        // Ejecutar el bloque de la función
-        //fmt.Printf("[LLAMADAFUNCION]  Ejecutando bloque de la función '%s'\n", funcName)
-        res := v.Visit(userFunc.Block)
-        //fmt.Printf("[LLAMADAFUNCION]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
+		// Ejecutar el bloque de la función
+		//fmt.Printf("[LLAMADAFUNCION]  Ejecutando bloque de la función '%s'\n", funcName)
+		res := v.Visit(userFunc.Block)
+		//fmt.Printf("[LLAMADAFUNCION]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
 
-        // Si tiene retorno
-        if ret, ok := res.(ReturnValue); ok {
-            //fmt.Printf("[LLAMADAFUNCION]  ReturnValue detectado: %v (tipo: %T)\n", ret.Value, ret.Value)
-            return ret.Value
-        }
-        //fmt.Printf("[LLAMADAFUNCION]  No hubo return explícito, devolviendo nil\n")
-        return nil
-    }
+		// Si tiene retorno
+		if ret, ok := res.(ReturnValue); ok {
+			//fmt.Printf("[LLAMADAFUNCION]  ReturnValue detectado: %v (tipo: %T)\n", ret.Value, ret.Value)
+			return ret.Value
+		}
+		//fmt.Printf("[LLAMADAFUNCION]  No hubo return explícito, devolviendo nil\n")
+		return nil
+	}
 
 	// 🔹 Si no es función de usuario, manejamos funciones nativas
 	switch funcName {
@@ -1455,8 +1460,7 @@ func (v *ReplVisitor) VisitSliceAssignmentIndex(ctx *parser.SliceAssignmentIndex
 func (v *ReplVisitor) VisitFuncDcl(ctx *parser.FuncDclContext) interface{} {
 	funcName := ctx.ID().GetText()
 	v.ScopeTrace.PushScope("fn_" + funcName)
-    defer v.ScopeTrace.PopScope()
-	
+	defer v.ScopeTrace.PopScope()
 
 	// Validación de duplicado
 	if _, exists := v.functions[funcName]; exists || v.ScopeTrace.GetVariable(funcName) != nil {
@@ -1499,7 +1503,7 @@ func (v *ReplVisitor) VisitFuncDcl(ctx *parser.FuncDclContext) interface{} {
 	}
 
 	// También agrégala al scope para la tabla de símbolos
-    v.ScopeTrace.AddFunction(funcName, nil) // Puedes pasar nil o un objeto si tienes uno
+	v.ScopeTrace.AddFunction(funcName, nil) // Puedes pasar nil o un objeto si tienes uno
 	return nil
 }
 
@@ -1521,7 +1525,7 @@ func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 			argVals = append(argVals, val)
 		}
 	}
-    fmt.Printf("[FUNCALL]  Argumentos evaluados: %v\n", argVals)
+	fmt.Printf("[FUNCALL]  Argumentos evaluados: %v\n", argVals)
 	if len(argVals) != len(fn.ParamNames) {
 		fmt.Printf("SEMANTICO: La función '%s' esperaba %d argumentos, recibió %d\n",
 			funcName, len(fn.ParamNames), len(argVals))
@@ -1545,12 +1549,12 @@ func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 	// Ejecutar función
 	fmt.Printf("[FUNCALL]  Ejecutando bloque de la función '%s'\n", funcName)
 	res := v.Visit(fn.Block)
-    fmt.Printf("[FUNCALL]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
+	fmt.Printf("[FUNCALL]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
 	// Siempre revisa si hay ReturnValue, aunque no tenga tipo explícito
-    if ret, ok := res.(ReturnValue); ok {
+	if ret, ok := res.(ReturnValue); ok {
 		fmt.Printf("[FUNCALL]  ReturnValue detectado: %v (tipo: %T)\n", ret.Value, ret.Value)
-        return ret.Value
-    }
+		return ret.Value
+	}
 	fmt.Printf("[FUNCALL]  No hubo return explícito, devolviendo nil\n")
 	return nil
 }
@@ -1584,12 +1588,45 @@ type ReturnValue struct {
 }
 
 func (v *ReplVisitor) VisitReturnStatement(ctx *parser.ReturnStatementContext) interface{} {
-    //fmt.Printf("[RETURN] Encontrado return en línea %d\n", ctx.GetStart().GetLine())
-    if ctx.Expresion() != nil {
-        val := v.Visit(ctx.Expresion())
-        //fmt.Printf("[RETURN]  Valor de retorno: %v (tipo: %T)\n", val, val)
-        return ReturnValue{Value: val}
-    }
-    //fmt.Printf("[RETURN]  Return sin valor (nil)\n")
-    return ReturnValue{Value: nil}
+	//fmt.Printf("[RETURN] Encontrado return en línea %d\n", ctx.GetStart().GetLine())
+	if ctx.Expresion() != nil {
+		val := v.Visit(ctx.Expresion())
+		//fmt.Printf("[RETURN]  Valor de retorno: %v (tipo: %T)\n", val, val)
+		return ReturnValue{Value: val}
+	}
+	//fmt.Printf("[RETURN]  Return sin valor (nil)\n")
+	return ReturnValue{Value: nil}
+}
+
+// Structs
+func (v *ReplVisitor) VisitStructDcl(ctx *parser.StructDclContext) interface{} {
+	structName := ctx.ID().GetText()
+
+	if _, exists := v.structs[structName]; exists {
+		fmt.Printf("SEMANTICO: El struct '%s' ya fue definido\n", structName)
+		return nil
+	}
+
+	atributos := make(map[string]string)
+
+	for _, attrCtx := range ctx.AtributosStruct().AllAtributoStruct() {
+		tipo := attrCtx.TIPO().GetText()
+		nombre := attrCtx.ID().GetText()
+
+		if _, dup := atributos[nombre]; dup {
+			fmt.Printf("SEMANTICO: Atributo duplicado '%s' en struct '%s'\n", nombre, structName)
+			return nil
+		}
+
+		atributos[nombre] = tipo
+	}
+
+	if len(atributos) == 0 {
+		fmt.Printf("SEMANTICO: El struct '%s' no puede estar vacío\n", structName)
+		return nil
+	}
+
+	v.structs[structName] = atributos
+	fmt.Printf("Struct '%s' definido con atributos: %v\n", structName, atributos)
+	return nil
 }

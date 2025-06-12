@@ -74,7 +74,7 @@ func main() {
 
 	fmt.Println("====aqui imprimire las variables de todos los entornos=========")
 	visitor.ScopeTrace.GlobalScope.PrintScopeVariables(0)
-    // CREA la tabla de símbolos y LLÉNALA
+	// CREA la tabla de símbolos y LLÉNALA
 	tabla := symbols.NewSymbolTable()
 	visitor.ScopeTrace.GlobalScope.CollectSymbols(tabla)
 
@@ -90,7 +90,7 @@ func main() {
 	} else {
 		fmt.Println("Tabla de símbolos exportada a tabla_simbolos.html")
 	}
-	
+
 }
 
 /*
@@ -101,9 +101,9 @@ func main() {
 */
 func readStdin() (string, error) {
 	//input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
-	input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/basicas.vch")
+	//input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/basicas.vch")
 	//input, err := os.ReadFile("/home/pablo/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
-	//input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
 	return string(input), err
 }
 

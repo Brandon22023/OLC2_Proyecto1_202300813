@@ -163,6 +163,18 @@ func (v *BaseVlangVisitor) VisitParametrosReales(ctx *ParametrosRealesContext) i
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitStructDcl(ctx *StructDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitAtributosStruct(ctx *AtributosStructContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitAtributoStruct(ctx *AtributoStructContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitWhileDcl(ctx *WhileDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -192,6 +204,10 @@ func (v *BaseVlangVisitor) VisitLlamadaFuncionExpr(ctx *LlamadaFuncionExprContex
 }
 
 func (v *BaseVlangVisitor) VisitExpdotexp(ctx *ExpdotexpContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitStructAttrAssign(ctx *StructAttrAssignContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

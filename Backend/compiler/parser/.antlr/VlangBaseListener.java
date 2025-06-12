@@ -1,4 +1,4 @@
-// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -35,6 +35,18 @@ public class VlangBaseListener implements VlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFuncMain(VlangParser.FuncMainContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFuncDcl(VlangParser.FuncDclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFuncDcl(VlangParser.FuncDclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -419,18 +431,6 @@ public class VlangBaseListener implements VlangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLlamadaFuncion(VlangParser.LlamadaFuncionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFuncDcl(VlangParser.FuncDclContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFuncDcl(VlangParser.FuncDclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -256,6 +256,24 @@ func (s *BaseVlangListener) EnterParametrosReales(ctx *ParametrosRealesContext) 
 // ExitParametrosReales is called when production parametrosReales is exited.
 func (s *BaseVlangListener) ExitParametrosReales(ctx *ParametrosRealesContext) {}
 
+// EnterStructDcl is called when production structDcl is entered.
+func (s *BaseVlangListener) EnterStructDcl(ctx *StructDclContext) {}
+
+// ExitStructDcl is called when production structDcl is exited.
+func (s *BaseVlangListener) ExitStructDcl(ctx *StructDclContext) {}
+
+// EnterAtributosStruct is called when production atributosStruct is entered.
+func (s *BaseVlangListener) EnterAtributosStruct(ctx *AtributosStructContext) {}
+
+// ExitAtributosStruct is called when production atributosStruct is exited.
+func (s *BaseVlangListener) ExitAtributosStruct(ctx *AtributosStructContext) {}
+
+// EnterAtributoStruct is called when production atributoStruct is entered.
+func (s *BaseVlangListener) EnterAtributoStruct(ctx *AtributoStructContext) {}
+
+// ExitAtributoStruct is called when production atributoStruct is exited.
+func (s *BaseVlangListener) ExitAtributoStruct(ctx *AtributoStructContext) {}
+
 // EnterWhileDcl is called when production whileDcl is entered.
 func (s *BaseVlangListener) EnterWhileDcl(ctx *WhileDclContext) {}
 
@@ -303,6 +321,12 @@ func (s *BaseVlangListener) EnterExpdotexp(ctx *ExpdotexpContext) {}
 
 // ExitExpdotexp is called when production expdotexp is exited.
 func (s *BaseVlangListener) ExitExpdotexp(ctx *ExpdotexpContext) {}
+
+// EnterStructAttrAssign is called when production structAttrAssign is entered.
+func (s *BaseVlangListener) EnterStructAttrAssign(ctx *StructAttrAssignContext) {}
+
+// ExitStructAttrAssign is called when production structAttrAssign is exited.
+func (s *BaseVlangListener) ExitStructAttrAssign(ctx *StructAttrAssignContext) {}
 
 // EnterRelacionales is called when production relacionales is entered.
 func (s *BaseVlangListener) EnterRelacionales(ctx *RelacionalesContext) {}

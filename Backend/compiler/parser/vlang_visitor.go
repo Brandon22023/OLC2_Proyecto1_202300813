@@ -124,6 +124,15 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#parametrosReales.
 	VisitParametrosReales(ctx *ParametrosRealesContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#structDcl.
+	VisitStructDcl(ctx *StructDclContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#atributosStruct.
+	VisitAtributosStruct(ctx *AtributosStructContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#atributoStruct.
+	VisitAtributoStruct(ctx *AtributoStructContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#whileDcl.
 	VisitWhileDcl(ctx *WhileDclContext) interface{}
 
@@ -147,6 +156,9 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#expdotexp.
 	VisitExpdotexp(ctx *ExpdotexpContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#structAttrAssign.
+	VisitStructAttrAssign(ctx *StructAttrAssignContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#relacionales.
 	VisitRelacionales(ctx *RelacionalesContext) interface{}

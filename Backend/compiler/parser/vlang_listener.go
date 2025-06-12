@@ -124,6 +124,15 @@ type VlangListener interface {
 	// EnterParametrosReales is called when entering the parametrosReales production.
 	EnterParametrosReales(c *ParametrosRealesContext)
 
+	// EnterStructDcl is called when entering the structDcl production.
+	EnterStructDcl(c *StructDclContext)
+
+	// EnterAtributosStruct is called when entering the atributosStruct production.
+	EnterAtributosStruct(c *AtributosStructContext)
+
+	// EnterAtributoStruct is called when entering the atributoStruct production.
+	EnterAtributoStruct(c *AtributoStructContext)
+
 	// EnterWhileDcl is called when entering the whileDcl production.
 	EnterWhileDcl(c *WhileDclContext)
 
@@ -147,6 +156,9 @@ type VlangListener interface {
 
 	// EnterExpdotexp is called when entering the expdotexp production.
 	EnterExpdotexp(c *ExpdotexpContext)
+
+	// EnterStructAttrAssign is called when entering the structAttrAssign production.
+	EnterStructAttrAssign(c *StructAttrAssignContext)
 
 	// EnterRelacionales is called when entering the relacionales production.
 	EnterRelacionales(c *RelacionalesContext)
@@ -325,6 +337,15 @@ type VlangListener interface {
 	// ExitParametrosReales is called when exiting the parametrosReales production.
 	ExitParametrosReales(c *ParametrosRealesContext)
 
+	// ExitStructDcl is called when exiting the structDcl production.
+	ExitStructDcl(c *StructDclContext)
+
+	// ExitAtributosStruct is called when exiting the atributosStruct production.
+	ExitAtributosStruct(c *AtributosStructContext)
+
+	// ExitAtributoStruct is called when exiting the atributoStruct production.
+	ExitAtributoStruct(c *AtributoStructContext)
+
 	// ExitWhileDcl is called when exiting the whileDcl production.
 	ExitWhileDcl(c *WhileDclContext)
 
@@ -348,6 +369,9 @@ type VlangListener interface {
 
 	// ExitExpdotexp is called when exiting the expdotexp production.
 	ExitExpdotexp(c *ExpdotexpContext)
+
+	// ExitStructAttrAssign is called when exiting the structAttrAssign production.
+	ExitStructAttrAssign(c *StructAttrAssignContext)
 
 	// ExitRelacionales is called when exiting the relacionales production.
 	ExitRelacionales(c *RelacionalesContext)
