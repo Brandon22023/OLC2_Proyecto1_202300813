@@ -54,12 +54,8 @@ func (s *BaseScope) AddChild(child *BaseScope) {
 Clase Aqui xd
 */
 func (s *BaseScope) variableExists(variable *Variable) bool {
-
-	// debo recorrer el scope y ver si existe
-	//fmt.Print("Verificando si la variable ", variable.Name, " existe en el scope ", s.name, "\n")
-
-	return false
-
+    _, exists := s.variables[variable.Name]
+    return exists
 }
 
 func (s *BaseScope) AddVariable(name string, varType string, value value.IVOR, isConst bool, allowNil bool, token antlr.Token) (*Variable, string) {

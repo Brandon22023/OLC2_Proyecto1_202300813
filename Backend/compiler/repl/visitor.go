@@ -4,6 +4,7 @@ import (
 	parser "compiler/parser"
 	"compiler/value"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -62,7 +63,7 @@ func (v *ReplVisitor) VisitPrograma(ctx *parser.ProgramaContext) interface{} {
         if decl.FuncDcl() != nil {
             v.VisitFuncDcl(decl.FuncDcl().(*parser.FuncDclContext))
         } else if decl.FuncMain() != nil {
-            v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
+            //v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
         } else {
             v.Visit(decl)
         }
@@ -165,7 +166,7 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 	varName := ctx.ID().GetText()
 	var varType string
 	var valueObj value.IVOR
-	var n = 1
+	
 
 	// 1. Detectar tipo explícito y asignar valor por defecto
 	if ctx.TIPO() != nil {
@@ -226,11 +227,14 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 		}
 	}
 
-	v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
-	if n == 0 {
-		fmt.Println(varName, varType, valueObj)
-	}
-	//fmt.Printf("[DEBUG] Variable '%s' declarada en scope '%s'\n", varName, v.Scope.Name)
+	// ⬇️ Aquí revisa si ya existe y muestra error
+    _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+    if errMsg != "" {
+        fmt.Printf("SEMANTICO: La variable '%s' ya está declarada en este ámbito\n", varName)
+		os.Exit(1) // Termina el programa inmediatamente
+        return nil
+    }
+	
 
 	return nil
 }
@@ -297,6 +301,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 		}
 		return nil
 	}
+	
 
 	fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
 	return nil
@@ -319,6 +324,14 @@ func (v *ReplVisitor) VisitValorEntero(ctx *parser.ValorEnteroContext) interface
 	}
 	return val
 }
+func unescapeString(s string) string {
+    // Agrega comillas para que Unquote lo procese como literal
+    unquoted, err := strconv.Unquote(`"` + s + `"`)
+    if err != nil {
+        return s // Si falla, regresa el original
+    }
+    return unquoted
+}
 
 func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) interface{} {
 	var outputs []string
@@ -332,6 +345,8 @@ func (v *ReplVisitor) VisitPrintStatement(ctx *parser.PrintStatementContext) int
 		}
 
 		switch v := val.(type) {
+		case string:
+            outputs = append(outputs, unescapeString(v))
 		case int32:
 			outputs = append(outputs, string(v))
 		case float64:
