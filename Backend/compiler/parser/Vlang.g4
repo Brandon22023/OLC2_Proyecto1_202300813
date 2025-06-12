@@ -2,10 +2,15 @@ grammar Vlang;
 
 
 // === Axioma principal ===
-programa : (funcDcl|funcMain)* EOF ;
+programa : (declaraciones)* EOF ;
 
 funcMain
     : 'fn' 'main' LPAREN RPAREN block
+    ;
+
+//Declaracion funciones
+funcDcl
+    : 'fn' ID LPAREN parametrosFormales? RPAREN (TIPO)? block
     ;
 
 block
@@ -14,7 +19,8 @@ block
 // /home/sebas/Desktop/Compiladores 2/OLC2_EVJUNIO2025/Clase2/compiler/errors/error_strategy.go
 declaraciones : varDcl   
               | stmt
-              | funcDcl    
+              | funcDcl
+              | funcMain    
               ; 
 
 varDcl
@@ -109,10 +115,7 @@ llamadaFuncion
     | APPEND LPAREN (expresion (COMMA expresion)*)? RPAREN
     ;
 
-//Declaracion funciones
-funcDcl
-    : 'func' ID LPAREN parametrosFormales? RPAREN (TIPO)? block
-    ;
+
 
 // Llamada funcion y parametros normales
 funcCall

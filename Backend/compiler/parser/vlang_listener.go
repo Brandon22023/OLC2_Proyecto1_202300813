@@ -13,6 +13,9 @@ type VlangListener interface {
 	// EnterFuncMain is called when entering the funcMain production.
 	EnterFuncMain(c *FuncMainContext)
 
+	// EnterFuncDcl is called when entering the funcDcl production.
+	EnterFuncDcl(c *FuncDclContext)
+
 	// EnterBlock is called when entering the block production.
 	EnterBlock(c *BlockContext)
 
@@ -108,9 +111,6 @@ type VlangListener interface {
 
 	// EnterLlamadaFuncion is called when entering the llamadaFuncion production.
 	EnterLlamadaFuncion(c *LlamadaFuncionContext)
-
-	// EnterFuncDcl is called when entering the funcDcl production.
-	EnterFuncDcl(c *FuncDclContext)
 
 	// EnterFuncCall is called when entering the funcCall production.
 	EnterFuncCall(c *FuncCallContext)
@@ -214,6 +214,9 @@ type VlangListener interface {
 	// ExitFuncMain is called when exiting the funcMain production.
 	ExitFuncMain(c *FuncMainContext)
 
+	// ExitFuncDcl is called when exiting the funcDcl production.
+	ExitFuncDcl(c *FuncDclContext)
+
 	// ExitBlock is called when exiting the block production.
 	ExitBlock(c *BlockContext)
 
@@ -309,9 +312,6 @@ type VlangListener interface {
 
 	// ExitLlamadaFuncion is called when exiting the llamadaFuncion production.
 	ExitLlamadaFuncion(c *LlamadaFuncionContext)
-
-	// ExitFuncDcl is called when exiting the funcDcl production.
-	ExitFuncDcl(c *FuncDclContext)
 
 	// ExitFuncCall is called when exiting the funcCall production.
 	ExitFuncCall(c *FuncCallContext)

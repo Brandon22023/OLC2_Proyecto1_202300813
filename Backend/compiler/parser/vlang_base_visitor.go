@@ -15,6 +15,10 @@ func (v *BaseVlangVisitor) VisitFuncMain(ctx *FuncMainContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitFuncDcl(ctx *FuncDclContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitBlock(ctx *BlockContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -140,10 +144,6 @@ func (v *BaseVlangVisitor) VisitDefaultBlock(ctx *DefaultBlockContext) interface
 }
 
 func (v *BaseVlangVisitor) VisitLlamadaFuncion(ctx *LlamadaFuncionContext) interface{} {
-	return v.VisitChildren(ctx)
-}
-
-func (v *BaseVlangVisitor) VisitFuncDcl(ctx *FuncDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

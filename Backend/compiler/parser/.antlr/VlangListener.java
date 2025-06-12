@@ -119,6 +119,18 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitVariableCastDeclaration(VlangParser.VariableCastDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code sliceAssignmentIndex}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterSliceAssignmentIndex(VlangParser.SliceAssignmentIndexContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sliceAssignmentIndex}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitSliceAssignmentIndex(VlangParser.SliceAssignmentIndexContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link VlangParser#sliceTipo}.
 	 * @param ctx the parse tree
 	 */
@@ -375,6 +387,56 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitLlamadaFuncion(VlangParser.LlamadaFuncionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link VlangParser#funcDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncDcl(VlangParser.FuncDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#funcDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncDcl(VlangParser.FuncDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#funcCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncCall(VlangParser.FuncCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#funcCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncCall(VlangParser.FuncCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#parametrosFormales}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametrosFormales(VlangParser.ParametrosFormalesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#parametrosFormales}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametrosFormales(VlangParser.ParametrosFormalesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#parametro}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametro(VlangParser.ParametroContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#parametro}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametro(VlangParser.ParametroContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#parametrosReales}.
+	 * @param ctx the parse tree
+	 */
+	void enterParametrosReales(VlangParser.ParametrosRealesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#parametrosReales}.
+	 * @param ctx the parse tree
+	 */
+	void exitParametrosReales(VlangParser.ParametrosRealesContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link VlangParser#whileDcl}.
 	 * @param ctx the parse tree
 	 */
@@ -540,6 +602,18 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSumres(VlangParser.SumresContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code PARAPRINTSLICE}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterPARAPRINTSLICE(VlangParser.PARAPRINTSLICEContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code PARAPRINTSLICE}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitPARAPRINTSLICE(VlangParser.PARAPRINTSLICEContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code asignacionLUEGO}
 	 * labeled alternative in {@link VlangParser#expresion}.

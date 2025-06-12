@@ -23,6 +23,12 @@ func NewSymbolTable() *SymbolTable {
 }
 
 func (st *SymbolTable) AddSymbol(sym Symbol) {
+    // Evita duplicados en el mismo ámbito
+    for _, s := range st.Symbols {
+        if s.ID == sym.ID && s.Scope == sym.Scope {
+            return // No agregar duplicado
+        }
+    }
     st.Symbols = append(st.Symbols, sym)
 }
 

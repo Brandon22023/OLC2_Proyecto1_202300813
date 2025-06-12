@@ -15,8 +15,7 @@ import (
 // Visitor personalizado para recorrer el árbol de sintaxis
 type ReplVisitor struct {
 	parser.BaseVlangVisitor            // Embebemos el visitor generado por ANTLR
-	Scope                   *BaseScope //este servira para obtener el valor de las variables declaradas xd
-	GlobalScope             *BaseScope // sera en si el entorno global
+	ScopeTrace *ScopeTrace
 	IfScope                 []*BaseScope
 	inForLoop               bool                       // Bandera para rastrear si estamos en un bucle for
 	functions               map[string]*StoredFunction // Mapa para almacenar funciones definidas
@@ -32,13 +31,12 @@ type StoredFunction struct {
 var _ parser.VlangVisitor = &ReplVisitor{} // <-- Esto asegura la interfaz
 // Constructor del visitor
 func NewReplVisitor() *ReplVisitor {
-	global := NewBaseScope("GLOBAL", nil)
-	return &ReplVisitor{
-		Scope:       global,
-		GlobalScope: global,
-		inForLoop:   false,
-		functions:   make(map[string]*StoredFunction),
-	}
+    scopeTrace := NewScopeTrace()
+    return &ReplVisitor{
+        ScopeTrace: scopeTrace,
+        inForLoop:  false,
+        functions:  make(map[string]*StoredFunction),
+    }
 }
 
 /*
@@ -59,22 +57,36 @@ func (v *ReplVisitor) Visit(tree antlr.ParseTree) interface{} {
 }
 
 func (v *ReplVisitor) VisitPrograma(ctx *parser.ProgramaContext) interface{} {
-	// Primero registramos las funciones
-	for _, funcDecl := range ctx.AllFuncDcl() {
-		v.Visit(funcDecl)
-	}
-
-	// Luego ejecutamos el main
-	for _, mainDecl := range ctx.AllFuncMain() {
-		v.Visit(mainDecl)
-	}
-
-	return nil
+    // 1. Registrar funciones y variables globales
+    for _, decl := range ctx.AllDeclaraciones() {
+        if decl.FuncDcl() != nil {
+            v.VisitFuncDcl(decl.FuncDcl().(*parser.FuncDclContext))
+        } else if decl.FuncMain() != nil {
+            v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
+        } else {
+            v.Visit(decl)
+        }
+    }
+    // 2. Ejecutar SOLO el main
+    for _, decl := range ctx.AllDeclaraciones() {
+        if decl.FuncMain() != nil {
+            return v.VisitFuncMain(decl.FuncMain().(*parser.FuncMainContext))
+        }
+    }
+    return nil
 }
 
 func (v *ReplVisitor) VisitDeclaraciones(ctx *parser.DeclaracionesContext) interface{} {
-	//fmt.Println("Entrando a VisitDeclaraciones")
-	return v.VisitChildren(ctx)
+	for i := 0; i < ctx.GetChildCount(); i++ {
+        child := ctx.GetChild(i)
+        if node, ok := child.(antlr.ParseTree); ok {
+            res := node.Accept(v)
+            if ret, ok := res.(ReturnValue); ok {
+                return ret
+            }
+        }
+    }
+    return nil
 }
 func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
 	return v.Visit(ctx.IfDcl())
@@ -90,13 +102,19 @@ func (v *ReplVisitor) VisitWhile_context(ctx *parser.While_contextContext) inter
 }
 
 func (v *ReplVisitor) VisitStmt(ctx *parser.StmtContext) interface{} {
-	//fmt.Println("Entrando a VisitStmt")
-	return v.VisitChildren(ctx)
+	res := v.VisitChildren(ctx)
+    if ret, ok := res.(ReturnValue); ok {
+        return ret
+    }
+    return nil
 }
 
 func (v *ReplVisitor) VisitFuncMain(ctx *parser.FuncMainContext) interface{} {
-	//fmt.Println("Entrando a VisitFuncMain")
-	return v.Visit(ctx.Block())
+    v.ScopeTrace.PushScope("fn_main")
+	v.ScopeTrace.AddFunction("main", nil)
+    defer v.ScopeTrace.PopScope()
+	
+    return v.Visit(ctx.Block())
 }
 
 // REVISAR
@@ -120,23 +138,26 @@ func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) int
 
 // HASTA ACA
 func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
-	//fmt.Println("[DEBUG] Entrando a un nuevo bloque. Scope actual:", v.Scope.Name)
-	//entorno global para todas las variables declaradas en el bloque
-	if v.Scope != v.GlobalScope {
-		newScope := NewBaseScope("block", v.Scope)
-		v.Scope = newScope
-		defer func() {
-			v.Scope = v.Scope.Parent
-		}()
-	}
-	for _, decl := range ctx.AllDeclaraciones() {
-		res := v.Visit(decl)
-		if _, ok := res.(ReturnValue); ok {
-			return res // Si es un ReturnValue, salimos del bloque
-		}
-	}
-	//fmt.Println("[DEBUG] Saliendo del bloque. Scope actual:", v.Scope.Name)
-	return nil
+    // Si el scope actual ya es de función, no hagas push de "block"
+    if strings.HasPrefix(v.ScopeTrace.CurrentScope.name, "fn_") || v.ScopeTrace.CurrentScope.name == "main" {
+        for _, decl := range ctx.AllDeclaraciones() {
+            res := v.Visit(decl)
+            if ret, ok := res.(ReturnValue); ok {
+                return ret
+            }
+        }
+        return nil
+    }
+    // Si no, sí crea un nuevo scope "block"
+    v.ScopeTrace.PushScope("block")
+    defer v.ScopeTrace.PopScope()
+    for _, decl := range ctx.AllDeclaraciones() {
+        res := v.Visit(decl)
+        if _, ok := res.(ReturnValue); ok {
+            return res
+        }
+    }
+    return nil
 }
 
 // Visitamos declaraciones de variables
@@ -205,7 +226,7 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 		}
 	}
 
-	v.Scope.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
 	if n == 0 {
 		fmt.Println(varName, varType, valueObj)
 	}
@@ -218,7 +239,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 	varName := ctx.ID().GetText()
 
 	if ctx.ASSIGN() != nil && ctx.Expresion() != nil {
-		variable := v.Scope.GetVariable(varName)
+		variable := v.ScopeTrace.GetVariable(varName)
 		if variable == nil {
 			fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
 			return nil
@@ -290,6 +311,7 @@ func (v *ReplVisitor) VisitValorCadena(ctx *parser.ValorCadenaContext) interface
 }
 
 func (v *ReplVisitor) VisitValorEntero(ctx *parser.ValorEnteroContext) interface{} {
+	//fmt.Println("[DEBUG] VisitValorEntero:", ctx.GetText())
 	val, err := strconv.Atoi(ctx.GetText())
 	if err != nil {
 		fmt.Printf("Error al convertir entero: %v\n", ctx.GetText())
@@ -608,8 +630,10 @@ func (v *ReplVisitor) VisitIgualdad(ctx *parser.IgualdadContext) interface{} {
 }
 
 func (v *ReplVisitor) VisitId(ctx *parser.IdContext) interface{} {
+	
 	varName := ctx.GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
+	//fmt.Println("[DEBUG] VisitID:", ctx.GetText())
 	if variable != nil && variable.Value != nil {
 		//fmt.Printf("Accediendo variable '%s', valor: %v\n", varName, variable.Value.Value())
 		// 🔍 Si es slice, devolvemos el objeto completo para poder acceder a sus elementos después
@@ -639,7 +663,7 @@ func (v *ReplVisitor) VisitIncredecr(ctx *parser.IncredecrContext) interface{} {
 
 func (v *ReplVisitor) VisitIncremento(ctx *parser.IncrementoContext) interface{} {
 	varName := ctx.ID().GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Error: variable '%s' no declarada\n", varName)
 		return nil
@@ -658,7 +682,7 @@ func (v *ReplVisitor) VisitIncremento(ctx *parser.IncrementoContext) interface{}
 
 func (v *ReplVisitor) VisitDecremento(ctx *parser.DecrementoContext) interface{} {
 	varName := ctx.ID().GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Error: variable '%s' no declarada\n", varName)
 		return nil
@@ -676,14 +700,16 @@ func (v *ReplVisitor) VisitDecremento(ctx *parser.DecrementoContext) interface{}
 }
 
 func (v *ReplVisitor) VisitChildren(node antlr.RuleNode) interface{} {
-	// Recorre todos los hijos usando tu visitor personalizado
-	for i := 0; i < node.GetChildCount(); i++ {
-		child := node.GetChild(i)
-		if childNode, ok := child.(antlr.ParseTree); ok {
-			childNode.Accept(v)
-		}
-	}
-	return nil
+    for i := 0; i < node.GetChildCount(); i++ {
+        child := node.GetChild(i)
+        if childNode, ok := child.(antlr.ParseTree); ok {
+            res := childNode.Accept(v)
+            if ret, ok := res.(ReturnValue); ok {
+                return ret
+            }
+        }
+    }
+    return nil
 }
 func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{} {
 	//fmt.Println("📌 Acceso punto ID.ID:", ctx.GetText())
@@ -697,7 +723,7 @@ func (v *ReplVisitor) VisitExpdotexp(ctx *parser.ExpdotexpContext) interface{} {
 
 func (v *ReplVisitor) VisitAsignacionLUEGO(ctx *parser.AsignacionLUEGOContext) interface{} {
 	varName := ctx.ID().GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Variable '%s' no declarada\n", varName)
 		return nil
@@ -742,7 +768,8 @@ func (v *ReplVisitor) VisitValorDecimal(ctx *parser.ValorDecimalContext) interfa
 }
 
 func (v *ReplVisitor) VisitValorBooleano(ctx *parser.ValorBooleanoContext) interface{} {
-	return ctx.GetText()
+	text := ctx.GetText()
+    return text == "true"
 }
 
 func (v *ReplVisitor) VisitValorCaracter(ctx *parser.ValorCaracterContext) interface{} {
@@ -755,12 +782,23 @@ func (v *ReplVisitor) VisitValorCaracter(ctx *parser.ValorCaracterContext) inter
 
 // NO ELIMINES ESTA FUNCION SI NO TE CARGAS TODO LITERALMENTE xD
 func (v *ReplVisitor) VisitExpresionStatement(ctx *parser.ExpresionStatementContext) interface{} {
-	return v.Visit(ctx.Expresion())
+    res := v.Visit(ctx.Expresion())
+    if ret, ok := res.(ReturnValue); ok {
+        return ret
+    }
+    return res
+}
+func (v *ReplVisitor) VisitTransfersentence(ctx *parser.TransfersentenceContext) interface{} {
+    res := v.VisitChildren(ctx)
+    if ret, ok := res.(ReturnValue); ok {
+        return ret
+    }
+    return nil
 }
 
 func (v *ReplVisitor) VisitIMCPLICIT(ctx *parser.IMCPLICITContext) interface{} {
 	varName := ctx.ID().GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("Error: variable '%s' no declarada\n", varName)
 		return nil
@@ -796,16 +834,12 @@ func (v *ReplVisitor) VisitOPERADORESLOGICOS(ctx *parser.OPERADORESLOGICOSContex
 	right := v.Visit(ctx.Expresion(1))
 	op := ctx.GetOp().GetText()
 
-	leftBool := fmt.Sprint(left) == "true"
-	rightBool := fmt.Sprint(right) == "true"
-
-	// Solo acepta booleanos
-	if (fmt.Sprint(left) != "true" && fmt.Sprint(left) != "false") ||
-		(fmt.Sprint(right) != "true" && fmt.Sprint(right) != "false") {
-		//fmt.Printf("Error: operador lógico '%s' solo acepta booleanos\n", op)
-		return false
-	}
-
+	leftBool, lok := left.(bool)
+    rightBool, rok := right.(bool)
+    if !lok || !rok {
+        fmt.Printf("Error: Operador lógico solo acepta booleanos, recibidos: %T y %T\n", left, right)
+        return false
+    }
 	switch op {
 	case "&&":
 		return leftBool && rightBool
@@ -816,58 +850,59 @@ func (v *ReplVisitor) VisitOPERADORESLOGICOS(ctx *parser.OPERADORESLOGICOSContex
 }
 
 func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext) interface{} {
-	return v.VisitChildren(ctx)
+    res := v.VisitChildren(ctx)
+    if ret, ok := res.(ReturnValue); ok {
+        return ret
+    }
+    return nil
 }
 
 // condicionales
 func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
-	//aqui manejaremos el entorno del if, tene en cuenta que es un scope nuevo
-	newScope := NewBaseScope("IF", v.Scope)
-	v.Scope = newScope
-	v.IfScope = append(v.IfScope, newScope)
-	defer func() { v.Scope = v.Scope.Parent }()
-	//fmt.Println("[DEBUG] Entrando a VisitIfDcl:", ctx.GetText())
-	condVal := v.Visit(ctx.Expresion())
-	//fmt.Printf("Valor de la condición del if: %v (tipo %T)\n", condVal, condVal)
-	condBool := fmt.Sprint(condVal) == "true"
+    v.ScopeTrace.PushScope("IF")
+    defer v.ScopeTrace.PopScope()
+    condVal := v.Visit(ctx.Expresion())
+    condBool := fmt.Sprint(condVal) == "true"
 
-	if condBool {
-		//fmt.Println("Condición verdadera, ejecutando declaraciones del if")
+    if condBool {
+        for _, decl := range ctx.AllDeclaraciones() {
+            res := v.Visit(decl)
+            if ret, ok := res.(ReturnValue); ok {
+                return ret
+            }
+        }
+        return nil
+    }
 
-		for _, decl := range ctx.AllDeclaraciones() {
-			v.Visit(decl)
-		}
-		return nil
-	}
+    for _, elseIf := range ctx.AllElseIfDcl() {
+        elseIfCond := v.Visit(elseIf.Expresion())
+        if fmt.Sprint(elseIfCond) == "true" {
+            for _, decl := range elseIf.AllDeclaraciones() {
+                res := v.Visit(decl)
+                if ret, ok := res.(ReturnValue); ok {
+                    return ret
+                }
+            }
+            return nil
+        }
+    }
 
-	// else if recursivo asi que no eliminar
-	for _, elseIf := range ctx.AllElseIfDcl() {
-		elseIfCond := v.Visit(elseIf.Expresion())
-		if fmt.Sprint(elseIfCond) == "true" {
-			for _, decl := range elseIf.AllDeclaraciones() {
-				v.Visit(decl)
-			}
-			return nil
-		}
-	}
+    if ctx.ElseCondicional() != nil {
+        for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
+            res := v.Visit(decl)
+            if ret, ok := res.(ReturnValue); ok {
+                return ret
+            }
+        }
+    }
 
-	// else
-	if ctx.ElseCondicional() != nil {
-		for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
-			v.Visit(decl)
-		}
-	}
-
-	return nil
+    return nil
 }
 
 // El For tiene error no repite el ciclo :') pero si lo lee el programa
 func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{} {
-	newScope := NewBaseScope("FOR_CLASICO", v.Scope)
-	v.Scope = newScope
-	defer func() {
-		v.Scope = v.Scope.Parent
-	}()
+	v.ScopeTrace.PushScope("FOR_CLASICO")
+    defer v.ScopeTrace.PopScope()
 
 	v.inForLoop = true // 🔹 Habilita el uso de "continue" y "break"
 	defer func() {
@@ -900,81 +935,66 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 		fmt.Printf("❌ Tipo no soportado para la variable '%s'\n", varName)
 	}
 
-	v.Scope.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
 
 	for {
-		condVal := v.Visit(ctx.Expresion())
-		if fmt.Sprint(condVal) != "true" {
-			break
-		}
+        condVal := v.Visit(ctx.Expresion())
+        if fmt.Sprint(condVal) != "true" {
+            break
+        }
 
-		iterScope := NewBaseScope("FOR_ITER", v.Scope)
-		v.Scope = iterScope
+        // ⬇️ Aquí usa PushScope y PopScope para el scope de la iteración
+        v.ScopeTrace.PushScope("FOR_ITER")
+        for _, decl := range ctx.Block().AllDeclaraciones() {
+            res := v.Visit(decl)
+            if str, ok := res.(string); ok {
+                if str == "continue" {
+                    break // salto a incremento y siguiente iteración
+                } else if str == "break" {
+                    v.ScopeTrace.PopScope()
+                    return nil // salimos del for
+                }
+            }
+        }
+        v.ScopeTrace.PopScope()
 
-		for _, decl := range ctx.Block().AllDeclaraciones() {
-			res := v.Visit(decl)
-
-			// 🔴 Controlar flujo con break o continue
-			if str, ok := res.(string); ok {
-				if str == "continue" {
-					v.Scope = v.Scope.Parent // salir del iterScope
-					break                    // salto a incremento y siguiente iteración
-				} else if str == "break" {
-					v.Scope = v.Scope.Parent
-					return nil // salimos del for
-				}
-			}
-		}
-
-		v.Scope = v.Scope.Parent // salir del iterScope
-
-		if ctx.Stmt() != nil {
-			v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
-		}
-	}
+        if ctx.Stmt() != nil {
+            v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
+        }
+    }
 
 	return nil
 }
 
 func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContext) interface{} {
-	newScope := NewBaseScope("FOR_SIMPLE", v.Scope)
-	v.Scope = newScope
-	defer func() {
-		v.Scope = v.Scope.Parent
-	}()
+    v.ScopeTrace.PushScope("FOR_SIMPLE")
+    defer v.ScopeTrace.PopScope()
 
-	v.inForLoop = true
-	defer func() {
-		v.inForLoop = false
-	}()
+    v.inForLoop = true
+    defer func() { v.inForLoop = false }()
 
-	for {
-		condVal := v.Visit(ctx.Expresion())
-		if fmt.Sprint(condVal) != "true" {
-			break
-		}
+    for {
+        condVal := v.Visit(ctx.Expresion())
+        if fmt.Sprint(condVal) != "true" {
+            break
+        }
 
-		iterScope := NewBaseScope("FOR_ITER", v.Scope)
-		v.Scope = iterScope
+        v.ScopeTrace.PushScope("FOR_ITER")
+        for _, decl := range ctx.Block().AllDeclaraciones() {
+            res := v.Visit(decl)
+            if str, ok := res.(string); ok {
+                if str == "continue" {
+                    break
+                } else if str == "break" {
+                    v.ScopeTrace.PopScope()
+                    return nil
+                }
+            }
+        }
+        v.ScopeTrace.PopScope()
+    }
 
-		for _, decl := range ctx.Block().AllDeclaraciones() {
-			res := v.Visit(decl)
-
-			if str, ok := res.(string); ok {
-				if str == "continue" {
-					v.Scope = v.Scope.Parent
-					break
-				} else if str == "break" {
-					v.Scope = v.Scope.Parent
-					return nil
-				}
-			}
-		}
-
-		v.Scope = v.Scope.Parent
-	}
-
-	return nil
+    return nil
 }
 
 func (v *ReplVisitor) VisitSwitchDcl(ctx *parser.SwitchDclContext) interface{} {
@@ -1011,7 +1031,7 @@ func (v *ReplVisitor) VisitSliceEmptyDeclaration(ctx *parser.SliceEmptyDeclarati
 	tipo := ctx.SliceTipo().TIPO().GetText()
 	sliceType := "slice_" + tipo
 	sliceVal := value.NewSliceValue(tipo, []value.IVOR{})
-	v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
 	return nil
 }
 
@@ -1063,15 +1083,15 @@ func (v *ReplVisitor) VisitSliceInitDeclaration(ctx *parser.SliceInitDeclaration
 		}
 	}
 	sliceVal := value.NewSliceValue(tipo, elements)
-	v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
 	/*
 			por si la misma palabra se quiere cambiar de valor dentro del slice
-		    existing := v.Scope.GetVariable(varName)
+		    existing := v.ScopeTrace.GetVariable(varName)
 		    if existing != nil {
 		        existing.Type = sliceType
 		        existing.Value = sliceVal
 		    } else {
-		        v.Scope.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+		        v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
 		    }
 	*/
 	return nil
@@ -1081,7 +1101,7 @@ func (v *ReplVisitor) VisitSliceAssignment(ctx *parser.SliceAssignmentContext) i
 	left := ctx.ID(0).GetText()
 	right := ctx.ID(1).GetText()
 
-	sliceRight := v.Scope.GetVariable(right)
+	sliceRight := v.ScopeTrace.GetVariable(right)
 	if sliceRight == nil || !strings.HasPrefix(sliceRight.Type, "slice_") {
 		fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", right)
 		return nil
@@ -1089,54 +1109,62 @@ func (v *ReplVisitor) VisitSliceAssignment(ctx *parser.SliceAssignmentContext) i
 
 	sliceType := sliceRight.Type
 	copyVal := sliceRight.Value.Copy() // ← asegúrate de que el método Copy exista
-	v.Scope.AddVariable(left, sliceType, copyVal, false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(left, sliceType, copyVal, false, false, ctx.GetStart())
 	return nil
 }
 
 // Indexof Slice no funciona imprime nil
 func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) interface{} {
 	funcName := ctx.GetStart().GetText()
+    //fmt.Printf("[LLAMADAFUNCION] Llamando a función '%s'\n", funcName)
 
-	// 🔹 Primero verificamos si es una función definida por el usuario
-	if userFunc, exists := v.functions[funcName]; exists {
-		// Evaluar los argumentos enviados
-		argVals := []interface{}{}
-		if len(ctx.AllExpresion()) > 0 {
-			for _, expr := range ctx.AllExpresion() {
-				val := v.Visit(expr)
-				argVals = append(argVals, val)
-			}
-		}
+    // 🔹 Primero verificamos si es una función definida por el usuario
+    if userFunc, exists := v.functions[funcName]; exists {
+        // Evaluar los argumentos enviados
+        argVals := []interface{}{}
+        if len(ctx.AllExpresion()) > 0 {
+            for _, expr := range ctx.AllExpresion() {
+                val := v.Visit(expr)
+                //fmt.Printf("[LLAMADAFUNCION]  Argumento #%d: %v (tipo: %T)\n", i, val, val)
+                argVals = append(argVals, val)
+            }
+        }
 
-		// Validar cantidad de parámetros
-		if len(argVals) != len(userFunc.ParamNames) {
-			fmt.Printf("SEMANTICO: La función '%s' esperaba %d argumentos, recibió %d\n",
-				funcName, len(userFunc.ParamNames), len(argVals))
-			return nil
-		}
+        // Validar cantidad de parámetros
+        if len(argVals) != len(userFunc.ParamNames) {
+            fmt.Printf("[LLAMADAFUNCION] ❌ La función '%s' esperaba %d argumentos, recibió %d\n",
+                funcName, len(userFunc.ParamNames), len(argVals))
+            return nil
+        }
 
-		// Crear nuevo scope para la función
-		newScope := NewBaseScope("func_"+funcName, v.Scope)
-		v.Scope = newScope
-		defer func() { v.Scope = v.Scope.Parent }()
+        // Crear nuevo scope para la función
+        //fmt.Printf("[LLAMADAFUNCION]  PushScope(func_%s)\n", funcName)
+        v.ScopeTrace.PushScope("func_" + funcName)
+        defer func() {
+            //fmt.Printf("[LLAMADAFUNCION]  PopScope(func_%s)\n", funcName)
+            v.ScopeTrace.PopScope()
+        }()
 
-		// Declarar parámetros en el nuevo scope
-		for i, paramName := range userFunc.ParamNames {
-			ivorVal := wrapToIVOR(argVals[i], userFunc.ParamTypes[i])
-			v.Scope.AddVariable(paramName, userFunc.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
-		}
+        // Declarar parámetros en el nuevo scope
+        for i, paramName := range userFunc.ParamNames {
+            ivorVal := wrapToIVOR(argVals[i], userFunc.ParamTypes[i])
+            //fmt.Printf("[LLAMADAFUNCION]  Declarando parámetro '%s' tipo '%s' valor '%v'\n", paramName, userFunc.ParamTypes[i], ivorVal)
+            v.ScopeTrace.AddVariable(paramName, userFunc.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
+        }
 
-		// Ejecutar el bloque de la función
-		res := v.Visit(userFunc.Block)
+        // Ejecutar el bloque de la función
+        //fmt.Printf("[LLAMADAFUNCION]  Ejecutando bloque de la función '%s'\n", funcName)
+        res := v.Visit(userFunc.Block)
+        //fmt.Printf("[LLAMADAFUNCION]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
 
-		// Si tiene retorno
-		if userFunc.ReturnType != "" {
-			if ret, ok := res.(ReturnValue); ok {
-				return ret.Value
-			}
-		}
-		return nil
-	}
+        // Si tiene retorno
+        if ret, ok := res.(ReturnValue); ok {
+            //fmt.Printf("[LLAMADAFUNCION]  ReturnValue detectado: %v (tipo: %T)\n", ret.Value, ret.Value)
+            return ret.Value
+        }
+        //fmt.Printf("[LLAMADAFUNCION]  No hubo return explícito, devolviendo nil\n")
+        return nil
+    }
 
 	// 🔹 Si no es función de usuario, manejamos funciones nativas
 	switch funcName {
@@ -1270,7 +1298,7 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 // casteos
 func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDeclarationContext) interface{} {
 	varName := ctx.ID().GetText()
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil {
 		fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
 		return nil
@@ -1336,7 +1364,7 @@ func (v *ReplVisitor) VisitLlamadaFuncionExpr(ctx *parser.LlamadaFuncionExprCont
 func (v *ReplVisitor) VisitPARAPRINTSLICE(ctx *parser.PARAPRINTSLICEContext) interface{} {
 	varName := ctx.ID().GetText()
 	index := v.Visit(ctx.Expresion())
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil || !strings.HasPrefix(variable.Type, "slice_") {
 		fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", varName)
 		return nil
@@ -1355,7 +1383,7 @@ func (v *ReplVisitor) VisitSliceAssignmentIndex(ctx *parser.SliceAssignmentIndex
 	index := v.Visit(ctx.Expresion(0))
 	newVal := v.Visit(ctx.Expresion(1))
 
-	variable := v.Scope.GetVariable(varName)
+	variable := v.ScopeTrace.GetVariable(varName)
 	if variable == nil || !strings.HasPrefix(variable.Type, "slice_") {
 		fmt.Printf("SEMANTICO: '%s' no es un slice válido\n", varName)
 		return nil
@@ -1411,9 +1439,12 @@ func (v *ReplVisitor) VisitSliceAssignmentIndex(ctx *parser.SliceAssignmentIndex
 // funciones
 func (v *ReplVisitor) VisitFuncDcl(ctx *parser.FuncDclContext) interface{} {
 	funcName := ctx.ID().GetText()
+	v.ScopeTrace.PushScope("fn_" + funcName)
+    defer v.ScopeTrace.PopScope()
+	
 
 	// Validación de duplicado
-	if _, exists := v.functions[funcName]; exists || v.Scope.GetVariable(funcName) != nil {
+	if _, exists := v.functions[funcName]; exists || v.ScopeTrace.GetVariable(funcName) != nil {
 		fmt.Printf("SEMANTICO: El nombre '%s' ya está en uso\n", funcName)
 		return nil
 	}
@@ -1451,12 +1482,15 @@ func (v *ReplVisitor) VisitFuncDcl(ctx *parser.FuncDclContext) interface{} {
 		ReturnType: returnType,
 		Block:      ctx.Block(),
 	}
+
+	// También agrégala al scope para la tabla de símbolos
+    v.ScopeTrace.AddFunction(funcName, nil) // Puedes pasar nil o un objeto si tienes uno
 	return nil
 }
 
 func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 	funcName := ctx.ID().GetText()
-
+	fmt.Printf("[FUNCALL] Llamando a función '%s'\n", funcName)
 	fn, exists := v.functions[funcName]
 	if !exists {
 		fmt.Printf("SEMANTICO: Función '%s' no existe\n", funcName)
@@ -1466,12 +1500,13 @@ func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 	// Evaluar argumentos
 	argVals := []interface{}{}
 	if ctx.ParametrosReales() != nil {
-		for _, expr := range ctx.ParametrosReales().AllExpresion() {
+		for i, expr := range ctx.ParametrosReales().AllExpresion() {
 			val := v.Visit(expr)
+			fmt.Printf("[FUNCALL]  Argumento #%d: %v (tipo: %T)\n", i, val, val)
 			argVals = append(argVals, val)
 		}
 	}
-
+    fmt.Printf("[FUNCALL]  Argumentos evaluados: %v\n", argVals)
 	if len(argVals) != len(fn.ParamNames) {
 		fmt.Printf("SEMANTICO: La función '%s' esperaba %d argumentos, recibió %d\n",
 			funcName, len(fn.ParamNames), len(argVals))
@@ -1479,31 +1514,29 @@ func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 	}
 
 	// Crear nuevo entorno
-	funcScope := NewBaseScope("func_"+funcName, v.Scope)
-	oldScope := v.Scope
-	v.Scope = funcScope
-	defer func() { v.Scope = oldScope }()
+	fmt.Printf("[FUNCALL]  PushScope(func_%s)\n", funcName)
+	v.ScopeTrace.PushScope("func_" + funcName)
+	defer v.ScopeTrace.PopScope()
 
 	// Declarar parámetros
 	for i, name := range fn.ParamNames {
 		val := argVals[i]
 		// Aquí puedes convertir val a IVOR si quieres tipo fuerte
 		ivorVal := wrapToIVOR(val, fn.ParamTypes[i])
-		v.Scope.AddVariable(name, fn.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
+		fmt.Printf("[FUNCALL]  Declarando parámetro '%s' tipo '%s' valor '%v'\n", name, fn.ParamTypes[i], ivorVal)
+		v.ScopeTrace.AddVariable(name, fn.ParamTypes[i], ivorVal, false, false, ctx.GetStart())
 	}
 
 	// Ejecutar función
+	fmt.Printf("[FUNCALL]  Ejecutando bloque de la función '%s'\n", funcName)
 	res := v.Visit(fn.Block)
-
-	// Si se esperaba retorno, debe venir un ReturnValue
-	if fn.ReturnType != "" {
-		if ret, ok := res.(ReturnValue); ok {
-			return ret.Value
-		} else {
-			fmt.Printf("SEMANTICO: Se esperaba retorno de tipo '%s' en función '%s'\n", fn.ReturnType, funcName)
-			return nil
-		}
-	}
+    fmt.Printf("[FUNCALL]  Resultado bruto del bloque: %v (tipo: %T)\n", res, res)
+	// Siempre revisa si hay ReturnValue, aunque no tenga tipo explícito
+    if ret, ok := res.(ReturnValue); ok {
+		fmt.Printf("[FUNCALL]  ReturnValue detectado: %v (tipo: %T)\n", ret.Value, ret.Value)
+        return ret.Value
+    }
+	fmt.Printf("[FUNCALL]  No hubo return explícito, devolviendo nil\n")
 	return nil
 }
 
@@ -1536,9 +1569,12 @@ type ReturnValue struct {
 }
 
 func (v *ReplVisitor) VisitReturnStatement(ctx *parser.ReturnStatementContext) interface{} {
-	if ctx.Expresion() != nil {
-		val := v.Visit(ctx.Expresion())
-		return ReturnValue{Value: val}
-	}
-	return ReturnValue{Value: nil}
+    //fmt.Printf("[RETURN] Encontrado return en línea %d\n", ctx.GetStart().GetLine())
+    if ctx.Expresion() != nil {
+        val := v.Visit(ctx.Expresion())
+        //fmt.Printf("[RETURN]  Valor de retorno: %v (tipo: %T)\n", val, val)
+        return ReturnValue{Value: val}
+    }
+    //fmt.Printf("[RETURN]  Return sin valor (nil)\n")
+    return ReturnValue{Value: nil}
 }

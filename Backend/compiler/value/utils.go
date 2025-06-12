@@ -15,3 +15,10 @@ func ToFloat(v interface{}) float64 {
 		return 0.0
 	}
 }
+func IsPrimitiveType(t string) bool {
+    switch t {
+    case IVOR_INT, IVOR_FLOAT, IVOR_STRING, IVOR_BOOL, IVOR_CHARACTER:
+        return true
+    }
+    return false
+}

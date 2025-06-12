@@ -6,6 +6,7 @@ import (
 
 	compiler "compiler/parser"
 	repl "compiler/repl"
+
 	"compiler/symbols"
 
 	//"main/cst"
@@ -70,24 +71,26 @@ func main() {
 	visitor.Visit(arbolito)
 
 	//visitor.GlobalScope.PrintVariables()
-	fmt.Println("=== Entornos IF ===")
-	for _, ifScope := range visitor.IfScope {
-		ifScope.PrintVariables()
-	}
-	//fmt.Println("aqui imprimire las variables de todos los entornos")
-	//visitor.Scope.PrintAllScopesUp()
-	//visitor.Scope.PrintAllEnvironments()
 
-	visitor.GlobalScope.PrintAllEnvironmentsRecursive(0)
-	// Al final del main:
+	fmt.Println("====aqui imprimire las variables de todos los entornos=========")
+	visitor.ScopeTrace.GlobalScope.PrintScopeVariables(0)
+    // CREA la tabla de símbolos y LLÉNALA
 	tabla := symbols.NewSymbolTable()
-	visitor.GlobalScope.CollectSymbols(tabla)
+	visitor.ScopeTrace.GlobalScope.CollectSymbols(tabla)
+
+	fmt.Println("==== Tabla de símbolos ====")
+	for _, sym := range tabla.Symbols {
+		fmt.Printf("ID: %s | Tipo: %s | Dato: %s | Ámbito: %s | Línea: %d | Columna: %d\n",
+			sym.ID, sym.SymType, sym.DataType, sym.Scope, sym.Line, sym.Column)
+	}
+
 	err = tabla.ToHTML("tabla_simbolos.html")
 	if err != nil {
-		fmt.Println("Error al escribir la tabla de símbolos:", err)
+		fmt.Println("Error generando HTML de tabla de símbolos:", err)
 	} else {
-		fmt.Println("Tabla de símbolos generada en tabla_simbolos.html")
+		fmt.Println("Tabla de símbolos exportada a tabla_simbolos.html")
 	}
+	
 }
 
 /*
@@ -97,9 +100,9 @@ func main() {
 	}
 */
 func readStdin() (string, error) {
-	//input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	input, err := os.ReadFile("/home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
 	//input, err := os.ReadFile("/home/pablo/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
-	input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
+	//input, err := os.ReadFile("/home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/arhivoP.vch")
 	return string(input), err
 }
 

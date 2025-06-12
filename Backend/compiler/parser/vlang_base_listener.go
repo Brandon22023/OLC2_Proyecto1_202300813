@@ -32,6 +32,12 @@ func (s *BaseVlangListener) EnterFuncMain(ctx *FuncMainContext) {}
 // ExitFuncMain is called when production funcMain is exited.
 func (s *BaseVlangListener) ExitFuncMain(ctx *FuncMainContext) {}
 
+// EnterFuncDcl is called when production funcDcl is entered.
+func (s *BaseVlangListener) EnterFuncDcl(ctx *FuncDclContext) {}
+
+// ExitFuncDcl is called when production funcDcl is exited.
+func (s *BaseVlangListener) ExitFuncDcl(ctx *FuncDclContext) {}
+
 // EnterBlock is called when production block is entered.
 func (s *BaseVlangListener) EnterBlock(ctx *BlockContext) {}
 
@@ -225,12 +231,6 @@ func (s *BaseVlangListener) EnterLlamadaFuncion(ctx *LlamadaFuncionContext) {}
 
 // ExitLlamadaFuncion is called when production llamadaFuncion is exited.
 func (s *BaseVlangListener) ExitLlamadaFuncion(ctx *LlamadaFuncionContext) {}
-
-// EnterFuncDcl is called when production funcDcl is entered.
-func (s *BaseVlangListener) EnterFuncDcl(ctx *FuncDclContext) {}
-
-// ExitFuncDcl is called when production funcDcl is exited.
-func (s *BaseVlangListener) ExitFuncDcl(ctx *FuncDclContext) {}
 
 // EnterFuncCall is called when production funcCall is entered.
 func (s *BaseVlangListener) EnterFuncCall(ctx *FuncCallContext) {}

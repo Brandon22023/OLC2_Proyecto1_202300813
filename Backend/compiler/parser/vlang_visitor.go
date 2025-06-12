@@ -13,6 +13,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#funcMain.
 	VisitFuncMain(ctx *FuncMainContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#funcDcl.
+	VisitFuncDcl(ctx *FuncDclContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#block.
 	VisitBlock(ctx *BlockContext) interface{}
 
@@ -108,9 +111,6 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#llamadaFuncion.
 	VisitLlamadaFuncion(ctx *LlamadaFuncionContext) interface{}
-
-	// Visit a parse tree produced by VlangParser#funcDcl.
-	VisitFuncDcl(ctx *FuncDclContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#funcCall.
 	VisitFuncCall(ctx *FuncCallContext) interface{}
