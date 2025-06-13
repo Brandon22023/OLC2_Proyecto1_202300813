@@ -62,6 +62,14 @@ func (s *BaseVlangListener) EnterSliceEmptyDeclaration(ctx *SliceEmptyDeclaratio
 // ExitSliceEmptyDeclaration is called when production sliceEmptyDeclaration is exited.
 func (s *BaseVlangListener) ExitSliceEmptyDeclaration(ctx *SliceEmptyDeclarationContext) {}
 
+// EnterStructDirectInitDeclaration is called when production structDirectInitDeclaration is entered.
+func (s *BaseVlangListener) EnterStructDirectInitDeclaration(ctx *StructDirectInitDeclarationContext) {
+}
+
+// ExitStructDirectInitDeclaration is called when production structDirectInitDeclaration is exited.
+func (s *BaseVlangListener) ExitStructDirectInitDeclaration(ctx *StructDirectInitDeclarationContext) {
+}
+
 // EnterSliceInitDeclaration is called when production sliceInitDeclaration is entered.
 func (s *BaseVlangListener) EnterSliceInitDeclaration(ctx *SliceInitDeclarationContext) {}
 
@@ -274,6 +282,18 @@ func (s *BaseVlangListener) EnterAtributoStruct(ctx *AtributoStructContext) {}
 // ExitAtributoStruct is called when production atributoStruct is exited.
 func (s *BaseVlangListener) ExitAtributoStruct(ctx *AtributoStructContext) {}
 
+// EnterListaAsignaciones is called when production listaAsignaciones is entered.
+func (s *BaseVlangListener) EnterListaAsignaciones(ctx *ListaAsignacionesContext) {}
+
+// ExitListaAsignaciones is called when production listaAsignaciones is exited.
+func (s *BaseVlangListener) ExitListaAsignaciones(ctx *ListaAsignacionesContext) {}
+
+// EnterAsignacionStruct is called when production asignacionStruct is entered.
+func (s *BaseVlangListener) EnterAsignacionStruct(ctx *AsignacionStructContext) {}
+
+// ExitAsignacionStruct is called when production asignacionStruct is exited.
+func (s *BaseVlangListener) ExitAsignacionStruct(ctx *AsignacionStructContext) {}
+
 // EnterWhileDcl is called when production whileDcl is entered.
 func (s *BaseVlangListener) EnterWhileDcl(ctx *WhileDclContext) {}
 
@@ -297,6 +317,12 @@ func (s *BaseVlangListener) EnterOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext
 
 // ExitOPERADORESLOGICOS is called when production OPERADORESLOGICOS is exited.
 func (s *BaseVlangListener) ExitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) {}
+
+// EnterStructInstanceCreation is called when production structInstanceCreation is entered.
+func (s *BaseVlangListener) EnterStructInstanceCreation(ctx *StructInstanceCreationContext) {}
+
+// ExitStructInstanceCreation is called when production structInstanceCreation is exited.
+func (s *BaseVlangListener) ExitStructInstanceCreation(ctx *StructInstanceCreationContext) {}
 
 // EnterValorexpr is called when production valorexpr is entered.
 func (s *BaseVlangListener) EnterValorexpr(ctx *ValorexprContext) {}

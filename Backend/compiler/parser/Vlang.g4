@@ -10,7 +10,7 @@ funcMain
 
 //Declaracion funciones
 funcDcl
-    : 'fn' ID LPAREN parametrosFormales? RPAREN (TIPO)? block
+    : 'fn' ID LPAREN parametrosFormales? RPAREN (TIPO)? block                    
     ;
 
 block
@@ -27,6 +27,7 @@ declaraciones : varDcl
 varDcl
     : 'mut' ID (TIPO)? (ASSIGN expresion)?       #variableDeclaration
     | 'mut' ID sliceTipo                         #sliceEmptyDeclaration
+    | ID ASSIGN ID LBRACE listaAsignaciones RBRACE  #structDirectInitDeclaration
     | ID ASSIGN sliceTipo sliceInit        #sliceInitDeclaration
     | ID ASSIGN ID                               #sliceAssignment
     | ID (ASSIGN expresion)?                     #variableDeclarationImmutable
@@ -148,6 +149,13 @@ atributoStruct
     : TIPO ID
     ;
 
+listaAsignaciones
+    : asignacionStruct (COMMA asignacionStruct)*
+    ;
+
+asignacionStruct
+    : ID COLON expresion
+    ;
 
 //esto se tiene que eliminar porque while y do-while no existen en Vlang, solo se usa for
 whileDcl
@@ -169,6 +177,7 @@ expresion
     | ID LBRACK expresion RBRACK                           #PARAPRINTSLICE
     | llamadaFuncion                                       #llamadaFuncionExpr
     | ID DOT ID ASSIGN expresion                           #structAttrAssign
+    | ID LBRACE listaAsignaciones RBRACE                   #structInstanceCreation
     | ID                                                   #id              
     | incredecre                                           #incredecr      
     | ID DOT ID                                            #expdotexp1             

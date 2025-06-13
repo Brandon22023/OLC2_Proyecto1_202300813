@@ -28,6 +28,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#sliceEmptyDeclaration.
 	VisitSliceEmptyDeclaration(ctx *SliceEmptyDeclarationContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#structDirectInitDeclaration.
+	VisitStructDirectInitDeclaration(ctx *StructDirectInitDeclarationContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#sliceInitDeclaration.
 	VisitSliceInitDeclaration(ctx *SliceInitDeclarationContext) interface{}
 
@@ -133,6 +136,12 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#atributoStruct.
 	VisitAtributoStruct(ctx *AtributoStructContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#listaAsignaciones.
+	VisitListaAsignaciones(ctx *ListaAsignacionesContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#asignacionStruct.
+	VisitAsignacionStruct(ctx *AsignacionStructContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#whileDcl.
 	VisitWhileDcl(ctx *WhileDclContext) interface{}
 
@@ -144,6 +153,9 @@ type VlangVisitor interface {
 
 	// Visit a parse tree produced by VlangParser#OPERADORESLOGICOS.
 	VisitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#structInstanceCreation.
+	VisitStructInstanceCreation(ctx *StructInstanceCreationContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#valorexpr.
 	VisitValorexpr(ctx *ValorexprContext) interface{}

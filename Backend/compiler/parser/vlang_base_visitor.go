@@ -35,6 +35,10 @@ func (v *BaseVlangVisitor) VisitSliceEmptyDeclaration(ctx *SliceEmptyDeclaration
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitStructDirectInitDeclaration(ctx *StructDirectInitDeclarationContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitSliceInitDeclaration(ctx *SliceInitDeclarationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -175,6 +179,14 @@ func (v *BaseVlangVisitor) VisitAtributoStruct(ctx *AtributoStructContext) inter
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitListaAsignaciones(ctx *ListaAsignacionesContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitAsignacionStruct(ctx *AsignacionStructContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitWhileDcl(ctx *WhileDclContext) interface{} {
 	return v.VisitChildren(ctx)
 }
@@ -188,6 +200,10 @@ func (v *BaseVlangVisitor) VisitIncredecr(ctx *IncredecrContext) interface{} {
 }
 
 func (v *BaseVlangVisitor) VisitOPERADORESLOGICOS(ctx *OPERADORESLOGICOSContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitStructInstanceCreation(ctx *StructInstanceCreationContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

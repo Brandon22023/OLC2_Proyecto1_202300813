@@ -311,6 +311,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 	fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
 	return nil
 }
+
 func (v *ReplVisitor) VisitValorCadena(ctx *parser.ValorCadenaContext) interface{} {
 	//fmt.Println("Entrando a VisitValorCadena:", ctx.GetText())
 	text := ctx.GetText()
@@ -731,9 +732,31 @@ func (v *ReplVisitor) VisitChildren(node antlr.RuleNode) interface{} {
 	}
 	return nil
 }
+
+// ================ Modificado para usar Struct ================================
 func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{} {
-	//fmt.Println("📌 Acceso punto ID.ID:", ctx.GetText())
-	return nil
+	varName := ctx.ID(0).GetText()
+	attrName := ctx.ID(1).GetText()
+
+	variable := v.ScopeTrace.GetVariable(varName)
+	if variable == nil {
+		fmt.Printf("SEMANTICO: Variable '%s' no encontrada\n", varName)
+		return nil
+	}
+
+	structInstance, ok := variable.Value.(*value.StructInstance)
+	if !ok {
+		fmt.Printf("SEMANTICO: Variable '%s' no es un struct\n", varName)
+		return nil
+	}
+
+	valueAttr, exists := structInstance.Attributes[attrName]
+	if !exists {
+		fmt.Printf("SEMANTICO: Atributo '%s' no existe en struct '%s'\n", attrName, structInstance.StructName)
+		return nil
+	}
+
+	return valueAttr
 }
 
 func (v *ReplVisitor) VisitExpdotexp(ctx *parser.ExpdotexpContext) interface{} {
@@ -1628,5 +1651,107 @@ func (v *ReplVisitor) VisitStructDcl(ctx *parser.StructDclContext) interface{} {
 
 	v.structs[structName] = atributos
 	fmt.Printf("Struct '%s' definido con atributos: %v\n", structName, atributos)
+	return nil
+}
+
+// Creado hoy para agregar datos al struct
+func (v *ReplVisitor) VisitStructInstanceCreation(ctx *parser.StructInstanceCreationContext) interface{} {
+	structName := ctx.ID().GetText()
+
+	// Verificamos que el struct esté definido
+	def, exists := v.structs[structName]
+	if !exists {
+		fmt.Printf("SEMANTICO: Struct '%s' no está definido\n", structName)
+		return nil
+	}
+
+	// Creamos una nueva instancia (map de atributos -> valores)
+	instance := make(map[string]interface{})
+	for key := range def {
+		instance[key] = nil // Inicializar los atributos a nil por ahora
+	}
+
+	// Procesamos las asignaciones dentro de la instancia
+	for _, assignCtx := range ctx.ListaAsignaciones().AllAsignacionStruct() {
+		field := assignCtx.ID().GetText()
+		val := v.Visit(assignCtx.Expresion())
+
+		// Validación: el atributo debe existir en el struct
+		if _, ok := def[field]; !ok {
+			fmt.Printf("SEMANTICO: El atributo '%s' no existe en el struct '%s'\n", field, structName)
+			return nil
+		}
+
+		instance[field] = val
+	}
+
+	// Retornamos un objeto que identifica el struct + sus valores
+	return value.NewStructInstance(structName, instance)
+}
+
+func (v *ReplVisitor) VisitStructAttrAssign(ctx *parser.StructAttrAssignContext) interface{} {
+	varName := ctx.ID(0).GetText()
+	attrName := ctx.ID(1).GetText()
+
+	// Buscar variable
+	variable := v.ScopeTrace.GetVariable(varName)
+	if variable == nil {
+		fmt.Printf("SEMANTICO: Variable '%s' no encontrada\n", varName)
+		return nil
+	}
+
+	// Verificamos que sea un struct
+	structInstance, ok := variable.Value.(*value.StructInstance)
+	if !ok {
+		fmt.Printf("SEMANTICO: Variable '%s' no es un struct\n", varName)
+		return nil
+	}
+
+	// Validamos que el atributo exista
+	if _, exists := structInstance.Attributes[attrName]; !exists {
+		fmt.Printf("SEMANTICO: Atributo '%s' no existe en struct '%s'\n", attrName, structInstance.StructName)
+		return nil
+	}
+
+	// Evaluamos el nuevo valor
+	newValue := v.Visit(ctx.Expresion())
+	structInstance.Attributes[attrName] = newValue
+
+	return nil
+}
+
+func (v *ReplVisitor) VisitStructDirectInitDeclaration(ctx *parser.StructDirectInitDeclarationContext) interface{} {
+	varName := ctx.ID(0).GetText()    // p
+	structName := ctx.ID(1).GetText() // Persona
+
+	// Verificamos que el struct esté definido
+	def, exists := v.structs[structName]
+	if !exists {
+		fmt.Printf("SEMANTICO: Struct '%s' no está definido\n", structName)
+		return nil
+	}
+
+	// Crear la instancia
+	attributes := make(map[string]interface{})
+	for k := range def {
+		attributes[k] = nil // inicializar en nil
+	}
+
+	for _, assign := range ctx.ListaAsignaciones().AllAsignacionStruct() {
+		attr := assign.ID().GetText()
+		val := v.Visit(assign.Expresion())
+
+		if _, ok := def[attr]; !ok {
+			fmt.Printf("SEMANTICO: El atributo '%s' no existe en el struct '%s'\n", attr, structName)
+			return nil
+		}
+		attributes[attr] = val
+	}
+
+	// Crear instancia
+	instance := value.NewStructInstance(structName, attributes)
+
+	// Guardar variable nueva en el scope actual
+	v.ScopeTrace.AddVariable(varName, "struct_"+structName, instance, false, false, ctx.GetStart())
 	return nil
 }

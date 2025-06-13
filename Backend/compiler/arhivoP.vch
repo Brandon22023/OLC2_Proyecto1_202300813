@@ -9,6 +9,14 @@ struct Persona {
   bool EsEstudiante
 }
 
+struct Juego {
+  string Nombre
+  string Genero
+  int Edad
+  bool EsBueno
+  bool EsAccion
+}
+
 fn imprimirSuma(a int, b int) {
   print("La suma es:", a + b)
 }
@@ -205,14 +213,26 @@ fn main() {
   print("El cuadrado de 5 es:", cuadrado(5))
 
   //Prueba Struct
-  /*mut r = Persona{
-  Nombre: "Alice"
-  Edad: 25
-  EsEstudiante: false
+  p = Persona{
+    Nombre: "Alice",
+    Edad: 25,
+    EsEstudiante: false
   }
 
-  print(r.Nombre)
-  r.Edad = 30
-  print(r.Edad)*/
+  jue = Juego{
+    Nombre: "CS2",
+    Genero: "Accion",
+    Edad: 3,
+    EsBueno: true,
+    EsAccion: true
+  }
+
+  print(p.Nombre) // Alice
+  print(p.Edad) // 25
+  print(p.EsEstudiante) // false
+  p.Nombre = "Bob"
+  print(p.Nombre) // Bob
+  print(jue.Nombre)
+  print(jue.Genero)
 }
 

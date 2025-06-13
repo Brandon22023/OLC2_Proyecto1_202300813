@@ -28,6 +28,9 @@ type VlangListener interface {
 	// EnterSliceEmptyDeclaration is called when entering the sliceEmptyDeclaration production.
 	EnterSliceEmptyDeclaration(c *SliceEmptyDeclarationContext)
 
+	// EnterStructDirectInitDeclaration is called when entering the structDirectInitDeclaration production.
+	EnterStructDirectInitDeclaration(c *StructDirectInitDeclarationContext)
+
 	// EnterSliceInitDeclaration is called when entering the sliceInitDeclaration production.
 	EnterSliceInitDeclaration(c *SliceInitDeclarationContext)
 
@@ -133,6 +136,12 @@ type VlangListener interface {
 	// EnterAtributoStruct is called when entering the atributoStruct production.
 	EnterAtributoStruct(c *AtributoStructContext)
 
+	// EnterListaAsignaciones is called when entering the listaAsignaciones production.
+	EnterListaAsignaciones(c *ListaAsignacionesContext)
+
+	// EnterAsignacionStruct is called when entering the asignacionStruct production.
+	EnterAsignacionStruct(c *AsignacionStructContext)
+
 	// EnterWhileDcl is called when entering the whileDcl production.
 	EnterWhileDcl(c *WhileDclContext)
 
@@ -144,6 +153,9 @@ type VlangListener interface {
 
 	// EnterOPERADORESLOGICOS is called when entering the OPERADORESLOGICOS production.
 	EnterOPERADORESLOGICOS(c *OPERADORESLOGICOSContext)
+
+	// EnterStructInstanceCreation is called when entering the structInstanceCreation production.
+	EnterStructInstanceCreation(c *StructInstanceCreationContext)
 
 	// EnterValorexpr is called when entering the valorexpr production.
 	EnterValorexpr(c *ValorexprContext)
@@ -240,6 +252,9 @@ type VlangListener interface {
 
 	// ExitSliceEmptyDeclaration is called when exiting the sliceEmptyDeclaration production.
 	ExitSliceEmptyDeclaration(c *SliceEmptyDeclarationContext)
+
+	// ExitStructDirectInitDeclaration is called when exiting the structDirectInitDeclaration production.
+	ExitStructDirectInitDeclaration(c *StructDirectInitDeclarationContext)
 
 	// ExitSliceInitDeclaration is called when exiting the sliceInitDeclaration production.
 	ExitSliceInitDeclaration(c *SliceInitDeclarationContext)
@@ -346,6 +361,12 @@ type VlangListener interface {
 	// ExitAtributoStruct is called when exiting the atributoStruct production.
 	ExitAtributoStruct(c *AtributoStructContext)
 
+	// ExitListaAsignaciones is called when exiting the listaAsignaciones production.
+	ExitListaAsignaciones(c *ListaAsignacionesContext)
+
+	// ExitAsignacionStruct is called when exiting the asignacionStruct production.
+	ExitAsignacionStruct(c *AsignacionStructContext)
+
 	// ExitWhileDcl is called when exiting the whileDcl production.
 	ExitWhileDcl(c *WhileDclContext)
 
@@ -357,6 +378,9 @@ type VlangListener interface {
 
 	// ExitOPERADORESLOGICOS is called when exiting the OPERADORESLOGICOS production.
 	ExitOPERADORESLOGICOS(c *OPERADORESLOGICOSContext)
+
+	// ExitStructInstanceCreation is called when exiting the structInstanceCreation production.
+	ExitStructInstanceCreation(c *StructInstanceCreationContext)
 
 	// ExitValorexpr is called when exiting the valorexpr production.
 	ExitValorexpr(c *ValorexprContext)
