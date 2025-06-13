@@ -55,7 +55,7 @@ func CstReport(input string) string {
 
 	lexerContent = string(lexer)
 
-	jinput, err := json.Marshal(input)
+	jinput, _:= json.Marshal(input)
 	finput := string(jinput)
 
 	payload := []byte(
@@ -69,7 +69,7 @@ func CstReport(input string) string {
 			parserContent,
 			finput,
 			lexerContent,
-			"program",
+			"programa",
 		),
 	)
 
@@ -97,15 +97,31 @@ func CstReport(input string) string {
 
 	// create a map to store the json
 	var data map[string]interface{}
-
-	// // unmarshal the json
+    
+	fmt.Println("Respuesta ANTLR:", string(body))
+	// unmarshal the json
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		fmt.Println("Error unmarshalling json:", err)
 		return ""
 	}
 
-	result := data["result"].(map[string]interface{})
+	// Validación segura de campos
+    result, ok := data["result"].(map[string]interface{})
+    if !ok || result == nil {
+        fmt.Println("No se encontró el campo 'result' en la respuesta:", string(body))
+        return ""
+    }
 
-	return result["svgtree"].(string)
+    svgtree, ok := result["svgtree"].(string)
+    if !ok {
+        fmt.Println("No se encontró el campo 'svgtree' en la respuesta:", result)
+        return ""
+    }
+
+    return svgtree
+}
+
+func SaveCSTSVG(svgContent, filename string) error {
+    return os.WriteFile(filename, []byte(svgContent), 0644)
 }

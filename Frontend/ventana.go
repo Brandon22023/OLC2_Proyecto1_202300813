@@ -1,17 +1,22 @@
 package main
 
 import (
+	"fmt"
 	"image"
 	"image/color"
+	"io"
 	"math"
+	"net/http"
+	"strings"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-    "io/ioutil"
-    "fyne.io/fyne/v2/dialog"
-    "fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/storage"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -94,14 +99,41 @@ func styledButton(label string, bg color.Color, border color.Color, tapped func(
     return NewCustomButton(label, bg, border, tapped)
 }
 
+type TimesTheme struct{}
 
+func (t *TimesTheme) Font(s fyne.TextStyle) fyne.Resource {
+    res, err := fyne.LoadResourceFromPath("fonts/Times New Roman.ttf")
+    if err != nil {
+        return theme.DefaultTheme().Font(s)
+    }
+    return res
+}
+func (t *TimesTheme) Color(n fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
+    if n == theme.ColorNameForeground {
+        return color.White // Texto blanco
+    }
+    if n == theme.ColorNameBackground {
+        return color.RGBA{36, 41, 56, 255} // Fondo oscuro
+    }
+    return theme.DefaultTheme().Color(n, v)
+}
+func (t *TimesTheme) Icon(n fyne.ThemeIconName) fyne.Resource {
+    return theme.DefaultTheme().Icon(n)
+}
+func (t *TimesTheme) Size(n fyne.ThemeSizeName) float32 {
+    if n == theme.SizeNameText {
+        return 20 // Tamaño de letra grande
+    }
+    return theme.DefaultTheme().Size(n)
+}
 func main() {
-    a := app.New()
+    a := app.NewWithID("olc2.proyecto1.202300813")
+    a.Settings().SetTheme(&TimesTheme{}) 
     w := a.NewWindow("OLC2 Proyecto 1 - IDE")
 
     // Colores modernos y vibrantes
     bgColor := color.RGBA{R: 36, G: 41, B: 56, A: 255}
-    panelColor := color.RGBA{R: 49, G: 54, B: 74, A: 255}
+    panelColor := color.RGBA{R: 36, G: 41, B: 56, A: 255}
 
     // Fondo de la ventana
     background := canvas.NewRectangle(bgColor)
@@ -111,7 +143,12 @@ func main() {
     entrada.SetText("// Escribe tu código aquí...")
     entrada.Wrapping = fyne.TextWrapWord
     // Botones con colores personalizados
-
+    
+    // --- Consola ---
+    salida := widget.NewMultiLineEntry()
+    salida.SetText("// Salida del programa...")
+    salida.Wrapping = fyne.TextWrapWord
+    //salida.Disable()
     var btnReportes fyne.CanvasObject
     buttons := container.NewHBox(
     layout.NewSpacer(),
@@ -148,7 +185,7 @@ func main() {
                             return
                         }
                         defer reader.Close()
-                        data, err := ioutil.ReadAll(reader)
+                        data, err := io.ReadAll(reader)
                         if err == nil {
                             entrada.SetText(string(data))
                             archivoActual = reader.URI() // Guarda la ruta del archivo abierto
@@ -197,7 +234,21 @@ func main() {
     styledButton("Ejecutar",
         color.RGBA{R: 149, G: 117, B: 205, A: 255},   // Morado pastel
         color.RGBA{R: 100, G: 181, B: 246, A: 120},   // Azul claro pastel
-        func() {}),
+        func() {
+
+            go func() {
+                code := entrada.Text
+                resp, err := http.Post("http://localhost:3000/analizar", "text/plain", strings.NewReader(code))
+                if err != nil {
+                    salida.SetText("Error al conectar con el backend: " + err.Error())
+                    return
+                }
+                defer resp.Body.Close()
+                body, _ := io.ReadAll(resp.Body)
+                fmt.Println("Respuesta del backend:", string(body)) // <-- Esto imprime en la terminal
+                salida.SetText(string(body))
+            }()
+        }),
     // Aquí guardamos la referencia
         func() fyne.CanvasObject {
             btnReportes = styledButton(
@@ -207,13 +258,47 @@ func main() {
                 func() {
                     menu := fyne.NewMenu("Reportes",
                         fyne.NewMenuItem("Reporte de Errores", func() {
-                            dialog.ShowInformation("Reporte de Errores", "Aquí iría el reporte de errores.", w)
+                            go func() {
+                                resp, err := http.Get("http://localhost:3000/reporte-errores")
+                                if err != nil {
+                                    dialog.ShowError(err, w)
+                                    return
+                                }
+                                defer resp.Body.Close()
+                                ruta, _ := io.ReadAll(resp.Body)
+                                dialog.ShowInformation("Ruta del reporte de errores", string(ruta), w)
+                                // Si quieres abrirlo automáticamente en el navegador (Linux):
+                                // exec.Command("xdg-open", string(ruta)).Start()
+                            }()
                         }),
                         fyne.NewMenuItem("Reporte de Tabla de Símbolos", func() {
-                            dialog.ShowInformation("Tabla de Símbolos", "Aquí iría el reporte de la tabla de símbolos.", w)
+                            go func() {
+                            resp, err := http.Get("http://localhost:3000/reporte-simbolos")
+                            if err != nil {
+                                dialog.ShowError(err, w)
+                                return
+                            }
+                            defer resp.Body.Close()
+                            ruta, _ := io.ReadAll(resp.Body)
+                            // Puedes mostrar la ruta o abrir el HTML con el navegador del sistema
+                            dialog.ShowInformation("Ruta del reporte", string(ruta), w)
+                            // Si quieres abrirlo automáticamente en el navegador (Linux):
+                            // exec.Command("xdg-open", string(ruta)).Start()
+                        }()
                         }),
-                        fyne.NewMenuItem("Reporte AST", func() {
-                            dialog.ShowInformation("Reporte AST", "Aquí iría el reporte AST.", w)
+                        fyne.NewMenuItem("Reporte CST", func() {
+                            go func() {
+                                resp, err := http.Get("http://localhost:3000/reporte-cst")
+                                if err != nil {
+                                    dialog.ShowError(err, w)
+                                    return
+                                }
+                                defer resp.Body.Close()
+                                ruta, _ := io.ReadAll(resp.Body)
+                                dialog.ShowInformation("Ruta del CST", string(ruta), w)
+                                // Si quieres abrirlo automáticamente en el navegador (Linux):
+                                // exec.Command("xdg-open", string(ruta)).Start()
+                            }()
                         }),
                     )
                     // Calcula la posición absoluta del botón
@@ -242,11 +327,7 @@ func main() {
         entradaBG,
     )
 
-    // --- Consola ---
-    salida := widget.NewMultiLineEntry()
-    salida.SetText("// Salida del programa...")
-    salida.Wrapping = fyne.TextWrapWord
-    salida.Disable()
+    
 
     salidaBG := container.NewBorder(
         widget.NewLabelWithStyle("CONSOLA", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
