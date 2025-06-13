@@ -306,6 +306,12 @@ func (s *BaseVlangListener) EnterMultdivmod(ctx *MultdivmodContext) {}
 // ExitMultdivmod is called when production multdivmod is exited.
 func (s *BaseVlangListener) ExitMultdivmod(ctx *MultdivmodContext) {}
 
+// EnterCasteo_paratipo is called when production casteo_paratipo is entered.
+func (s *BaseVlangListener) EnterCasteo_paratipo(ctx *Casteo_paratipoContext) {}
+
+// ExitCasteo_paratipo is called when production casteo_paratipo is exited.
+func (s *BaseVlangListener) ExitCasteo_paratipo(ctx *Casteo_paratipoContext) {}
+
 // EnterIncredecr is called when production incredecr is entered.
 func (s *BaseVlangListener) EnterIncredecr(ctx *IncredecrContext) {}
 

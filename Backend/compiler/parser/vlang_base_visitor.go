@@ -195,6 +195,10 @@ func (v *BaseVlangVisitor) VisitMultdivmod(ctx *MultdivmodContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitCasteo_paratipo(ctx *Casteo_paratipoContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitIncredecr(ctx *IncredecrContext) interface{} {
 	return v.VisitChildren(ctx)
 }

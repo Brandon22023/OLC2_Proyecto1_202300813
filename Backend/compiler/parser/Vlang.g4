@@ -184,6 +184,7 @@ expresion
     | ID DOT expresion                                     #expdotexp      
     | ID TIPO ASSIGN expresion                             #asignacionLUEGO
     | ID op=(SUMAIMPLICITA | RESTOIMPLICITO) expresion     #IMCPLICIT
+    | TYPEOF LPAREN expresion RPAREN                      #casteo_paratipo   // <-- AGREGA ESTA LÍNEA
     ;
 
 // === Parámetros en llamadas ===
@@ -208,6 +209,8 @@ listaExpresiones : expresion (COMMA expresion)* ;
 //FUNCIONES que parecen casteos
 ATOI  : 'Atoi' ;
 PARSEFLOAT : 'parseFloat' ;
+TYPEOF : 'typeOf' ;
+
 
 // === Incremento / Decremento ===
 incredecre

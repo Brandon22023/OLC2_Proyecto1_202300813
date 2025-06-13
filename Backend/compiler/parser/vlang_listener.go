@@ -148,6 +148,9 @@ type VlangListener interface {
 	// EnterMultdivmod is called when entering the multdivmod production.
 	EnterMultdivmod(c *MultdivmodContext)
 
+	// EnterCasteo_paratipo is called when entering the casteo_paratipo production.
+	EnterCasteo_paratipo(c *Casteo_paratipoContext)
+
 	// EnterIncredecr is called when entering the incredecr production.
 	EnterIncredecr(c *IncredecrContext)
 
@@ -372,6 +375,9 @@ type VlangListener interface {
 
 	// ExitMultdivmod is called when exiting the multdivmod production.
 	ExitMultdivmod(c *MultdivmodContext)
+
+	// ExitCasteo_paratipo is called when exiting the casteo_paratipo production.
+	ExitCasteo_paratipo(c *Casteo_paratipoContext)
 
 	// ExitIncredecr is called when exiting the incredecr production.
 	ExitIncredecr(c *IncredecrContext)

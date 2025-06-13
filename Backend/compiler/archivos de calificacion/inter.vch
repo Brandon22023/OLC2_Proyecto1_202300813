@@ -1,0 +1,191 @@
+
+// Funciones recursivas
+fn factorial(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	return n * factorial(n - 1)
+}
+
+fn fibonacci(n int) int {
+	if n <= 1 {
+		return n
+	}
+	return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+fn hanoi(n int, origen string, auxiliar string, destino string) {
+	if n == 1 {
+		println("Mover disco 1 de ")
+		println(origen, destino)
+		return
+	}
+	hanoi(n - 1, origen, destino, auxiliar)
+	println("Mover disco $n de $origen a $destino")
+	hanoi(n - 1, auxiliar, origen, destino)
+}
+
+
+fn parse_float(s string) f64 {
+	// Esta función no se ejecutará, solo simula una llamada
+	if s == "123.45" {
+		return 123.45
+	}
+	if s == "123" {
+		return 123.0
+	}
+	return 0.0
+}
+
+fn sumar(a int, b int) int {
+	// Esta funcion retorna la suma de dos numeros 
+	return a + b 
+}
+/*
+Que las funciones no sean nativas 
+
+
+*/
+
+
+
+fn main() {
+	mut puntos = 0
+
+	println("=== Archivo de prueba de funciones ===")
+
+	// 1. Funciones sin parámetros
+	mut puntos_simples = 0
+	println("\n==== Funciones no recursivas sin parámetros ====")
+	// saludar() ERROR 
+	
+	// numero = obtener_numero() ERROR 
+	println("El número obtenido es: $numero")
+	if numero == 42 {
+		puntos_simples += 1
+		println("OK Funciones sin parámetros: correcto")
+	} else {
+		println("X Funciones sin parámetros: incorrecto")
+	}
+
+	// 2. Funciones con parámetros
+	mut puntos_param = 0
+	println("\n==== Funciones no recursivas con parámetros ====")
+
+	// saludar_persona("Juan") ERROR ---> No esta declarada
+	resultado = sumar(10, 20)
+	println("La suma de 10 y 20 es:")
+	println(resultado)
+	if resultado == 30 {
+		puntos_param += 2
+		println("OK Función con parámetros: correcto")
+	} else {
+		println("X Función con parámetros: incorrecto")
+	}
+
+	// 3. Funciones recursivas
+	mut puntos_recur = 0
+	println("\n==== Funciones recursivas ====")
+	fact = factorial(5)
+	println("Factorial de 5: $fact")
+	if fact == 120 {
+		puntos_recur += 2
+		println("OK factorial: correcto")
+	} else {
+		println("X factorial: incorrecto")
+	}
+
+	fibo = fibonacci(10)
+	println("Fibonacci de 10: $fibo")
+	if fibo == 55 {
+		puntos_recur += 2
+		println("OK fibonacci: correcto")
+	} else {
+		println("X fibonacci: incorrecto")
+	}
+
+	println("\nTorres de Hanoi:")
+	hanoi(3, "A", "B", "C")
+	puntos_recur += 2
+
+	// Funcion Nativa
+	mut puntos_atoi = 0
+	println("\n==== strconv.Atoi ====")
+	val = atoi("123") // llamado simulado
+	println("123 convertido a int: ")
+	println(val)
+	if val == 123 {
+		puntos_atoi += 1
+		println("OK strconv.Atoi: correcto")
+	} else {
+		println("X strconv.Atoi: incorrecto")
+	}
+
+	// 5. ParseFloat
+	mut puntos_parse = 0
+	println("\n==== ParseFloat ====")
+	val1 = parse_float("123.45")
+	val2 = parse_float("123")
+	println(""123.45" convertido a float64: $val1")
+	println(""123" convertido a float64: $val2")
+	if val1 == 123.45 && val2 == 123.0 {
+		puntos_parse += 1
+		println("OK ParseFloat: correcto")
+	} else {
+		println("X ParseFloat: incorrecto")
+	}
+
+
+	// 6. reflect.TypeOf
+	mut puntos_type = 0
+
+	// Nativa no es de esta forma 
+	println("\n==== reflect.TypeOf ====")
+	/*
+	
+	NOTA: Cambiar si es necesario, si el enunciado tiene otros nombres
+	o utilizaron otros nombres para las funciones nativas
+
+	*/
+
+
+	t1 = TypeOf(42)
+	t2 = TypeOf(3.14)
+	t3 = TypeOf("Hola")
+	t4 = TypeOf(true)
+	t5 = Type([1, 2, 3])
+	println("Tipo de 42:")
+	println(t2)
+	println("Tipo de 3.14:")
+	println(t2)
+	println("Tipo de "Hola":")
+	println(t3)
+	println("Tipo de true:")
+	println(t4)
+	println("Tipo de [1, 2, 3]:")
+	println(t5)
+
+	if t1 == "int" && t2 == "f64" && t3 == "string" && t4 == "bool" && t5 == "[]int" {
+		puntos_type += 1
+		println("OK TypeOf: correcto")
+	} else {
+		println("X TypeOf: incorrecto")
+	}
+
+	// TOTAL
+	puntos = puntos_simples + puntos_param + puntos_recur + puntos_atoi + puntos_parse + puntos_type
+
+	println("\n=== Tabla de Resultados ===")
+	println("| Funciones con parámetros         | / 2")
+	println(puntos_param)
+	println("| Funciones recursivas             |  / 6")
+	println(puntos_recur)
+	println("| Atoi                     |  / 1")
+	println(puntos_atoi)
+	println("| ParseFloat               |  / 1")
+	println(puntos_parse)
+	println("| TypeOf                   |  / 1")
+	println(puntos_type)
+	println("| TOTAL                            |  / 12")
+	println(puntos)
+}

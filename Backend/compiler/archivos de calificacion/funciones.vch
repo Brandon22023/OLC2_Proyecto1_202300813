@@ -1,0 +1,171 @@
+// Funciones no recursivas
+fn saludar() {
+	println("¡Hola, mundo!")
+}
+
+fn obtener_numero() int {
+	return 42
+}
+
+
+fn sumar(a int, b int) int {
+	return a + b
+}
+
+// Funciones recursivas
+fn factorial(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	return n * factorial(n - 1)
+}
+
+fn fibonacci(n int) int {
+	if n <= 1 {
+		return n
+	}
+	return fibonacci(n - 1) + fibonacci(n - 2)
+}
+
+fn hanoi(n int, origen string, auxiliar string, destino string) {
+	if n == 1 {
+		println("Mover disco 1 de $origen a $destino")
+		return
+	}
+	hanoi(n - 1, origen, destino, auxiliar)
+	println("Mover disco $n de $origen a $destino")
+	hanoi(n - 1, auxiliar, origen, destino)
+}
+
+
+fn main() {
+	mut puntos = 0
+
+	println("=== Archivo de prueba de funciones ===")
+
+	// 1. Funciones sin parámetros
+	mut puntos_simples = 0
+	println("\n==== Funciones no recursivas sin parámetros ====")
+	saludar()
+	numero = obtener_numero()
+	println("El número obtenido es: $numero")
+	if numero == 42 {
+		puntos_simples += 1
+		println("OK Funciones sin parámetros: correcto")
+	} else {
+		println("X Funciones sin parámetros: incorrecto")
+	}
+
+	// 2. Funciones con parámetros
+	mut puntos_param = 0
+	println("\n==== Funciones no recursivas con parámetros ====")
+	saludar_persona("Juan")
+	resultado = sumar(10, 20)
+	println("La suma de 10 y 20 es: $resultado")
+	if resultado == 30 {
+		puntos_param += 2
+		println("OK Función con parámetros: correcto")
+	} else {
+		println("X Función con parámetros: incorrecto")
+	}
+
+	// 3. Funciones recursivas
+	mut puntos_recur = 0
+	println("\n==== Funciones recursivas ====")
+	fact = factorial(5)
+	println("Factorial de 5:")
+	println(fact)
+	if fact == 120 {
+		puntos_recur += 2
+		println("OK factorial: correcto")
+	} else {
+		println("X factorial: incorrecto")
+	}
+
+	fibo = fibonacci(10)
+	println("Fibonacci de 10:")
+	println(fibo)
+	if fibo == 55 {
+		puntos_recur += 2
+		println("OK fibonacci: correcto")
+	} else {
+		println("X fibonacci: incorrecto")
+	}
+
+	println("\nTorres de Hanoi:")
+	hanoi(3, "A", "B", "C")
+	puntos_recur += 2
+
+	// 4. strconv.Atoi (simulado)
+	mut puntos_atoi = 0
+	println("\n==== strconv.Atoi ====")
+	val = atoi("123") // llamado simulado
+	println('"123" convertido a int:', val)
+	if val == 123 {
+		puntos_atoi += 1
+		println("OK strconv.Atoi: correcto")
+	} else {
+		println("X strconv.Atoi: incorrecto")
+	}
+
+	// 5. ParseFloat 
+	/*
+	
+	NOTA: Si es necesario cambiar los nombres de las nativas 
+	porque asi se trabajo, adelante. 
+	
+	*/
+	mut puntos_parse = 0
+	println("\n==== strconv.ParseFloat ====")
+	val1 = parse_float("123.45")
+	val2 = parse_float("123")
+	println("123.45 convertido a float64:", val1)
+	println("123 convertido a float64:", val2)
+	if val1 == 123.45 && val2 == 123.0 {
+		puntos_parse += 1
+		println("OK strconv.ParseFloat: correcto")
+	} else {
+		println("X strconv.ParseFloat: incorrecto")
+	}
+
+	// 6. TypeOf 
+	mut puntos_type = 0
+	println("\n==== reflect.TypeOf ====")
+	// => Correccion del TypeOf 
+	t1 = TypeOf(42)
+	t2 = TypeOf(3.14)
+	t3 = TypeOf("Hola")
+	t4 = TypeOf(true)
+	t5 = TypeOf([1, 2, 3])
+	println("Tipo de 42:", t1)
+	println("Tipo de 3.14:", t2)
+	println("Tipo de 'Hola':", t3)
+	println("Tipo de true:", t4)
+	println("Tipo de [1, 2, 3]:", t5)
+
+	if t1 == "int" && t2 == "f64" && t3 == "string" && t4 == "bool" && t5 == "[]int" {
+		puntos_type += 1
+		println("OK reflect.TypeOf: correcto")
+	} else {
+		println("X reflect.TypeOf: incorrecto")
+	}
+
+	// TOTAL
+	puntos = puntos_simples + puntos_param + puntos_recur + puntos_atoi + puntos_parse + puntos_type
+
+	println("\n=== Tabla de Resultados ===")
+	println("| Funciones sin parámetros         |  / 1")
+	println(puntos_simples)
+	println("| Funciones con parámetros         |  / 2")
+	println(puntos_param)
+	println("| Funciones recursivas             |  / 6")
+	println(puntos_recur)
+	println("| Atoi                             |  / 1")
+	println(puntos_atoi)
+	println("| ParseFloat                       |  / 1")
+	println(puntos_parse)
+	println("| TypeOf                           |  / 1")
+	println(puntos_type)
+	println("| TOTAL                            |  / 12")
+	println(puntos)
+}

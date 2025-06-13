@@ -54,6 +54,7 @@ expresion
     | ID DOT ID                                            #expdotexp1             
     | ID DOT expresion                                     #expdotexp      
     | ID ASSIGN expresion                                  #asignacionfor
+    | TYPEOF LPAREN expresion RPAREN                       #casteo_paratipo
     ;
 
 // === Parámetros en llamadas ===
@@ -97,6 +98,7 @@ CARACTER : '\'' . '\'' ;
 //FUNCIONES que parecen casteos
 ATOI  : 'Atoi' ;
 PARSEFLOAT : 'parseFloat' ;
+TYPEOF : 'typeOf' ;
 
 // === Identificadores ===
 ID : [a-zA-Z_][a-zA-Z0-9_]* ;

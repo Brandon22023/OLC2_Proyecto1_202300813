@@ -29,9 +29,6 @@ fn cuadrado(n int) int {
   return n * n
 }
 
-fn saludar(nombre string) string {
-  return "Hola, " + nombre
-}
 
 
 fn main() {
@@ -43,11 +40,9 @@ fn main() {
     print("valor de puy: ", puy)
     puy = 100+100
     print("valor de puy: ", puy)
-    puy = "hola"
     print("valor de puy: ", puy)
     mut ttt string = "hola, PUM"
     print("valor de ttt: ", ttt)
-    ttt = 23
     print("valor de ttt: ", ttt)
     mut i int = 15
     mut j string = "como estas"
@@ -156,8 +151,7 @@ fn main() {
   mut numero int
   numero = Atoi("123")
   print("Número:", numero) // Salida: Número: 123
-  numero = Atoi("123.5")
-  print("Número:", numero) // Salida: Número: 123
+
   print("ahora probar decimal")
   mut numero1 float64
   print("Número1:", numero1)

@@ -148,6 +148,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#multdivmod.
 	VisitMultdivmod(ctx *MultdivmodContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#casteo_paratipo.
+	VisitCasteo_paratipo(ctx *Casteo_paratipoContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#incredecr.
 	VisitIncredecr(ctx *IncredecrContext) interface{}
 

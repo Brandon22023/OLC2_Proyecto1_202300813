@@ -52,7 +52,9 @@ func main() {
         arbolito := parser.Programa()
 		// Imprime el árbol sintáctico para depuración
 		//PrintVerticalTree(arbolito, parser.RuleNames)
+		
         visitor := repl.NewReplVisitor()
+		
         visitor.Visit(arbolito)
 		
 		//fmt.Println("====aqui imprimire las variables de todos los entornos=========")
@@ -84,7 +86,9 @@ func main() {
 		}
 		fmt.Println("errores llegados: ", lexicalErrorListener.ErrorTable.Errors, syntaxErrorListener.ErrorTable.Errors)
 		allErrors := append(lexicalErrorListener.ErrorTable.Errors, syntaxErrorListener.ErrorTable.Errors...)
+		allErrors = append(allErrors, visitor.SemanticErrors.Errors...)
 		allErrors = errors.RemoveDuplicateErrors(allErrors)
+		
 		errorTable := &repl.ErrorTable{Errors: allErrors}
 		rutaErrores := filepath.Join("reportes", "errores.html")
 
