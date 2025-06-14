@@ -276,11 +276,17 @@ func (s *BaseVlangListener) EnterAtributosStruct(ctx *AtributosStructContext) {}
 // ExitAtributosStruct is called when production atributosStruct is exited.
 func (s *BaseVlangListener) ExitAtributosStruct(ctx *AtributosStructContext) {}
 
-// EnterAtributoStruct is called when production atributoStruct is entered.
-func (s *BaseVlangListener) EnterAtributoStruct(ctx *AtributoStructContext) {}
+// EnterAtributoPrimitivo is called when production atributoPrimitivo is entered.
+func (s *BaseVlangListener) EnterAtributoPrimitivo(ctx *AtributoPrimitivoContext) {}
 
-// ExitAtributoStruct is called when production atributoStruct is exited.
-func (s *BaseVlangListener) ExitAtributoStruct(ctx *AtributoStructContext) {}
+// ExitAtributoPrimitivo is called when production atributoPrimitivo is exited.
+func (s *BaseVlangListener) ExitAtributoPrimitivo(ctx *AtributoPrimitivoContext) {}
+
+// EnterAtributoStructAnidado is called when production atributoStructAnidado is entered.
+func (s *BaseVlangListener) EnterAtributoStructAnidado(ctx *AtributoStructAnidadoContext) {}
+
+// ExitAtributoStructAnidado is called when production atributoStructAnidado is exited.
+func (s *BaseVlangListener) ExitAtributoStructAnidado(ctx *AtributoStructAnidadoContext) {}
 
 // EnterListaAsignaciones is called when production listaAsignaciones is entered.
 func (s *BaseVlangListener) EnterListaAsignaciones(ctx *ListaAsignacionesContext) {}

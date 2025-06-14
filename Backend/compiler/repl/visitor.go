@@ -4,6 +4,7 @@ import (
 	parser "compiler/parser"
 	"compiler/value"
 	"fmt"
+
 	//"os"
 	"strconv"
 	"strings"
@@ -21,8 +22,8 @@ type ReplVisitor struct {
 	inForLoop               bool                         // Bandera para rastrear si estamos en un bucle for
 	functions               map[string]*StoredFunction   // Mapa para almacenar funciones definidas
 	structs                 map[string]map[string]string // Mapa structs -> mapa (atributos)
-	SemanticErrors *ErrorTable // o []*Error si prefieres
-	HasSemanticError bool
+	SemanticErrors          *ErrorTable                  // o []*Error si prefieres
+	HasSemanticError        bool
 }
 
 type StoredFunction struct {
@@ -37,11 +38,11 @@ var _ parser.VlangVisitor = &ReplVisitor{} // <-- Esto asegura la interfaz
 func NewReplVisitor() *ReplVisitor {
 	scopeTrace := NewScopeTrace()
 	return &ReplVisitor{
-		ScopeTrace: scopeTrace,
-		inForLoop:  false,
-		functions:  make(map[string]*StoredFunction),
-		structs:    make(map[string]map[string]string),
-		SemanticErrors: NewErrorTable(),
+		ScopeTrace:       scopeTrace,
+		inForLoop:        false,
+		functions:        make(map[string]*StoredFunction),
+		structs:          make(map[string]map[string]string),
+		SemanticErrors:   NewErrorTable(),
 		HasSemanticError: false,
 	}
 }
@@ -154,7 +155,7 @@ func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContex
 	}
 	if !v.inForLoop {
 		fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-		
+
 		return nil
 	}
 	return "continue" // Señal para saltar a la siguiente iteración
@@ -201,126 +202,126 @@ func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 
 // Visitamos declaraciones de variables
 func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationContext) interface{} {
-    if v.HasSemanticError {
-        return nil
-    }
-    varName := ctx.ID().GetText()
-    var varType string
-    var valueObj value.IVOR
+	if v.HasSemanticError {
+		return nil
+	}
+	varName := ctx.ID().GetText()
+	var varType string
+	var valueObj value.IVOR
 
-    // 1. Detectar tipo explícito y asignar valor por defecto
-    if ctx.TIPO() != nil {
-        tipoText := ctx.TIPO().GetText()
+	// 1. Detectar tipo explícito y asignar valor por defecto
+	if ctx.TIPO() != nil {
+		tipoText := ctx.TIPO().GetText()
 
-        if structDef, exists := v.structs[tipoText]; exists {
-            varType = "struct_" + tipoText
-            valueObj = value.NewStructValue(tipoText, structDef)
-        } else {
-            switch tipoText {
-            case "int":
-                varType = value.IVOR_INT
-                valueObj = value.NewIntValue(0)
-            case "float64":
-                varType = value.IVOR_FLOAT
-                valueObj = value.NewFloatValue(0.0)
-            case "string":
-                varType = value.IVOR_STRING
-                valueObj = value.NewStringValue("")
-            case "bool":
-                varType = value.IVOR_BOOL
-                valueObj = value.NewBoolValue(false)
-            case "rune":
-                varType = value.IVOR_CHARACTER
-                valueObj = value.NewCharValue('\x00')
-            default:
-                return nil
-            }
-        }
-    }
+		if structDef, exists := v.structs[tipoText]; exists {
+			varType = "struct_" + tipoText
+			valueObj = value.NewStructValue(tipoText, structDef)
+		} else {
+			switch tipoText {
+			case "int":
+				varType = value.IVOR_INT
+				valueObj = value.NewIntValue(0)
+			case "float64":
+				varType = value.IVOR_FLOAT
+				valueObj = value.NewFloatValue(0.0)
+			case "string":
+				varType = value.IVOR_STRING
+				valueObj = value.NewStringValue("")
+			case "bool":
+				varType = value.IVOR_BOOL
+				valueObj = value.NewBoolValue(false)
+			case "rune":
+				varType = value.IVOR_CHARACTER
+				valueObj = value.NewCharValue('\x00')
+			default:
+				return nil
+			}
+		}
+	}
 
-    // 2. Si hay valor, evaluarlo y sobreescribir el valor por defecto
-    if ctx.Expresion() != nil {
-        val := v.Visit(ctx.Expresion())
-        // Validación de tipo antes de asignar
-        tipoOk := true
-        switch varType {
-        case value.IVOR_INT:
-            _, err := strconv.Atoi(fmt.Sprint(val))
-            if err != nil {
-                tipoOk = false
-            }
-        case value.IVOR_FLOAT:
-            _, err := strconv.ParseFloat(fmt.Sprint(val), 64)
-            if err != nil {
-                tipoOk = false
-            }
-        case value.IVOR_STRING:
-            _, ok := val.(string)
-            if !ok {
-                tipoOk = false
-            }
-        case value.IVOR_BOOL:
-            strVal := fmt.Sprint(val)
-            if strVal != "true" && strVal != "false" {
-                tipoOk = false
-            }
-        case value.IVOR_CHARACTER:
-            _, ok1 := val.(int32)
-            _, ok2 := val.(string)
-            if !ok1 && !ok2 {
-                tipoOk = false
-            }
-        }
-        if !tipoOk {
-            v.SemanticErrors.NewSemanticError(ctx.GetStart(),
-            fmt.Sprintf("El valor asignado a '%s' no es compatible con el tipo '%s'", varName, varType))
+	// 2. Si hay valor, evaluarlo y sobreescribir el valor por defecto
+	if ctx.Expresion() != nil {
+		val := v.Visit(ctx.Expresion())
+		// Validación de tipo antes de asignar
+		tipoOk := true
+		switch varType {
+		case value.IVOR_INT:
+			_, err := strconv.Atoi(fmt.Sprint(val))
+			if err != nil {
+				tipoOk = false
+			}
+		case value.IVOR_FLOAT:
+			_, err := strconv.ParseFloat(fmt.Sprint(val), 64)
+			if err != nil {
+				tipoOk = false
+			}
+		case value.IVOR_STRING:
+			_, ok := val.(string)
+			if !ok {
+				tipoOk = false
+			}
+		case value.IVOR_BOOL:
+			strVal := fmt.Sprint(val)
+			if strVal != "true" && strVal != "false" {
+				tipoOk = false
+			}
+		case value.IVOR_CHARACTER:
+			_, ok1 := val.(int32)
+			_, ok2 := val.(string)
+			if !ok1 && !ok2 {
+				tipoOk = false
+			}
+		}
+		if !tipoOk {
+			v.SemanticErrors.NewSemanticError(ctx.GetStart(),
+				fmt.Sprintf("El valor asignado a '%s' no es compatible con el tipo '%s'", varName, varType))
 			fmt.Printf("SEMANTICO: El valor asignado a '%s' no es compatible con el tipo '%s'\n", varName, varType)
-            v.HasSemanticError = true
-            return nil
-        }
-        // Si el tipo es correcto, asigna el valor
-        switch varType {
-        case value.IVOR_INT:
-            intVal, _ := strconv.Atoi(fmt.Sprint(val))
-            valueObj = value.NewIntValue(intVal)
-        case value.IVOR_FLOAT:
-            floatVal, _ := strconv.ParseFloat(fmt.Sprint(val), 64)
-            valueObj = value.NewFloatValue(floatVal)
-        case value.IVOR_STRING:
-            valueObj = value.NewStringValue(fmt.Sprint(val))
-        case value.IVOR_BOOL:
-            boolVal := false
-            if fmt.Sprint(val) == "true" {
-                boolVal = true
-            }
-            valueObj = value.NewBoolValue(boolVal)
-        case value.IVOR_CHARACTER:
-            switch v := val.(type) {
-            case int32:
-                valueObj = value.NewCharValue(rune(v))
-            case string:
-                runes := []rune(v)
-                if len(runes) > 0 {
-                    valueObj = value.NewCharValue(runes[0])
-                } else {
-                    valueObj = value.NewCharValue('\x00')
-                }
-            default:
-                valueObj = value.NewCharValue('\x00')
-            }
-        }
-    }
+			v.HasSemanticError = true
+			return nil
+		}
+		// Si el tipo es correcto, asigna el valor
+		switch varType {
+		case value.IVOR_INT:
+			intVal, _ := strconv.Atoi(fmt.Sprint(val))
+			valueObj = value.NewIntValue(intVal)
+		case value.IVOR_FLOAT:
+			floatVal, _ := strconv.ParseFloat(fmt.Sprint(val), 64)
+			valueObj = value.NewFloatValue(floatVal)
+		case value.IVOR_STRING:
+			valueObj = value.NewStringValue(fmt.Sprint(val))
+		case value.IVOR_BOOL:
+			boolVal := false
+			if fmt.Sprint(val) == "true" {
+				boolVal = true
+			}
+			valueObj = value.NewBoolValue(boolVal)
+		case value.IVOR_CHARACTER:
+			switch v := val.(type) {
+			case int32:
+				valueObj = value.NewCharValue(rune(v))
+			case string:
+				runes := []rune(v)
+				if len(runes) > 0 {
+					valueObj = value.NewCharValue(runes[0])
+				} else {
+					valueObj = value.NewCharValue('\x00')
+				}
+			default:
+				valueObj = value.NewCharValue('\x00')
+			}
+		}
+	}
 
-    // ⬇️ Aquí revisa si ya existe y muestra error
-    _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
-    if errMsg != "" {
+	// ⬇️ Aquí revisa si ya existe y muestra error
+	_, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+	if errMsg != "" {
 		fmt.Printf("SEMANTICO: %s\n", errMsg)
-        v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
-        v.HasSemanticError = true
-        return nil
-    }
+		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
+		v.HasSemanticError = true
+		return nil
+	}
 
-    return nil
+	return nil
 }
 
 func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDeclarationImmutableContext) interface{} {
@@ -334,7 +335,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 		if variable == nil {
 			fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("Variable '%s' no declarada.", varName))
-    		v.HasSemanticError = true
+			v.HasSemanticError = true
 			return nil
 		}
 		val := v.Visit(ctx.Expresion())
@@ -345,7 +346,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			if !ok {
 				fmt.Printf("SEMANTICO valor '%v' no es int\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es int", varName))
-    			v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewIntValue(intVal)
@@ -354,7 +355,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			if !ok {
 				fmt.Printf("SEMANTICO: valor '%v' no es float64\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es float64", varName))
-    			v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewFloatValue(floatVal)
@@ -363,7 +364,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			if !ok {
 				fmt.Printf("SEMANTICO: valor '%v' no es string\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es string", varName))
-    			v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewStringValue(strVal)
@@ -372,7 +373,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			if !ok {
 				fmt.Printf("SEMANTICO: valor '%v' no es bool\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es bool", varName))
-    			v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewBoolValue(boolVal)
@@ -381,7 +382,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 			if !ok {
 				fmt.Printf("SEMANTICO: valor '%v' no es rune\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es rune", varName))
-    			v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewCharValue(charVal)
@@ -392,15 +393,15 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 				if !ok {
 					fmt.Printf("SEMANTICO: valor '%v' no es un slice válido\n", val)
 					v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es un slice váido", varName))
-    				v.HasSemanticError = true
+					v.HasSemanticError = true
 					return nil
 				}
 				variable.Value = sliceVal
 			} else {
 				fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación: \n", variable.Type)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("tipo '%s' no soportado para asignación", varName))
-    			v.HasSemanticError = true
-				
+				v.HasSemanticError = true
+
 			}
 		}
 		return nil
@@ -408,7 +409,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 
 	fmt.Printf("SEMANTICO: declaración inválida para '%s'\n", varName)
 	v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("tipo '%s' no soportado para asignación", varName))
-    v.HasSemanticError = true
+	v.HasSemanticError = true
 	return nil
 }
 
@@ -437,7 +438,7 @@ func (v *ReplVisitor) VisitValorEntero(ctx *parser.ValorEnteroContext) interface
 	return val
 }
 func unescapeString(s string) string {
-	
+
 	// Agrega comillas para que Unquote lo procese como literal
 	unquoted, err := strconv.Unquote(`"` + s + `"`)
 	if err != nil {
@@ -533,7 +534,7 @@ func (v *ReplVisitor) VisitUnario(ctx *parser.UnarioContext) interface{} {
 		} else {
 			fmt.Println("SEMANTICO: operador '!' solo acepta booleanos")
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), "operador '!' solo acepta booleanos")
-            v.HasSemanticError = true
+			v.HasSemanticError = true
 			return false
 		}
 	case "-":
@@ -548,7 +549,7 @@ func (v *ReplVisitor) VisitUnario(ctx *parser.UnarioContext) interface{} {
 		} else {
 			fmt.Println("SEMANTICO: operador '-' solo acepta números")
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), "operador '-' solo acepta booleanos")
-            v.HasSemanticError = true
+			v.HasSemanticError = true
 			return 0
 		}
 	}
@@ -629,7 +630,7 @@ func (v *ReplVisitor) VisitMultdivmod(ctx *parser.MultdivmodContext) interface{}
 			if rightVal == 0 {
 				fmt.Println("SEMANTICO: División por cero")
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), "División por cero")
-            	v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			return leftVal / rightVal
@@ -637,7 +638,7 @@ func (v *ReplVisitor) VisitMultdivmod(ctx *parser.MultdivmodContext) interface{}
 			// El módulo solo tiene sentido para enteros, pero si hay decimal, puedes retornar NaN o error
 			fmt.Println("SEMANTICO: El operador % no es válido para decimales")
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), "El operador % no es válido para decimales.")
-            v.HasSemanticError = true
+			v.HasSemanticError = true
 			return nil
 		}
 	} else {
@@ -650,7 +651,7 @@ func (v *ReplVisitor) VisitMultdivmod(ctx *parser.MultdivmodContext) interface{}
 			if rightVal == 0 {
 				fmt.Println("SEMANTICO: División por cero")
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), "División por cero")
-            	v.HasSemanticError = true
+				v.HasSemanticError = true
 				return nil
 			}
 			// División entera
@@ -724,7 +725,7 @@ func (v *ReplVisitor) VisitRelacionales(ctx *parser.RelacionalesContext) interfa
 
 	fmt.Printf("SEMANTICO: comparación relacional inválida entre tipos '%T' y '%T'\n", left, right)
 	v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("comparación relacional inválida entre tipos '%T' y '%T'", left, right))
-    v.HasSemanticError = true
+	v.HasSemanticError = true
 	return false
 }
 
@@ -791,7 +792,7 @@ func (v *ReplVisitor) VisitIgualdad(ctx *parser.IgualdadContext) interface{} {
 
 	fmt.Printf("SEMANTICO: comparación inválida entre tipos '%T' y '%T'\n", left, right)
 	v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("comparación relacional inválida entre tipos '%T' y '%T'", left, right))
-    v.HasSemanticError = true
+	v.HasSemanticError = true
 	return false
 }
 
@@ -829,7 +830,7 @@ func (v *ReplVisitor) VisitIncredecr(ctx *parser.IncredecrContext) interface{} {
 	default:
 		fmt.Println("SEMANTICO: incremento/decremento no reconocido")
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), "incremento/decremento no reconocido")
-        v.HasSemanticError = true
+		v.HasSemanticError = true
 		return nil
 	}
 }
@@ -916,7 +917,7 @@ func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{}
 	if variable == nil {
 		fmt.Printf("SEMANTICO: Variable '%s' no encontrada\n", varName)
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("variable '%s' no encontrada", varName))
-    	v.HasSemanticError = true
+		v.HasSemanticError = true
 		return nil
 	}
 
@@ -924,7 +925,7 @@ func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{}
 	if !ok {
 		fmt.Printf("SEMANTICO: Variable '%s' no es un struct\n", varName)
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("variable '%s' no es un struct", varName))
-    	v.HasSemanticError = true
+		v.HasSemanticError = true
 		return nil
 	}
 
@@ -932,7 +933,7 @@ func (v *ReplVisitor) VisitExpdotexp1(ctx *parser.Expdotexp1Context) interface{}
 	if !exists {
 		fmt.Printf("SEMANTICO: Atributo '%s' no existe en struct '%s'\n", attrName, structInstance.StructName)
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("Atributo '%s' no existe en struct '%s'\n", attrName, structInstance.StructName))
-    	v.HasSemanticError = true
+		v.HasSemanticError = true
 		return nil
 	}
 
@@ -956,7 +957,7 @@ func (v *ReplVisitor) VisitAsignacionLUEGO(ctx *parser.AsignacionLUEGOContext) i
 	if variable == nil {
 		fmt.Printf("SEMANTICO: Variable '%s' no declarada\n", varName)
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("Variable '%s' no declarada", varName))
-	    v.HasSemanticError = true
+		v.HasSemanticError = true
 		return nil
 	}
 	newVal := v.Visit(ctx.Expresion())
@@ -1426,7 +1427,7 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 		// Validar cantidad de parámetros
 		if len(argVals) != len(userFunc.ParamNames) {
 			fmt.Printf("[LLAMADAFUNCION] ❌ La función '%s' esperaba %d argumentos, recibió %d\n",
-			funcName, len(userFunc.ParamNames), len(argVals))
+				funcName, len(userFunc.ParamNames), len(argVals))
 			return nil
 		}
 
@@ -1692,7 +1693,7 @@ func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDecla
 		variable.Value = value.NewFloatValue(floatVal)
 		return nil
 	case "typeOf":
-        val := v.Visit(ctx.Expresion())
+		val := v.Visit(ctx.Expresion())
 		// Si es un valor IVOR (IntValue, FloatValue, etc.)
 		if ivor, ok := val.(value.IVOR); ok {
 			return ivor.Type()
@@ -1729,47 +1730,47 @@ func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDecla
 	}
 }
 func (v *ReplVisitor) VisitCasteo_paratipo(ctx *parser.Casteo_paratipoContext) interface{} {
-    if v.HasSemanticError {
+	if v.HasSemanticError {
 		return nil
 	}
 	val := v.Visit(ctx.Expresion())
 	//fmt.Printf("[DEBUG typeOf] Valor recibido: %v, tipo: %T\n", val, val) // <-- agrega esto
-    switch val := val.(type) {
-    case int:
-        return "int"
-    case float64:
-        return "float64"
-    case string:
-        return "string"
-    case bool:
-        return "bool"
-    case rune:
-        return "rune"
-    case *value.SliceValue:
-        return "[]" + val.ElementType
-    case *value.StructInstance:
-        return "struct_" + val.StructName
-    default:
-        return fmt.Sprintf("%T", val)
-    }
+	switch val := val.(type) {
+	case int:
+		return "int"
+	case float64:
+		return "float64"
+	case string:
+		return "string"
+	case bool:
+		return "bool"
+	case rune:
+		return "rune"
+	case *value.SliceValue:
+		return "[]" + val.ElementType
+	case *value.StructInstance:
+		return "struct_" + val.StructName
+	default:
+		return fmt.Sprintf("%T", val)
+	}
 }
 func (v *ReplVisitor) VisitCasteo_paratipo_slice(ctx *parser.Casteo_paratipo_sliceContext) interface{} {
-    if v.HasSemanticError {
+	if v.HasSemanticError {
 		return nil
 	}
 	var elements []value.IVOR
 	var n = 1
-    for _, expr := range ctx.AllExpresion() {
-        val := v.Visit(expr)
-        // Aquí puedes deducir el tipo real si lo deseas
-        elements = append(elements, value.NewIntValue(int(value.ToFloat(val))))
+	for _, expr := range ctx.AllExpresion() {
+		val := v.Visit(expr)
+		// Aquí puedes deducir el tipo real si lo deseas
+		elements = append(elements, value.NewIntValue(int(value.ToFloat(val))))
 		if n == 0 {
 			fmt.Println(elements)
 		}
-        
+
 	}
-    // Puedes deducir el tipo real de los elementos si quieres soportar otros tipos
-    return "[]int" // O deducido dinámicamente
+	// Puedes deducir el tipo real de los elementos si quieres soportar otros tipos
+	return "[]int" // O deducido dinámicamente
 }
 
 func (v *ReplVisitor) VisitLlamadaFuncionExpr(ctx *parser.LlamadaFuncionExprContext) interface{} {
@@ -1956,7 +1957,7 @@ func (v *ReplVisitor) VisitFuncCall(ctx *parser.FuncCallContext) interface{} {
 	fmt.Printf("[FUNCALL]  Argumentos evaluados: %v\n", argVals)
 	if len(argVals) != len(fn.ParamNames) {
 		fmt.Printf("SEMANTICO: La función '%s' esperaba %d argumentos, recibió %d\n",
-		funcName, len(fn.ParamNames), len(argVals))
+			funcName, len(fn.ParamNames), len(argVals))
 		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La función '%s' esperaba %d argumentos, recibió %d", funcName, len(fn.ParamNames), len(argVals)))
 		v.HasSemanticError = true
 		return nil
@@ -2009,7 +2010,7 @@ func wrapToIVOR(val interface{}, tipo string) value.IVOR {
 		return value.NewCharValue('\x00')
 	default:
 		fmt.Printf("SEMANTICO: Tipo '%s' no soportado\n", tipo)
-		
+
 		return nil
 	}
 }
@@ -2034,44 +2035,64 @@ func (v *ReplVisitor) VisitReturnStatement(ctx *parser.ReturnStatementContext) i
 
 // Structs
 func (v *ReplVisitor) VisitStructDcl(ctx *parser.StructDclContext) interface{} {
-	if v.HasSemanticError {
-		return nil
-	}
 	structName := ctx.ID().GetText()
 
 	if _, exists := v.structs[structName]; exists {
 		fmt.Printf("SEMANTICO: El struct '%s' ya fue definido\n", structName)
-		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("El struct '%s' ya fue definido", structName))
-		v.HasSemanticError = true
 		return nil
 	}
 
 	atributos := make(map[string]string)
 
 	for _, attrCtx := range ctx.AtributosStruct().AllAtributoStruct() {
-		tipo := attrCtx.TIPO().GetText()
-		nombre := attrCtx.ID().GetText()
+		switch realAttr := attrCtx.(type) {
 
-		if _, dup := atributos[nombre]; dup {
-			fmt.Printf("SEMANTICO: Atributo duplicado '%s' en struct '%s'\n", nombre, structName)
-			v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("Atributo duplicado '%s' en struct '%s'", nombre, structName))
-			v.HasSemanticError = true
-			return nil
+		case *parser.AtributoPrimitivoContext:
+			tipo := realAttr.TIPO().GetText()
+			nombre := realAttr.ID().GetText()
+
+			if !isTipoPrimitivo(tipo) {
+				fmt.Printf("SEMANTICO: Tipo primitivo '%s' no válido\n", tipo)
+				return nil
+			}
+
+			if _, dup := atributos[nombre]; dup {
+				fmt.Printf("SEMANTICO: Atributo duplicado '%s'\n", nombre)
+				return nil
+			}
+
+			atributos[nombre] = tipo
+
+		case *parser.AtributoStructAnidadoContext:
+			nombre := realAttr.ID(0).GetText()
+			tipo := realAttr.ID(1).GetText()
+
+			if !v.structDefinido(tipo) {
+				fmt.Printf("SEMANTICO: Struct '%s' no está definido\n", tipo)
+				return nil
+			}
+
+			if _, dup := atributos[nombre]; dup {
+				fmt.Printf("SEMANTICO: Atributo duplicado '%s'\n", nombre)
+				return nil
+			}
+
+			atributos[nombre] = tipo
 		}
-
-		atributos[nombre] = tipo
-	}
-
-	if len(atributos) == 0 {
-		fmt.Printf("SEMANTICO: El struct '%s' no puede estar vacío\n", structName)
-		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("El struct '%s' no puede estar vacío", structName))
-		v.HasSemanticError = true
-		return nil
 	}
 
 	v.structs[structName] = atributos
-	fmt.Printf("Struct '%s' definido con atributos: %v\n", structName, atributos)
+	//fmt.Printf("Struct '%s' definido con atributos: %v\n", structName, atributos)
 	return nil
+}
+
+func isTipoPrimitivo(tipo string) bool {
+	return tipo == "int" || tipo == "float64" || tipo == "string" || tipo == "bool" || tipo == "rune"
+}
+
+func (v *ReplVisitor) structDefinido(nombre string) bool {
+	_, existe := v.structs[nombre]
+	return existe
 }
 
 // Creado hoy para agregar datos al struct

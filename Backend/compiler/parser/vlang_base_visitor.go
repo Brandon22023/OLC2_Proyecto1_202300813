@@ -175,7 +175,11 @@ func (v *BaseVlangVisitor) VisitAtributosStruct(ctx *AtributosStructContext) int
 	return v.VisitChildren(ctx)
 }
 
-func (v *BaseVlangVisitor) VisitAtributoStruct(ctx *AtributoStructContext) interface{} {
+func (v *BaseVlangVisitor) VisitAtributoPrimitivo(ctx *AtributoPrimitivoContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
+func (v *BaseVlangVisitor) VisitAtributoStructAnidado(ctx *AtributoStructAnidadoContext) interface{} {
 	return v.VisitChildren(ctx)
 }
 

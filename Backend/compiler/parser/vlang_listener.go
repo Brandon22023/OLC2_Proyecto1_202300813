@@ -133,8 +133,11 @@ type VlangListener interface {
 	// EnterAtributosStruct is called when entering the atributosStruct production.
 	EnterAtributosStruct(c *AtributosStructContext)
 
-	// EnterAtributoStruct is called when entering the atributoStruct production.
-	EnterAtributoStruct(c *AtributoStructContext)
+	// EnterAtributoPrimitivo is called when entering the atributoPrimitivo production.
+	EnterAtributoPrimitivo(c *AtributoPrimitivoContext)
+
+	// EnterAtributoStructAnidado is called when entering the atributoStructAnidado production.
+	EnterAtributoStructAnidado(c *AtributoStructAnidadoContext)
 
 	// EnterListaAsignaciones is called when entering the listaAsignaciones production.
 	EnterListaAsignaciones(c *ListaAsignacionesContext)
@@ -364,8 +367,11 @@ type VlangListener interface {
 	// ExitAtributosStruct is called when exiting the atributosStruct production.
 	ExitAtributosStruct(c *AtributosStructContext)
 
-	// ExitAtributoStruct is called when exiting the atributoStruct production.
-	ExitAtributoStruct(c *AtributoStructContext)
+	// ExitAtributoPrimitivo is called when exiting the atributoPrimitivo production.
+	ExitAtributoPrimitivo(c *AtributoPrimitivoContext)
+
+	// ExitAtributoStructAnidado is called when exiting the atributoStructAnidado production.
+	ExitAtributoStructAnidado(c *AtributoStructAnidadoContext)
 
 	// ExitListaAsignaciones is called when exiting the listaAsignaciones production.
 	ExitListaAsignaciones(c *ListaAsignacionesContext)

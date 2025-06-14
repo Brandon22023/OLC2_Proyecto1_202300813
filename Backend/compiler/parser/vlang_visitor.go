@@ -133,8 +133,11 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#atributosStruct.
 	VisitAtributosStruct(ctx *AtributosStructContext) interface{}
 
-	// Visit a parse tree produced by VlangParser#atributoStruct.
-	VisitAtributoStruct(ctx *AtributoStructContext) interface{}
+	// Visit a parse tree produced by VlangParser#atributoPrimitivo.
+	VisitAtributoPrimitivo(ctx *AtributoPrimitivoContext) interface{}
+
+	// Visit a parse tree produced by VlangParser#atributoStructAnidado.
+	VisitAtributoStructAnidado(ctx *AtributoStructAnidadoContext) interface{}
 
 	// Visit a parse tree produced by VlangParser#listaAsignaciones.
 	VisitListaAsignaciones(ctx *ListaAsignacionesContext) interface{}

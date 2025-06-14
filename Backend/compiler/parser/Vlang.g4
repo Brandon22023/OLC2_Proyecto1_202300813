@@ -146,7 +146,8 @@ atributosStruct
     ;
 
 atributoStruct
-    : TIPO ID
+    : ID TIPO                   # atributoPrimitivo
+    | ID ID                     # atributoStructAnidado
     ;
 
 listaAsignaciones
