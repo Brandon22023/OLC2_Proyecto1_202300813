@@ -1378,7 +1378,8 @@ func (v *ReplVisitor) VisitSliceInitDeclaration(ctx *parser.SliceInitDeclaration
 		        v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
 		    }
 	*/
-	return nil
+	//esto se cambio ahora veremos que tal antes retornaba nill
+	return value.NewSliceValue(tipo, elements)
 }
 
 func (v *ReplVisitor) VisitSliceAssignment(ctx *parser.SliceAssignmentContext) interface{} {
@@ -1728,7 +1729,11 @@ func (v *ReplVisitor) VisitVariableCastDeclaration(ctx *parser.VariableCastDecla
 	}
 }
 func (v *ReplVisitor) VisitCasteo_paratipo(ctx *parser.Casteo_paratipoContext) interface{} {
-    val := v.Visit(ctx.Expresion())
+    if v.HasSemanticError {
+		return nil
+	}
+	val := v.Visit(ctx.Expresion())
+	//fmt.Printf("[DEBUG typeOf] Valor recibido: %v, tipo: %T\n", val, val) // <-- agrega esto
     switch val := val.(type) {
     case int:
         return "int"
@@ -1741,12 +1746,30 @@ func (v *ReplVisitor) VisitCasteo_paratipo(ctx *parser.Casteo_paratipoContext) i
     case rune:
         return "rune"
     case *value.SliceValue:
-        return "slice_" + val.ElementType
+        return "[]" + val.ElementType
     case *value.StructInstance:
         return "struct_" + val.StructName
     default:
         return fmt.Sprintf("%T", val)
     }
+}
+func (v *ReplVisitor) VisitCasteo_paratipo_slice(ctx *parser.Casteo_paratipo_sliceContext) interface{} {
+    if v.HasSemanticError {
+		return nil
+	}
+	var elements []value.IVOR
+	var n = 1
+    for _, expr := range ctx.AllExpresion() {
+        val := v.Visit(expr)
+        // Aquí puedes deducir el tipo real si lo deseas
+        elements = append(elements, value.NewIntValue(int(value.ToFloat(val))))
+		if n == 0 {
+			fmt.Println(elements)
+		}
+        
+	}
+    // Puedes deducir el tipo real de los elementos si quieres soportar otros tipos
+    return "[]int" // O deducido dinámicamente
 }
 
 func (v *ReplVisitor) VisitLlamadaFuncionExpr(ctx *parser.LlamadaFuncionExprContext) interface{} {

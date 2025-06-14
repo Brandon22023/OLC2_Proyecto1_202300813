@@ -184,6 +184,7 @@ expresion
     | ID DOT expresion                                     #expdotexp      
     | ID TIPO ASSIGN expresion                             #asignacionLUEGO
     | ID op=(SUMAIMPLICITA | RESTOIMPLICITO) expresion     #IMCPLICIT
+    | TYPEOF LPAREN LBRACK expresion (COMMA expresion)* RBRACK RPAREN         #casteo_paratipo_slice
     | TYPEOF LPAREN expresion RPAREN                      #casteo_paratipo   // <-- AGREGA ESTA LÍNEA
     ;
 

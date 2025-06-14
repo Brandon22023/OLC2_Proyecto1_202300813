@@ -366,6 +366,12 @@ func (s *BaseVlangListener) EnterRelacionales(ctx *RelacionalesContext) {}
 // ExitRelacionales is called when production relacionales is exited.
 func (s *BaseVlangListener) ExitRelacionales(ctx *RelacionalesContext) {}
 
+// EnterCasteo_paratipo_slice is called when production casteo_paratipo_slice is entered.
+func (s *BaseVlangListener) EnterCasteo_paratipo_slice(ctx *Casteo_paratipo_sliceContext) {}
+
+// ExitCasteo_paratipo_slice is called when production casteo_paratipo_slice is exited.
+func (s *BaseVlangListener) ExitCasteo_paratipo_slice(ctx *Casteo_paratipo_sliceContext) {}
+
 // EnterCorchetesexpre is called when production corchetesexpre is entered.
 func (s *BaseVlangListener) EnterCorchetesexpre(ctx *CorchetesexpreContext) {}
 

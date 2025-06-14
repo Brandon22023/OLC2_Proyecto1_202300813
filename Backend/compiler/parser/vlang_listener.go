@@ -178,6 +178,9 @@ type VlangListener interface {
 	// EnterRelacionales is called when entering the relacionales production.
 	EnterRelacionales(c *RelacionalesContext)
 
+	// EnterCasteo_paratipo_slice is called when entering the casteo_paratipo_slice production.
+	EnterCasteo_paratipo_slice(c *Casteo_paratipo_sliceContext)
+
 	// EnterCorchetesexpre is called when entering the corchetesexpre production.
 	EnterCorchetesexpre(c *CorchetesexpreContext)
 
@@ -405,6 +408,9 @@ type VlangListener interface {
 
 	// ExitRelacionales is called when exiting the relacionales production.
 	ExitRelacionales(c *RelacionalesContext)
+
+	// ExitCasteo_paratipo_slice is called when exiting the casteo_paratipo_slice production.
+	ExitCasteo_paratipo_slice(c *Casteo_paratipo_sliceContext)
 
 	// ExitCorchetesexpre is called when exiting the corchetesexpre production.
 	ExitCorchetesexpre(c *CorchetesexpreContext)

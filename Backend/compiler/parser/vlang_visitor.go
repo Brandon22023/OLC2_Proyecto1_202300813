@@ -178,6 +178,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#relacionales.
 	VisitRelacionales(ctx *RelacionalesContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#casteo_paratipo_slice.
+	VisitCasteo_paratipo_slice(ctx *Casteo_paratipo_sliceContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#corchetesexpre.
 	VisitCorchetesexpre(ctx *CorchetesexpreContext) interface{}
 

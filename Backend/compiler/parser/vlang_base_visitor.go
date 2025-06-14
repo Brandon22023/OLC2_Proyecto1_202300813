@@ -235,6 +235,10 @@ func (v *BaseVlangVisitor) VisitRelacionales(ctx *RelacionalesContext) interface
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitCasteo_paratipo_slice(ctx *Casteo_paratipo_sliceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitCorchetesexpre(ctx *CorchetesexpreContext) interface{} {
 	return v.VisitChildren(ctx)
 }
