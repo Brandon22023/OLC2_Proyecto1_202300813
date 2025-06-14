@@ -155,7 +155,7 @@ func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContex
 	}
 	if !v.inForLoop {
 		fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-
+		
 		return nil
 	}
 	return "continue" // Señal para saltar a la siguiente iteración
@@ -166,10 +166,10 @@ func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) int
 	if v.HasSemanticError {
 		return nil
 	}
-	if !v.inForLoop {
-		fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-		return nil
-	}
+	//if !v.inForLoop {
+		//fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
+		//return nil
+	//}
 	return "break" // Señal para salir del bucle
 }
 
@@ -312,14 +312,14 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 		}
 	}
 
-	// ⬇️ Aquí revisa si ya existe y muestra error
-	_, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
-	if errMsg != "" {
+    // ⬇️ Aquí revisa si ya existe y muestra error
+    _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+    if errMsg != "" {
 		fmt.Printf("SEMANTICO: %s\n", errMsg)
-		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
-		v.HasSemanticError = true
-		return nil
-	}
+        v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
+        v.HasSemanticError = true
+        return nil
+    }
 
 	return nil
 }

@@ -1,0 +1,46 @@
+fn main() {
+       // 7. Break (3 puntos)
+	  print("\n==== Break ====")
+	mut puntosBreak int = 0
+
+	print("Break en for infinito")
+	mut contador int = 0
+        suma = 0
+
+	for true {
+		  print("contador =", contador)
+		suma = suma + contador
+		contador = contador + 1
+
+		if contador >= 5 {
+			break
+		}
+	}
+
+	if suma == 10 {
+		puntosBreak = puntosBreak + 1
+		  println("OK Break en for infinito: correcto")
+	} else {
+		  println("X Break en for infinito: incorrecto")
+	}
+
+	  println("\nBreak en for clásico")
+	suma = 0
+
+	for i = 0; i < 10; i++ {
+		  println("i =", i)
+		suma = suma + i
+
+		if i >= 4 {
+			break
+		}
+	}
+
+	if suma == 10 {
+		puntosBreak = puntosBreak + 2
+		  println("OK Break en for clásico: correcto")
+	} else {
+		  println("X Break en for clásico: incorrecto")
+	}
+
+}

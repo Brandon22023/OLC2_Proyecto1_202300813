@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -140,6 +140,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_programa; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterPrograma(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitPrograma(this);
+		}
 	}
 
 	public final ProgramaContext programa() throws RecognitionException {
@@ -189,6 +197,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_funcMain; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterFuncMain(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitFuncMain(this);
+		}
 	}
 
 	public final FuncMainContext funcMain() throws RecognitionException {
@@ -236,6 +252,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_funcDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterFuncDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitFuncDcl(this);
+		}
 	}
 
 	public final FuncDclContext funcDcl() throws RecognitionException {
@@ -302,6 +326,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_block; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterBlock(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitBlock(this);
+		}
 	}
 
 	public final BlockContext block() throws RecognitionException {
@@ -363,6 +395,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_declaraciones; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterDeclaraciones(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitDeclaraciones(this);
+		}
 	}
 
 	public final DeclaracionesContext declaraciones() throws RecognitionException {
@@ -445,6 +485,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RBRACE() { return getToken(VlangParser.RBRACE, 0); }
 		public StructDirectInitDeclarationContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterStructDirectInitDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitStructDirectInitDeclaration(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SliceEmptyDeclarationContext extends VarDclContext {
@@ -453,6 +501,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(SliceTipoContext.class,0);
 		}
 		public SliceEmptyDeclarationContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceEmptyDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceEmptyDeclaration(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SliceAssignmentContext extends VarDclContext {
@@ -462,6 +518,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode ASSIGN() { return getToken(VlangParser.ASSIGN, 0); }
 		public SliceAssignmentContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceAssignment(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceAssignment(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableDeclarationImmutableContext extends VarDclContext {
@@ -471,6 +535,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public VariableDeclarationImmutableContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterVariableDeclarationImmutable(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitVariableDeclarationImmutable(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableCastDeclarationContext extends VarDclContext {
@@ -483,6 +555,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(VlangParser.RPAREN, 0); }
 		public VariableCastDeclarationContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterVariableCastDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitVariableCastDeclaration(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SliceInitDeclarationContext extends VarDclContext {
@@ -495,6 +575,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(SliceInitContext.class,0);
 		}
 		public SliceInitDeclarationContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceInitDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceInitDeclaration(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableDeclarationContext extends VarDclContext {
@@ -505,6 +593,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public VariableDeclarationContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterVariableDeclaration(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitVariableDeclaration(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SliceAssignmentIndexContext extends VarDclContext {
@@ -519,6 +615,14 @@ public class VlangParser extends Parser {
 		public TerminalNode RBRACK() { return getToken(VlangParser.RBRACK, 0); }
 		public TerminalNode ASSIGN() { return getToken(VlangParser.ASSIGN, 0); }
 		public SliceAssignmentIndexContext(VarDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceAssignmentIndex(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceAssignmentIndex(this);
+		}
 	}
 
 	public final VarDclContext varDcl() throws RecognitionException {
@@ -695,6 +799,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_sliceTipo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceTipo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceTipo(this);
+		}
 	}
 
 	public final SliceTipoContext sliceTipo() throws RecognitionException {
@@ -733,6 +845,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_sliceInit; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSliceInit(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSliceInit(this);
+		}
 	}
 
 	public final SliceInitContext sliceInit() throws RecognitionException {
@@ -797,6 +917,14 @@ public class VlangParser extends Parser {
 			return getToken(VlangParser.COMMA, i);
 		}
 		public PrintStatementContext(StmtContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterPrintStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitPrintStatement(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ControlStatementContext extends StmtContext {
@@ -804,6 +932,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(Sentencias_controlContext.class,0);
 		}
 		public ControlStatementContext(StmtContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterControlStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitControlStatement(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpresionStatementContext extends StmtContext {
@@ -811,6 +947,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public ExpresionStatementContext(StmtContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterExpresionStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitExpresionStatement(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class TransfersentenceContext extends StmtContext {
@@ -818,6 +962,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(Sentencias_transferenciaContext.class,0);
 		}
 		public TransfersentenceContext(StmtContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterTransfersentence(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitTransfersentence(this);
+		}
 	}
 
 	public final StmtContext stmt() throws RecognitionException {
@@ -942,6 +1094,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(WhileDclContext.class,0);
 		}
 		public While_contextContext(Sentencias_controlContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterWhile_context(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitWhile_context(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class Switch_contextContext extends Sentencias_controlContext {
@@ -949,6 +1109,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(SwitchDclContext.class,0);
 		}
 		public Switch_contextContext(Sentencias_controlContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSwitch_context(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSwitch_context(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class If_contextContext extends Sentencias_controlContext {
@@ -956,6 +1124,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(IfDclContext.class,0);
 		}
 		public If_contextContext(Sentencias_controlContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIf_context(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIf_context(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class For_contextContext extends Sentencias_controlContext {
@@ -963,6 +1139,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ForDclContext.class,0);
 		}
 		public For_contextContext(Sentencias_controlContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterFor_context(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitFor_context(this);
+		}
 	}
 
 	public final Sentencias_controlContext sentencias_control() throws RecognitionException {
@@ -1035,11 +1219,27 @@ public class VlangParser extends Parser {
 	public static class BreakStatementContext extends Sentencias_transferenciaContext {
 		public TerminalNode BREAK() { return getToken(VlangParser.BREAK, 0); }
 		public BreakStatementContext(Sentencias_transferenciaContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterBreakStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitBreakStatement(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ContinueStatementContext extends Sentencias_transferenciaContext {
 		public TerminalNode CONTINUE() { return getToken(VlangParser.CONTINUE, 0); }
 		public ContinueStatementContext(Sentencias_transferenciaContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterContinueStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitContinueStatement(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ReturnStatementContext extends Sentencias_transferenciaContext {
@@ -1048,6 +1248,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public ReturnStatementContext(Sentencias_transferenciaContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterReturnStatement(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitReturnStatement(this);
+		}
 	}
 
 	public final Sentencias_transferenciaContext sentencias_transferencia() throws RecognitionException {
@@ -1133,6 +1341,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_ifDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIfDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIfDcl(this);
+		}
 	}
 
 	public final IfDclContext ifDcl() throws RecognitionException {
@@ -1223,6 +1439,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_elseIfDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterElseIfDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitElseIfDcl(this);
+		}
 	}
 
 	public final ElseIfDclContext elseIfDcl() throws RecognitionException {
@@ -1284,6 +1508,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_elseCondicional; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterElseCondicional(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitElseCondicional(this);
+		}
 	}
 
 	public final ElseCondicionalContext elseCondicional() throws RecognitionException {
@@ -1348,6 +1580,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(BlockContext.class,0);
 		}
 		public ForCondicionUnicaContext(ForDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterForCondicionUnica(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitForCondicionUnica(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ForClasicoContext extends ForDclContext {
@@ -1369,6 +1609,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(StmtContext.class,0);
 		}
 		public ForClasicoContext(ForDclContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterForClasico(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitForClasico(this);
+		}
 	}
 
 	public final ForDclContext forDcl() throws RecognitionException {
@@ -1443,6 +1691,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_asignacion; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAsignacion(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAsignacion(this);
+		}
 	}
 
 	public final AsignacionContext asignacion() throws RecognitionException {
@@ -1491,6 +1747,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_switchDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSwitchDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSwitchDcl(this);
+		}
 	}
 
 	public final SwitchDclContext switchDcl() throws RecognitionException {
@@ -1561,6 +1825,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_caseBlock; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterCaseBlock(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitCaseBlock(this);
+		}
 	}
 
 	public final CaseBlockContext caseBlock() throws RecognitionException {
@@ -1616,6 +1888,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_defaultBlock; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterDefaultBlock(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitDefaultBlock(this);
+		}
 	}
 
 	public final DefaultBlockContext defaultBlock() throws RecognitionException {
@@ -1679,6 +1959,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_llamadaFuncion; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterLlamadaFuncion(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitLlamadaFuncion(this);
+		}
 	}
 
 	public final LlamadaFuncionContext llamadaFuncion() throws RecognitionException {
@@ -1901,6 +2189,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_funcCall; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterFuncCall(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitFuncCall(this);
+		}
 	}
 
 	public final FuncCallContext funcCall() throws RecognitionException {
@@ -1955,6 +2251,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametrosFormales; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterParametrosFormales(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitParametrosFormales(this);
+		}
 	}
 
 	public final ParametrosFormalesContext parametrosFormales() throws RecognitionException {
@@ -2003,6 +2307,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametro; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterParametro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitParametro(this);
+		}
 	}
 
 	public final ParametroContext parametro() throws RecognitionException {
@@ -2044,6 +2356,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametrosReales; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterParametrosReales(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitParametrosReales(this);
+		}
 	}
 
 	public final ParametrosRealesContext parametrosReales() throws RecognitionException {
@@ -2096,6 +2416,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_structDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterStructDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitStructDcl(this);
+		}
 	}
 
 	public final StructDclContext structDcl() throws RecognitionException {
@@ -2139,6 +2467,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_atributosStruct; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAtributosStruct(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAtributosStruct(this);
+		}
 	}
 
 	public final AtributosStructContext atributosStruct() throws RecognitionException {
@@ -2192,6 +2528,14 @@ public class VlangParser extends Parser {
 		public TerminalNode ID() { return getToken(VlangParser.ID, 0); }
 		public TerminalNode TIPO() { return getToken(VlangParser.TIPO, 0); }
 		public AtributoPrimitivoContext(AtributoStructContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAtributoPrimitivo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAtributoPrimitivo(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AtributoStructAnidadoContext extends AtributoStructContext {
@@ -2200,6 +2544,14 @@ public class VlangParser extends Parser {
 			return getToken(VlangParser.ID, i);
 		}
 		public AtributoStructAnidadoContext(AtributoStructContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAtributoStructAnidado(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAtributoStructAnidado(this);
+		}
 	}
 
 	public final AtributoStructContext atributoStruct() throws RecognitionException {
@@ -2258,6 +2610,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_listaAsignaciones; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterListaAsignaciones(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitListaAsignaciones(this);
+		}
 	}
 
 	public final ListaAsignacionesContext listaAsignaciones() throws RecognitionException {
@@ -2309,6 +2669,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_asignacionStruct; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAsignacionStruct(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAsignacionStruct(this);
+		}
 	}
 
 	public final AsignacionStructContext asignacionStruct() throws RecognitionException {
@@ -2355,6 +2723,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_whileDcl; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterWhileDcl(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitWhileDcl(this);
+		}
 	}
 
 	public final WhileDclContext whileDcl() throws RecognitionException {
@@ -2428,6 +2804,14 @@ public class VlangParser extends Parser {
 		public TerminalNode DIV() { return getToken(VlangParser.DIV, 0); }
 		public TerminalNode MOD() { return getToken(VlangParser.MOD, 0); }
 		public MultdivmodContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterMultdivmod(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitMultdivmod(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class Casteo_paratipoContext extends ExpresionContext {
@@ -2438,6 +2822,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(VlangParser.RPAREN, 0); }
 		public Casteo_paratipoContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterCasteo_paratipo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitCasteo_paratipo(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IncredecrContext extends ExpresionContext {
@@ -2445,6 +2837,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(IncredecreContext.class,0);
 		}
 		public IncredecrContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIncredecr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIncredecr(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class OPERADORESLOGICOSContext extends ExpresionContext {
@@ -2458,6 +2858,14 @@ public class VlangParser extends Parser {
 		public TerminalNode AND() { return getToken(VlangParser.AND, 0); }
 		public TerminalNode OR() { return getToken(VlangParser.OR, 0); }
 		public OPERADORESLOGICOSContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterOPERADORESLOGICOS(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitOPERADORESLOGICOS(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class StructInstanceCreationContext extends ExpresionContext {
@@ -2468,6 +2876,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RBRACE() { return getToken(VlangParser.RBRACE, 0); }
 		public StructInstanceCreationContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterStructInstanceCreation(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitStructInstanceCreation(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValorexprContext extends ExpresionContext {
@@ -2475,6 +2891,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ValorContext.class,0);
 		}
 		public ValorexprContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorexpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorexpr(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IgualdadContext extends ExpresionContext {
@@ -2488,6 +2912,14 @@ public class VlangParser extends Parser {
 		public TerminalNode EQ() { return getToken(VlangParser.EQ, 0); }
 		public TerminalNode NEQ() { return getToken(VlangParser.NEQ, 0); }
 		public IgualdadContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIgualdad(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIgualdad(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class LlamadaFuncionExprContext extends ExpresionContext {
@@ -2495,6 +2927,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(LlamadaFuncionContext.class,0);
 		}
 		public LlamadaFuncionExprContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterLlamadaFuncionExpr(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitLlamadaFuncionExpr(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ExpdotexpContext extends ExpresionContext {
@@ -2504,6 +2944,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public ExpdotexpContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterExpdotexp(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitExpdotexp(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class StructAttrAssignContext extends ExpresionContext {
@@ -2517,6 +2965,14 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public StructAttrAssignContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterStructAttrAssign(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitStructAttrAssign(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class RelacionalesContext extends ExpresionContext {
@@ -2532,6 +2988,14 @@ public class VlangParser extends Parser {
 		public TerminalNode GE() { return getToken(VlangParser.GE, 0); }
 		public TerminalNode GT() { return getToken(VlangParser.GT, 0); }
 		public RelacionalesContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterRelacionales(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitRelacionales(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class Casteo_paratipo_sliceContext extends ExpresionContext {
@@ -2551,6 +3015,14 @@ public class VlangParser extends Parser {
 			return getToken(VlangParser.COMMA, i);
 		}
 		public Casteo_paratipo_sliceContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterCasteo_paratipo_slice(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitCasteo_paratipo_slice(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class CorchetesexpreContext extends ExpresionContext {
@@ -2560,6 +3032,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RBRACK() { return getToken(VlangParser.RBRACK, 0); }
 		public CorchetesexpreContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterCorchetesexpre(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitCorchetesexpre(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class UnarioContext extends ExpresionContext {
@@ -2570,6 +3050,14 @@ public class VlangParser extends Parser {
 		public TerminalNode NOT() { return getToken(VlangParser.NOT, 0); }
 		public TerminalNode MINUS() { return getToken(VlangParser.MINUS, 0); }
 		public UnarioContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterUnario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitUnario(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ParentesisexpreContext extends ExpresionContext {
@@ -2579,6 +3067,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RPAREN() { return getToken(VlangParser.RPAREN, 0); }
 		public ParentesisexpreContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterParentesisexpre(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitParentesisexpre(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IMCPLICITContext extends ExpresionContext {
@@ -2590,6 +3086,14 @@ public class VlangParser extends Parser {
 		public TerminalNode SUMAIMPLICITA() { return getToken(VlangParser.SUMAIMPLICITA, 0); }
 		public TerminalNode RESTOIMPLICITO() { return getToken(VlangParser.RESTOIMPLICITO, 0); }
 		public IMCPLICITContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIMCPLICIT(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIMCPLICIT(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class SumresContext extends ExpresionContext {
@@ -2603,6 +3107,14 @@ public class VlangParser extends Parser {
 		public TerminalNode PLUS() { return getToken(VlangParser.PLUS, 0); }
 		public TerminalNode MINUS() { return getToken(VlangParser.MINUS, 0); }
 		public SumresContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterSumres(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitSumres(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class PARAPRINTSLICEContext extends ExpresionContext {
@@ -2613,6 +3125,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode RBRACK() { return getToken(VlangParser.RBRACK, 0); }
 		public PARAPRINTSLICEContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterPARAPRINTSLICE(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitPARAPRINTSLICE(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class AsignacionLUEGOContext extends ExpresionContext {
@@ -2623,11 +3143,27 @@ public class VlangParser extends Parser {
 			return getRuleContext(ExpresionContext.class,0);
 		}
 		public AsignacionLUEGOContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterAsignacionLUEGO(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitAsignacionLUEGO(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class IdContext extends ExpresionContext {
 		public TerminalNode ID() { return getToken(VlangParser.ID, 0); }
 		public IdContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterId(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitId(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class Expdotexp1Context extends ExpresionContext {
@@ -2637,6 +3173,14 @@ public class VlangParser extends Parser {
 		}
 		public TerminalNode DOT() { return getToken(VlangParser.DOT, 0); }
 		public Expdotexp1Context(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterExpdotexp1(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitExpdotexp1(this);
+		}
 	}
 
 	public final ExpresionContext expresion() throws RecognitionException {
@@ -2676,7 +3220,7 @@ public class VlangParser extends Parser {
 					consume();
 				}
 				setState(433);
-				expresion(16);
+				expresion(19);
 				}
 				break;
 			case 2:
@@ -2916,15 +3460,15 @@ public class VlangParser extends Parser {
 					switch ( getInterpreter().adaptivePredict(_input,47,_ctx) ) {
 					case 1:
 						{
-						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new MultdivmodContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(495);
 						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
 						setState(496);
-						((RelacionalesContext)_localctx).op = _input.LT(1);
+						((MultdivmodContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 33776997205278720L) != 0)) ) {
-							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61572651155456L) != 0)) ) {
+							((MultdivmodContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -2937,15 +3481,15 @@ public class VlangParser extends Parser {
 						break;
 					case 2:
 						{
-						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new SumresContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(498);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
 						setState(499);
-						((IgualdadContext)_localctx).op = _input.LT(1);
+						((SumresContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==EQ || _la==NEQ) ) {
-							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						if ( !(_la==PLUS || _la==MINUS) ) {
+							((SumresContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -2958,11 +3502,53 @@ public class VlangParser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new OPERADORESLOGICOSContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(501);
-						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
+						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
 						setState(502);
+						((RelacionalesContext)_localctx).op = _input.LT(1);
+						_la = _input.LA(1);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 33776997205278720L) != 0)) ) {
+							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(503);
+						expresion(19);
+						}
+						break;
+					case 4:
+						{
+						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
+						setState(504);
+						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
+						setState(505);
+						((IgualdadContext)_localctx).op = _input.LT(1);
+						_la = _input.LA(1);
+						if ( !(_la==EQ || _la==NEQ) ) {
+							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						}
+						else {
+							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+							_errHandler.reportMatch(this);
+							consume();
+						}
+						setState(506);
+						expresion(18);
+						}
+						break;
+					case 5:
+						{
+						_localctx = new OPERADORESLOGICOSContext(new ExpresionContext(_parentctx, _parentState));
+						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
+						setState(507);
+						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
+						setState(508);
 						((OPERADORESLOGICOSContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==OR || _la==AND) ) {
@@ -2973,50 +3559,8 @@ public class VlangParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(503);
-						expresion(20);
-						}
-						break;
-					case 4:
-						{
-						_localctx = new MultdivmodContext(new ExpresionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
-						setState(504);
-						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
-						setState(505);
-						((MultdivmodContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61572651155456L) != 0)) ) {
-							((MultdivmodContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
-						setState(506);
-						expresion(19);
-						}
-						break;
-					case 5:
-						{
-						_localctx = new SumresContext(new ExpresionContext(_parentctx, _parentState));
-						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
-						setState(507);
-						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
-						setState(508);
-						((SumresContext)_localctx).op = _input.LT(1);
-						_la = _input.LA(1);
-						if ( !(_la==PLUS || _la==MINUS) ) {
-							((SumresContext)_localctx).op = (Token)_errHandler.recoverInline(this);
-						}
-						else {
-							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
-							_errHandler.reportMatch(this);
-							consume();
-						}
 						setState(509);
-						expresion(18);
+						expresion(17);
 						}
 						break;
 					}
@@ -3055,6 +3599,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_parametros; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterParametros(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitParametros(this);
+		}
 	}
 
 	public final ParametrosContext parametros() throws RecognitionException {
@@ -3104,6 +3656,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_valores; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValores(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValores(this);
+		}
 	}
 
 	public final ValoresContext valores() throws RecognitionException {
@@ -3143,26 +3703,66 @@ public class VlangParser extends Parser {
 	public static class ValorDecimalContext extends ValorContext {
 		public TerminalNode DECIMAL() { return getToken(VlangParser.DECIMAL, 0); }
 		public ValorDecimalContext(ValorContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorDecimal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorDecimal(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValorEnteroContext extends ValorContext {
 		public TerminalNode ENTERO() { return getToken(VlangParser.ENTERO, 0); }
 		public ValorEnteroContext(ValorContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorEntero(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorEntero(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValorBooleanoContext extends ValorContext {
 		public TerminalNode BOOLEANO() { return getToken(VlangParser.BOOLEANO, 0); }
 		public ValorBooleanoContext(ValorContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorBooleano(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorBooleano(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValorCaracterContext extends ValorContext {
 		public TerminalNode CARACTER() { return getToken(VlangParser.CARACTER, 0); }
 		public ValorCaracterContext(ValorContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorCaracter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorCaracter(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValorCadenaContext extends ValorContext {
 		public TerminalNode CADENA() { return getToken(VlangParser.CADENA, 0); }
 		public ValorCadenaContext(ValorContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterValorCadena(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitValorCadena(this);
+		}
 	}
 
 	public final ValorContext valor() throws RecognitionException {
@@ -3243,6 +3843,14 @@ public class VlangParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_listaExpresiones; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterListaExpresiones(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitListaExpresiones(this);
+		}
 	}
 
 	public final ListaExpresionesContext listaExpresiones() throws RecognitionException {
@@ -3300,12 +3908,28 @@ public class VlangParser extends Parser {
 		public TerminalNode ID() { return getToken(VlangParser.ID, 0); }
 		public TerminalNode INC() { return getToken(VlangParser.INC, 0); }
 		public IncrementoContext(IncredecreContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterIncremento(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitIncremento(this);
+		}
 	}
 	@SuppressWarnings("CheckReturnValue")
 	public static class DecrementoContext extends IncredecreContext {
 		public TerminalNode ID() { return getToken(VlangParser.ID, 0); }
 		public TerminalNode DEC() { return getToken(VlangParser.DEC, 0); }
 		public DecrementoContext(IncredecreContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).enterDecremento(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof VlangListener ) ((VlangListener)listener).exitDecremento(this);
+		}
 	}
 
 	public final IncredecreContext incredecre() throws RecognitionException {
@@ -3362,11 +3986,11 @@ public class VlangParser extends Parser {
 		case 1:
 			return precpred(_ctx, 20);
 		case 2:
-			return precpred(_ctx, 19);
-		case 3:
 			return precpred(_ctx, 18);
-		case 4:
+		case 3:
 			return precpred(_ctx, 17);
+		case 4:
+			return precpred(_ctx, 16);
 		}
 		return true;
 	}
@@ -3459,8 +4083,8 @@ public class VlangParser extends Parser {
 		"\u0001#\u0001#\u0001#\u0001#\u0003#\u0221\b#\u0001#\u0000\u0001<$\u0000"+
 		"\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u001c"+
 		"\u001e \"$&(*,.02468:<>@BDF\u0000\u0007\u0002\u0000**..\u0001\u0000\'"+
-		"(\u0001\u000036\u0001\u000012\u0001\u0000/0\u0001\u0000+-\u0001\u0000"+
-		")*\u0258\u0000K\u0001\u0000\u0000\u0000\u0002P\u0001\u0000\u0000\u0000"+
+		"(\u0001\u0000+-\u0001\u0000)*\u0001\u000036\u0001\u000012\u0001\u0000"+
+		"/0\u0258\u0000K\u0001\u0000\u0000\u0000\u0002P\u0001\u0000\u0000\u0000"+
 		"\u0004V\u0001\u0000\u0000\u0000\u0006b\u0001\u0000\u0000\u0000\bp\u0001"+
 		"\u0000\u0000\u0000\n\u00a0\u0001\u0000\u0000\u0000\f\u00a2\u0001\u0000"+
 		"\u0000\u0000\u000e\u00a6\u0001\u0000\u0000\u0000\u0010\u00bc\u0001\u0000"+
@@ -3667,7 +4291,7 @@ public class VlangParser extends Parser {
 		"\u0000\u0000\u01ab\u01ad\u0001\u0000\u0000\u0000\u01ac\u01aa\u0001\u0000"+
 		"\u0000\u0000\u01ad\u01ae\u0005;\u0000\u0000\u01ae;\u0001\u0000\u0000\u0000"+
 		"\u01af\u01b0\u0006\u001e\uffff\uffff\u0000\u01b0\u01b1\u0007\u0000\u0000"+
-		"\u0000\u01b1\u01ee\u0003<\u001e\u0010\u01b2\u01ee\u0003B!\u0000\u01b3"+
+		"\u0000\u01b1\u01ee\u0003<\u001e\u0013\u01b2\u01ee\u0003B!\u0000\u01b3"+
 		"\u01b4\u00058\u0000\u0000\u01b4\u01b5\u0003<\u001e\u0000\u01b5\u01b6\u0005"+
 		"9\u0000\u0000\u01b6\u01ee\u0001\u0000\u0000\u0000\u01b7\u01b8\u0005:\u0000"+
 		"\u0000\u01b8\u01b9\u0003<\u001e\u0000\u01b9\u01ba\u0005;\u0000\u0000\u01ba"+
@@ -3705,11 +4329,11 @@ public class VlangParser extends Parser {
 		"\u0000\u01ee\u0200\u0001\u0000\u0000\u0000\u01ef\u01f0\n\u0015\u0000\u0000"+
 		"\u01f0\u01f1\u0007\u0002\u0000\u0000\u01f1\u01ff\u0003<\u001e\u0016\u01f2"+
 		"\u01f3\n\u0014\u0000\u0000\u01f3\u01f4\u0007\u0003\u0000\u0000\u01f4\u01ff"+
-		"\u0003<\u001e\u0015\u01f5\u01f6\n\u0013\u0000\u0000\u01f6\u01f7\u0007"+
-		"\u0004\u0000\u0000\u01f7\u01ff\u0003<\u001e\u0014\u01f8\u01f9\n\u0012"+
+		"\u0003<\u001e\u0015\u01f5\u01f6\n\u0012\u0000\u0000\u01f6\u01f7\u0007"+
+		"\u0004\u0000\u0000\u01f7\u01ff\u0003<\u001e\u0013\u01f8\u01f9\n\u0011"+
 		"\u0000\u0000\u01f9\u01fa\u0007\u0005\u0000\u0000\u01fa\u01ff\u0003<\u001e"+
-		"\u0013\u01fb\u01fc\n\u0011\u0000\u0000\u01fc\u01fd\u0007\u0006\u0000\u0000"+
-		"\u01fd\u01ff\u0003<\u001e\u0012\u01fe\u01ef\u0001\u0000\u0000\u0000\u01fe"+
+		"\u0012\u01fb\u01fc\n\u0010\u0000\u0000\u01fc\u01fd\u0007\u0006\u0000\u0000"+
+		"\u01fd\u01ff\u0003<\u001e\u0011\u01fe\u01ef\u0001\u0000\u0000\u0000\u01fe"+
 		"\u01f2\u0001\u0000\u0000\u0000\u01fe\u01f5\u0001\u0000\u0000\u0000\u01fe"+
 		"\u01f8\u0001\u0000\u0000\u0000\u01fe\u01fb\u0001\u0000\u0000\u0000\u01ff"+
 		"\u0202\u0001\u0000\u0000\u0000\u0200\u01fe\u0001\u0000\u0000\u0000\u0200"+

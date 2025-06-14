@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -80,6 +80,18 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSliceEmptyDeclaration(VlangParser.SliceEmptyDeclarationContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code structDirectInitDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructDirectInitDeclaration(VlangParser.StructDirectInitDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code structDirectInitDeclaration}
+	 * labeled alternative in {@link VlangParser#varDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructDirectInitDeclaration(VlangParser.StructDirectInitDeclarationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code sliceInitDeclaration}
 	 * labeled alternative in {@link VlangParser#varDcl}.
@@ -437,6 +449,70 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitParametrosReales(VlangParser.ParametrosRealesContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link VlangParser#structDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructDcl(VlangParser.StructDclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#structDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructDcl(VlangParser.StructDclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#atributosStruct}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtributosStruct(VlangParser.AtributosStructContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#atributosStruct}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtributosStruct(VlangParser.AtributosStructContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code atributoPrimitivo}
+	 * labeled alternative in {@link VlangParser#atributoStruct}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtributoPrimitivo(VlangParser.AtributoPrimitivoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code atributoPrimitivo}
+	 * labeled alternative in {@link VlangParser#atributoStruct}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtributoPrimitivo(VlangParser.AtributoPrimitivoContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code atributoStructAnidado}
+	 * labeled alternative in {@link VlangParser#atributoStruct}.
+	 * @param ctx the parse tree
+	 */
+	void enterAtributoStructAnidado(VlangParser.AtributoStructAnidadoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code atributoStructAnidado}
+	 * labeled alternative in {@link VlangParser#atributoStruct}.
+	 * @param ctx the parse tree
+	 */
+	void exitAtributoStructAnidado(VlangParser.AtributoStructAnidadoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#listaAsignaciones}.
+	 * @param ctx the parse tree
+	 */
+	void enterListaAsignaciones(VlangParser.ListaAsignacionesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#listaAsignaciones}.
+	 * @param ctx the parse tree
+	 */
+	void exitListaAsignaciones(VlangParser.ListaAsignacionesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link VlangParser#asignacionStruct}.
+	 * @param ctx the parse tree
+	 */
+	void enterAsignacionStruct(VlangParser.AsignacionStructContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link VlangParser#asignacionStruct}.
+	 * @param ctx the parse tree
+	 */
+	void exitAsignacionStruct(VlangParser.AsignacionStructContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link VlangParser#whileDcl}.
 	 * @param ctx the parse tree
 	 */
@@ -458,6 +534,18 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultdivmod(VlangParser.MultdivmodContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code casteo_paratipo}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasteo_paratipo(VlangParser.Casteo_paratipoContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code casteo_paratipo}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasteo_paratipo(VlangParser.Casteo_paratipoContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code incredecr}
 	 * labeled alternative in {@link VlangParser#expresion}.
@@ -482,6 +570,18 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOPERADORESLOGICOS(VlangParser.OPERADORESLOGICOSContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code structInstanceCreation}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructInstanceCreation(VlangParser.StructInstanceCreationContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code structInstanceCreation}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructInstanceCreation(VlangParser.StructInstanceCreationContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code valorexpr}
 	 * labeled alternative in {@link VlangParser#expresion}.
@@ -531,6 +631,18 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitExpdotexp(VlangParser.ExpdotexpContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code structAttrAssign}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructAttrAssign(VlangParser.StructAttrAssignContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code structAttrAssign}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructAttrAssign(VlangParser.StructAttrAssignContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code relacionales}
 	 * labeled alternative in {@link VlangParser#expresion}.
 	 * @param ctx the parse tree
@@ -542,6 +654,18 @@ public interface VlangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRelacionales(VlangParser.RelacionalesContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code casteo_paratipo_slice}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterCasteo_paratipo_slice(VlangParser.Casteo_paratipo_sliceContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code casteo_paratipo_slice}
+	 * labeled alternative in {@link VlangParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitCasteo_paratipo_slice(VlangParser.Casteo_paratipo_sliceContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code corchetesexpre}
 	 * labeled alternative in {@link VlangParser#expresion}.
