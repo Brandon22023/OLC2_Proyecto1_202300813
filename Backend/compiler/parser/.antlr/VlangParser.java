@@ -3461,12 +3461,15 @@ public class VlangParser extends Parser {
 					case 1:
 						{
 						_localctx = new MultdivmodContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new MultdivmodContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(495);
 						if (!(precpred(_ctx, 21))) throw new FailedPredicateException(this, "precpred(_ctx, 21)");
 						setState(496);
 						((MultdivmodContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61572651155456L) != 0)) ) {
+							((MultdivmodContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 61572651155456L) != 0)) ) {
 							((MultdivmodContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
@@ -3482,12 +3485,15 @@ public class VlangParser extends Parser {
 					case 2:
 						{
 						_localctx = new SumresContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new SumresContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(498);
 						if (!(precpred(_ctx, 20))) throw new FailedPredicateException(this, "precpred(_ctx, 20)");
 						setState(499);
 						((SumresContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
+						if ( !(_la==PLUS || _la==MINUS) ) {
+							((SumresContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						if ( !(_la==PLUS || _la==MINUS) ) {
 							((SumresContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
@@ -3503,12 +3509,15 @@ public class VlangParser extends Parser {
 					case 3:
 						{
 						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(501);
 						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
 						setState(502);
 						((RelacionalesContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 33776997205278720L) != 0)) ) {
+							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 33776997205278720L) != 0)) ) {
 							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
@@ -3524,12 +3533,15 @@ public class VlangParser extends Parser {
 					case 4:
 						{
 						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(504);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(505);
 						((IgualdadContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
+						if ( !(_la==EQ || _la==NEQ) ) {
+							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						if ( !(_la==EQ || _la==NEQ) ) {
 							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
@@ -3545,12 +3557,15 @@ public class VlangParser extends Parser {
 					case 5:
 						{
 						_localctx = new OPERADORESLOGICOSContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new OPERADORESLOGICOSContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(507);
 						if (!(precpred(_ctx, 16))) throw new FailedPredicateException(this, "precpred(_ctx, 16)");
 						setState(508);
 						((OPERADORESLOGICOSContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
+						if ( !(_la==OR || _la==AND) ) {
+							((OPERADORESLOGICOSContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						if ( !(_la==OR || _la==AND) ) {
 							((OPERADORESLOGICOSContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
@@ -3988,7 +4003,10 @@ public class VlangParser extends Parser {
 		case 2:
 			return precpred(_ctx, 18);
 		case 3:
+		case 3:
 			return precpred(_ctx, 17);
+		case 4:
+			return precpred(_ctx, 16);
 		case 4:
 			return precpred(_ctx, 16);
 		}

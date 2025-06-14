@@ -154,7 +154,7 @@ func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContex
 		return nil
 	}
 	if !v.inForLoop {
-		fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
+		//fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
 		
 		return nil
 	}
@@ -315,7 +315,7 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
     // ⬇️ Aquí revisa si ya existe y muestra error
     _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
     if errMsg != "" {
-		fmt.Printf("SEMANTICO: %s\n", errMsg)
+		fmt.Printf("SEMANTICO por la variable: %s\n", errMsg)
         v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
         v.HasSemanticError = true
         return nil

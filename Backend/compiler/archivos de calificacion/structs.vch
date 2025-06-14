@@ -1,0 +1,75 @@
+struct Persona {
+	nombre string
+	edad int
+	estatura float64
+	activo bool
+}
+
+struct Empleado {
+	datos_personales Persona
+	id string
+	departamento string
+	salario float64
+}
+
+fn main(){
+	mut puntos int = 0
+	print("=== Archivo de prueba de structs ===")
+
+	// 1. Declaración
+	print("==== Declaración ====")
+	puntos += 1
+
+	// 2. Instanciación
+	print("\n==== Instanciación ====")
+	persona1 = Persona{
+		nombre: "Juan",
+		edad: 30,
+		estatura: 1.75,
+		activo: true
+	}
+	print("###Validación Manual")
+	print(persona1)
+	puntos += 2
+
+	// 3. Asignación a propiedades primitivas
+	print("\n==== Asignación a propiedades primitivas ====")
+	persona1.nombre = "María"
+	persona1.edad = 25
+	persona1.estatura = 1.65
+	persona1.activo = true
+	if persona1.nombre == "María" && persona1.edad == 25 {
+		puntos += 2
+		print("OK Asignación directa: correcto")
+	} else {
+		print("X Asignación directa: incorrecto")
+	}
+
+	// 4. Acceso a propiedades primitivas
+	print("\n==== Acceso a propiedades primitivas ====")
+	mut nombre_persona1 string = persona1.nombre
+	mut edad_persona1 int = persona1.edad
+	print("Nombre de persona1: ")
+    print(nombre_persona1)
+	print("Edad de persona1: ")
+    print(edad_persona1)
+	if nombre_persona1 == "María" && edad_persona1 == 25 {
+		puntos += 2
+		print("OK Acceso directo: correcto")
+	} else {
+		print("X Acceso directo: incorrecto")
+	}
+
+	// Tabla resumen
+	print("\n=== Tabla de Resultados ===")
+	print("| Característica                           | Puntos |")
+	print("|------------------------------------------|--------|")
+	print("| Declaración                              | 1      |")
+	print("| Instanciación                            | 2      |")
+	print("| Asignación propiedades primitivas        | 2      |")
+	print("| Acceso propiedades primitivas            | 2      |")
+	//print("| Funciones asociadas                      | $puntos_funciones      |")
+	print("|------------------------------------------|--------|")
+	print("| TOTAL                                    |", puntos,"     |")
+
+}
