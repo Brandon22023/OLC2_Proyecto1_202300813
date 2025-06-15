@@ -1,0 +1,380 @@
+
+func main() {
+	mut puntos int = 0
+
+	println("=== Archivo de prueba de funcionalidades intermedias ===")
+
+	// 1. Manejo de entornos (3 puntos)
+	println("==== Manejo de entornos ====")
+	mut puntosEntornos int = 0
+
+	println("Variable redeclarada en el mismo entorno")
+	mut a int = 10
+	// a = "" // ! ERROR: Comentar esta línea para que el programa compile
+	println("a =", a)
+
+	if a == 10 {
+		puntosEntornos = puntosEntornos + 1
+		  println("OK Detección de redeclaración en mismo entorno: correcto")
+	} else {
+		  println("X Detección de redeclaración en mismo entorno: incorrecto")
+	}
+
+	println("\nVariable redeclarada en un entorno diferente")
+	mut b int = 10
+	if true {
+        // verificamos con entornos si la variable es manejada
+		b = 20
+		  println("b dentro del if =", b)
+
+		if b == 20 {
+			puntosEntornos = puntosEntornos + 1
+			  println("OK Redeclaración en entorno diferente: correcto")
+		} else {
+			  println("X Redeclaración en entorno diferente: incorrecto")
+		}
+	}
+	  println("b fuera del if =", b)
+
+	  println("\nUso de variable en un entorno superior")
+	mut c int = 10 
+	mut d int = 10
+	if true {
+		// d se redefine en este ámbito
+		d = 20
+		// modificamos c 
+        c = 50 
+		
+		// Modificamos d del ámbito local
+		d = 30
+	}
+	  println("c fuera del if =", c)
+	  println("d fuera del if =", d)
+
+	if c == 30 && d == 10 {
+		puntosEntornos = puntosEntornos + 1
+		  println("OK Uso de variable en entorno superior: correcto")
+	} else {
+		  println("X Uso de variable en entorno superior: incorrecto")
+	}
+
+	// 2. If / Else (3 puntos)
+	println("\n==== If / Else ====")
+	mut puntosIfElse int = 0
+
+	println("If simple")
+	if true {
+		println("Condición verdadera")
+		puntosIfElse = puntosIfElse + 1
+	}
+
+	println("\nIf-Else")
+	if true {
+		  println("Condición verdadera en if-else")
+	} else {
+		  println("Condición falsa en if-else")
+	}
+
+	if false {
+		  println("Esto no debería imprimirse")
+	} else {
+		  println("Condición falsa, ejecutando else")
+		puntosIfElse = puntosIfElse + 1
+	}
+
+	println("\nIf-ElseIf-Else")
+	if true {
+		  println("Primera condición verdadera")
+	} else if true {
+		  println("Segunda condición verdadera, pero no se ejecuta")
+	} else {
+		  println("Ninguna condición verdadera")
+	}
+
+	if false {
+		  println("Primera condición falsa")
+	} else if true {
+		  println("Segunda condición verdadera")
+		puntosIfElse = puntosIfElse + 1
+	} else {
+		  println("Ninguna condición verdadera")
+	}
+
+	// 3. For Tipo While (2 puntos)
+	println("\n==== For Tipo While ====")
+	mut puntosForWhile int = 0
+
+	println("For como while simple")
+	i = 0
+	suma = 0
+	for i < 5 {
+		  println("i =", i)
+		suma = suma + i
+		i = i + 1
+	}
+
+	if suma == 10 {
+		puntosForWhile = puntosForWhile + 1
+		  println("OK For como while simple: correcto")
+	} else {
+		  println("X For como while simple: incorrecto")
+	}
+
+	println("\nFor como while anidado (patrón X)")
+	println("###Validacion Manual")
+
+	mut n int  = 5
+	mut x int = 0
+	for x < n {
+		j = 0
+		fila = ""
+
+		for j < n {
+			if x == j || x+j == n-1 {
+				fila = fila + "*"
+			} else {
+				fila = fila + " "
+			}
+			j = j + 1
+		}
+
+		  println(fila)
+		x = x + 1
+	}
+
+	if x == 5 {
+		puntosForWhile = puntosForWhile + 1
+		  println("OK For como while anidado: correcto")
+	} else {
+		  println("X For como while anidado: incorrecto")
+	}
+
+	// 4. For Clásico (3 puntos)
+	  println("\n==== For Clásico ====")
+	puntosForClasico = 0
+
+	println("For clásico simple")
+	suma = 0
+	for i = 0; i < 5; i++ {
+		  println("i =", i)
+		suma = suma + i
+	}
+
+	if suma == 10 {
+		puntosForClasico = puntosForClasico + 1
+		  println("OK For clásico simple: correcto")
+	} else {
+		  println("X For clásico simple: incorrecto")
+	}
+
+	  println("\nFor clásico anidado (tabla de multiplicar)")
+	  println("###Validacion Manual")
+	for i = 1; i <= 3; i++ {
+		for j = 1; j <= 3; j++ {
+			  println(i, "x", j, "=", i*j)
+		}
+		  println()
+	}
+	puntosForClasico = puntosForClasico + 2
+
+	// 5. For Range (3 puntos)
+	println("\n==== For Range ====")
+	mut puntosForRange int = 0
+
+	println("For range con slice")
+	numeros = []int{10, 20, 30, 40, 50}
+	suma = 0
+	sumaIndices = 0
+
+	for i, valor = range numeros {
+		  println("Índice", i, "=", valor)
+		suma = suma + valor
+		sumaIndices = sumaIndices + i
+	}
+
+	if suma == 150 {
+		puntosForRange = puntosForRange + 2
+		  println("OK For range con slice: correcto")
+	} else {
+		  println("X For range con slice: incorrecto")
+	}
+
+	if sumaIndices == 10 {
+		puntosForRange = puntosForRange + 1
+		  println("OK For range con índices: correcto")
+	} else {
+		  println("X For range con índices: incorrecto")
+	}
+
+	// 6. Switch/Case (3 puntos)
+	println("\n==== Switch/Case ====")
+	mut puntosSwitch int = 0
+
+	println("Switch simple")
+	dia = 1
+
+	switch dia {
+	case 1:
+		  println("Lunes")
+		puntosSwitch = puntosSwitch + 1
+	case 2:
+		  println("Martes")
+	case 3:
+		  println("Miércoles")
+	case 4:
+		  println("Jueves")
+	case 5:
+		  println("Viernes")
+	case 6:
+		  println("Sábado")
+	case 7:
+		  println("Domingo")
+	default:
+		  println("Día inválido")
+	}
+
+	println("\nSwitch con default")
+	mut numero int = 100
+
+	switch numero {
+	case 1:
+		  println("No se debería imprimir")
+	case 2:
+		  println("No se debería imprimir")
+	default:
+		  println("Número no reconocido, se ejecuta default")
+		puntosSwitch = puntosSwitch + 1 // Se suma solo si default se ejecuta correctamente
+	}
+
+	  println("\n==== Switch con break explícito ====")
+
+	mut numeroBreak int = 2
+
+	switch numeroBreak {
+	case 1:
+		  println("No se debería imprimir")
+	case 2:
+		  println("Caso 2 - Se ejecuta este y debe detenerse")
+		puntosSwitch = puntosSwitch + 1
+		break
+		  println("No debería ejecutarse si el break funciona")
+		puntosSwitch = puntosSwitch - 1
+	case 3:
+		  println("No se debería imprimir")
+	}
+
+	// 7. Break (3 puntos)
+	  println("\n==== Break ====")
+	mut puntosBreak int = 0
+
+	println("Break en for infinito")
+	mut contador int = 0
+	mut suma int = 0
+
+	for true {
+		  println("contador =", contador)
+		suma = suma + contador
+		contador = contador + 1
+
+		if contador >= 5 {
+			break
+		}
+	}
+
+	if suma == 10 {
+		puntosBreak = puntosBreak + 1
+		  println("OK Break en for infinito: correcto")
+	} else {
+		  println("X Break en for infinito: incorrecto")
+	}
+
+	  println("\nBreak en for clásico")
+	suma = 0
+
+	for i = 0; i < 10; i++ {
+		  println("i =", i)
+		suma = suma + i
+
+		if i >= 4 {
+			break
+		}
+	}
+
+	if suma == 10 {
+		puntosBreak = puntosBreak + 2
+		  println("OK Break en for clásico: correcto")
+	} else {
+		  println("X Break en for clásico: incorrecto")
+	}
+
+	// 8. Continue (3 puntos)
+	println("\n==== Continue ====")
+	mut puntosContinue int = 0
+
+	println("Continue en for tipo while")
+	mut contador int = 0
+	mut impares int = 0
+
+	for contador < 10 {
+		contador = contador + 1
+
+		if contador%2 == 0 {
+			continue
+		}
+
+		impares = impares + contador
+	}
+
+	  println("Números impares:", impares)
+
+	if impares == 25 {
+		puntosContinue = puntosContinue + 1
+		  println("OK Continue en for tipo while: correcto")
+	} else {
+		  println("X Continue en for tipo while: incorrecto")
+	}
+
+	  println("\nContinue en for clásico")
+	pares = 0
+
+	for i = 0; i < 10; i++ {
+		if i%2 != 0 {
+			continue
+		}
+
+		pares = pares + i
+	}
+
+	  println("Números pares:", pares)
+
+	if pares == 20 {
+		puntosContinue = puntosContinue + 2
+		  println("OK Continue en for clásico: correcto")
+	} else {
+		  println("X Continue en for clásico: incorrecto")
+	}
+
+	// Resumen de puntos
+	puntos = puntosEntornos + puntosIfElse + puntosForWhile + puntosForClasico +
+		puntosForRange + puntosSwitch + puntosBreak + puntosContinue
+
+	  println("\n=== Errores ===")
+	  println("###Validacion Manual")
+	  println("Errores esperados ?/1")
+
+	  println("\n=== Tabla de Resultados ===")
+	  println("+--------------------------+--------+-------+")
+	  println("| Característica           | Puntos | Total |")
+	  println("+--------------------------+--------+-------+")
+	  println("| Manejo de entornos       | ", puntosEntornos, "    | 3     |")
+	  println("| If / Else                | ", puntosIfElse, "    | 3     |")
+	  println("| For Tipo While           | ", puntosForWhile, "    | 2     |")
+	  println("| For Clásico              | ", puntosForClasico, "    | 3     |")
+	  println("| For Range                | ", puntosForRange, "    | 3     |")
+	  println("| Switch/Case              | ", puntosSwitch, "    | 3     |")
+	  println("| Break                    | ", puntosBreak, "    | 3     |")
+	  println("| Continue                 | ", puntosContinue, "    | 3     |")
+	  println("+--------------------------+--------+-------+")
+	  println("| TOTAL                    | ", puntos, "   | 23    |")
+	  println("+--------------------------+--------+-------+")
+}

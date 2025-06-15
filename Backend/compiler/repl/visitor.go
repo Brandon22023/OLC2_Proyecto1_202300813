@@ -88,18 +88,29 @@ func (v *ReplVisitor) VisitDeclaraciones(ctx *parser.DeclaracionesContext) inter
 	if v.HasSemanticError {
 		return nil
 	}
-	for i := 0; i < ctx.GetChildCount(); i++ {
-		child := ctx.GetChild(i)
-		if node, ok := child.(antlr.ParseTree); ok {
-			res := node.Accept(v)
-			if ret, ok := res.(ReturnValue); ok {
-				return ret
-			}
-		}
-	}
 
+	if ctx.Stmt() != nil {
+		res := v.Visit(ctx.Stmt())
+		if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+			return str // ✅ Propaga ambos
+		}
+		return res
+	}
+	if ctx.VarDcl() != nil {
+		return v.Visit(ctx.VarDcl())
+	}
+	if ctx.FuncDcl() != nil {
+		return v.Visit(ctx.FuncDcl())
+	}
+	if ctx.FuncMain() != nil {
+		return v.Visit(ctx.FuncMain())
+	}
+	if ctx.StructDcl() != nil {
+		return v.Visit(ctx.StructDcl())
+	}
 	return nil
 }
+
 func (v *ReplVisitor) VisitIf_context(ctx *parser.If_contextContext) interface{} {
 	if v.HasSemanticError {
 		return nil
@@ -130,6 +141,11 @@ func (v *ReplVisitor) VisitStmt(ctx *parser.StmtContext) interface{} {
 		return nil
 	}
 	res := v.VisitChildren(ctx)
+
+	// ✅ Propagar control flow
+	if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+		return str
+	}
 	if ret, ok := res.(ReturnValue); ok {
 		return ret
 	}
@@ -144,33 +160,47 @@ func (v *ReplVisitor) VisitFuncMain(ctx *parser.FuncMainContext) interface{} {
 	v.ScopeTrace.AddFunction("main", nil)
 	defer v.ScopeTrace.PopScope()
 
-	return v.Visit(ctx.Block())
+	for _, decl := range ctx.Block().AllDeclaraciones() {
+		res := v.Visit(decl)
+
+		// ⚠️ Cambia esto:
+		// if str, ok := res.(string); ok && str == "break" {
+		//     return nil
+		// }
+
+		// ✅ Nuevo: ignora breaks que vienen de switch
+		if str, ok := res.(string); ok {
+			if str == "break" {
+				//fmt.Println("[DEBUG] break fue ignorado fuera de ciclo/switch")
+				continue
+			}
+			if str == "continue" {
+				//fmt.Println("[DEBUG] continue fue ignorado fuera de ciclo")
+				continue
+			}
+		}
+
+		if ret, ok := res.(ReturnValue); ok {
+			return ret
+		}
+	}
+	return nil
 }
 
 // REVISAR
 // Para el continue
 func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContext) interface{} {
-	if v.HasSemanticError {
-		return nil
-	}
 	if !v.inForLoop {
-		//fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-
 		return nil
 	}
-	return "continue" // Señal para saltar a la siguiente iteración
+	//fmt.Println("[DEBUG] continue ejecutado")
+	return "continue"
 }
 
 // Para el brake
 func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) interface{} {
-	if v.HasSemanticError {
-		return nil
-	}
-	//if !v.inForLoop {
-	//fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-	//return nil
-	//}
-	return "break" // Señal para salir del bucle
+	//fmt.Println("[DEBUG] break ejecutado")
+	return "break"
 }
 
 // HASTA ACA
@@ -178,25 +208,23 @@ func (v *ReplVisitor) VisitBlock(ctx *parser.BlockContext) interface{} {
 	if v.HasSemanticError {
 		return nil
 	}
-	// Si el scope actual ya es de función, no hagas push de "block"
-	if strings.HasPrefix(v.ScopeTrace.CurrentScope.name, "fn_") || v.ScopeTrace.CurrentScope.name == "main" {
-		for _, decl := range ctx.AllDeclaraciones() {
-			res := v.Visit(decl)
-			if ret, ok := res.(ReturnValue); ok {
-				return ret
-			}
-		}
-		return nil
+
+	isMainOrFn := strings.HasPrefix(v.ScopeTrace.CurrentScope.name, "fn_") || v.ScopeTrace.CurrentScope.name == "main"
+	if !isMainOrFn {
+		v.ScopeTrace.PushScope("block")
+		defer v.ScopeTrace.PopScope()
 	}
-	// Si no, sí crea un nuevo scope "block"
-	v.ScopeTrace.PushScope("block")
-	defer v.ScopeTrace.PopScope()
+
 	for _, decl := range ctx.AllDeclaraciones() {
 		res := v.Visit(decl)
-		if _, ok := res.(ReturnValue); ok {
-			return res
+		if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+			return str // ✅ Propaga ambos
+		}
+		if ret, ok := res.(ReturnValue); ok {
+			return ret
 		}
 	}
+
 	return nil
 }
 
@@ -328,37 +356,67 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 	if v.HasSemanticError {
 		return nil
 	}
+
 	varName := ctx.ID().GetText()
 
 	if ctx.ASSIGN() != nil && ctx.Expresion() != nil {
+		// Buscar la variable (actual o padre)
 		variable := v.ScopeTrace.GetVariable(varName)
+		if variable == nil {
+			scope := v.ScopeTrace.CurrentScope.parent
+			for scope != nil {
+				if vref, ok := scope.variables[varName]; ok {
+					variable = vref
+					break
+				}
+				scope = scope.parent
+			}
+		}
+
 		if variable == nil {
 			fmt.Printf("SEMANTICO: variable '%s' no declarada\n", varName)
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("Variable '%s' no declarada.", varName))
 			v.HasSemanticError = true
 			return nil
 		}
+
 		val := v.Visit(ctx.Expresion())
 
+		// Inferir el tipo si no está fijo
 		switch variable.Type {
 		case value.IVOR_INT:
 			intVal, ok := val.(int)
 			if !ok {
-				fmt.Printf("SEMANTICO valor '%v' no es int\n", val)
+				// Tal vez viene como float64 (ej: 2.0)
+				if floatVal, ok2 := val.(float64); ok2 {
+					intVal = int(floatVal)
+					ok = true
+				}
+			}
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es int\n", val)
 				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es int", varName))
 				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewIntValue(intVal)
+
 		case value.IVOR_FLOAT:
 			floatVal, ok := val.(float64)
 			if !ok {
-				fmt.Printf("SEMANTICO: valor '%v' no es float64\n", val)
-				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es float64", varName))
+				if intVal, ok2 := val.(int); ok2 {
+					floatVal = float64(intVal)
+					ok = true
+				}
+			}
+			if !ok {
+				fmt.Printf("SEMANTICO: valor '%v' no es float\n", val)
+				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es float", varName))
 				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewFloatValue(floatVal)
+
 		case value.IVOR_STRING:
 			strVal, ok := val.(string)
 			if !ok {
@@ -368,6 +426,7 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 				return nil
 			}
 			variable.Value = value.NewStringValue(strVal)
+
 		case value.IVOR_BOOL:
 			boolVal, ok := val.(bool)
 			if !ok {
@@ -377,31 +436,31 @@ func (v *ReplVisitor) VisitVariableDeclarationImmutable(ctx *parser.VariableDecl
 				return nil
 			}
 			variable.Value = value.NewBoolValue(boolVal)
+
 		case value.IVOR_CHARACTER:
 			charVal, ok := val.(rune)
 			if !ok {
 				fmt.Printf("SEMANTICO: valor '%v' no es rune\n", val)
-				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es rune", varName))
+				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es char", varName))
 				v.HasSemanticError = true
 				return nil
 			}
 			variable.Value = value.NewCharValue(charVal)
+
 		default:
-			// Soporte para slices
 			if strings.HasPrefix(variable.Type, "slice_") {
 				sliceVal, ok := val.(*value.SliceValue)
 				if !ok {
 					fmt.Printf("SEMANTICO: valor '%v' no es un slice válido\n", val)
-					v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es un slice váido", varName))
+					v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("valor '%s' no es un slice válido", varName))
 					v.HasSemanticError = true
 					return nil
 				}
 				variable.Value = sliceVal
 			} else {
-				fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación: \n", variable.Type)
-				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("tipo '%s' no soportado para asignación", varName))
+				fmt.Printf("SEMANTICO: tipo '%s' no soportado para asignación\n", variable.Type)
+				v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("tipo '%s' no soportado para asignación", variable.Type))
 				v.HasSemanticError = true
-
 			}
 		}
 		return nil
@@ -897,6 +956,10 @@ func (v *ReplVisitor) VisitChildren(node antlr.RuleNode) interface{} {
 		child := node.GetChild(i)
 		if childNode, ok := child.(antlr.ParseTree); ok {
 			res := childNode.Accept(v)
+
+			if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+				return str // ✅ propaga ambos
+			}
 			if ret, ok := res.(ReturnValue); ok {
 				return ret
 			}
@@ -1037,11 +1100,19 @@ func (v *ReplVisitor) VisitExpresionStatement(ctx *parser.ExpresionStatementCont
 	}
 	return res
 }
+
+// /++++++ ERROR DE BREAK CON EL SWITCH AQUI ++++++++++
 func (v *ReplVisitor) VisitTransfersentence(ctx *parser.TransfersentenceContext) interface{} {
 	if v.HasSemanticError {
 		return nil
 	}
 	res := v.VisitChildren(ctx)
+
+	// 🔁 Asegúrate de agregar esto
+	if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+		return str
+	}
+
 	if ret, ok := res.(ReturnValue); ok {
 		return ret
 	}
@@ -1118,6 +1189,9 @@ func (v *ReplVisitor) VisitControlStatement(ctx *parser.ControlStatementContext)
 		return nil
 	}
 	res := v.VisitChildren(ctx)
+	if str, ok := res.(string); ok && str == "break" {
+		return str
+	}
 	if ret, ok := res.(ReturnValue); ok {
 		return ret
 	}
@@ -1137,6 +1211,9 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 	if condBool {
 		for _, decl := range ctx.AllDeclaraciones() {
 			res := v.Visit(decl)
+			if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+				return str // ✅ Propaga control
+			}
 			if ret, ok := res.(ReturnValue); ok {
 				return ret
 			}
@@ -1149,6 +1226,9 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 		if fmt.Sprint(elseIfCond) == "true" {
 			for _, decl := range elseIf.AllDeclaraciones() {
 				res := v.Visit(decl)
+				if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+					return str
+				}
 				if ret, ok := res.(ReturnValue); ok {
 					return ret
 				}
@@ -1160,6 +1240,9 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 	if ctx.ElseCondicional() != nil {
 		for _, decl := range ctx.ElseCondicional().AllDeclaraciones() {
 			res := v.Visit(decl)
+			if str, ok := res.(string); ok && (str == "break" || str == "continue") {
+				return str
+			}
 			if ret, ok := res.(ReturnValue); ok {
 				return ret
 			}
@@ -1177,10 +1260,8 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 	v.ScopeTrace.PushScope("FOR_CLASICO")
 	defer v.ScopeTrace.PopScope()
 
-	v.inForLoop = true // 🔹 Habilita el uso de "continue" y "break"
-	defer func() {
-		v.inForLoop = false // 🔹 Restaura estado
-	}()
+	v.inForLoop = true
+	defer func() { v.inForLoop = false }()
 
 	varName := ctx.Asignacion().ID().GetText()
 	initVal := v.Visit(ctx.Asignacion().Expresion())
@@ -1216,23 +1297,23 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 			break
 		}
 
-		// ⬇️ Aquí usa PushScope y PopScope para el scope de la iteración
 		v.ScopeTrace.PushScope("FOR_ITER")
 		for _, decl := range ctx.Block().AllDeclaraciones() {
 			res := v.Visit(decl)
 			if str, ok := res.(string); ok {
 				if str == "continue" {
-					break // salto a incremento y siguiente iteración
+					break // salimos del bloque, NO del ciclo
 				} else if str == "break" {
 					v.ScopeTrace.PopScope()
-					return nil // salimos del for
+					return nil
 				}
 			}
 		}
 		v.ScopeTrace.PopScope()
 
+		// ✅ Incrementar SIEMPRE (no depende de continue)
 		if ctx.Stmt() != nil {
-			v.Visit(ctx.Stmt()) // Ejecutar incremento (como i++)
+			v.Visit(ctx.Stmt())
 		}
 	}
 
@@ -1243,12 +1324,11 @@ func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContex
 	if v.HasSemanticError {
 		return nil
 	}
-	v.ScopeTrace.PushScope("FOR_SIMPLE")
-	defer v.ScopeTrace.PopScope()
 
 	v.inForLoop = true
 	defer func() { v.inForLoop = false }()
 
+LOOP:
 	for {
 		condVal := v.Visit(ctx.Expresion())
 		if fmt.Sprint(condVal) != "true" {
@@ -1256,17 +1336,20 @@ func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContex
 		}
 
 		v.ScopeTrace.PushScope("FOR_ITER")
+
 		for _, decl := range ctx.Block().AllDeclaraciones() {
 			res := v.Visit(decl)
 			if str, ok := res.(string); ok {
 				if str == "continue" {
-					break
+					v.ScopeTrace.PopScope()
+					continue LOOP // 🔥 REINICIA ciclo, evita ejecutar más declaraciones
 				} else if str == "break" {
 					v.ScopeTrace.PopScope()
-					return nil
+					break LOOP
 				}
 			}
 		}
+
 		v.ScopeTrace.PopScope()
 	}
 
@@ -1326,30 +1409,34 @@ func (v *ReplVisitor) VisitSwitchDcl(ctx *parser.SwitchDclContext) interface{} {
 	if v.HasSemanticError {
 		return nil
 	}
-	//fmt.Println("========== [DEBUG SWITCH_DCL] ==========")
+
 	switchVal := v.Visit(ctx.Expresion())
 	valStr := fmt.Sprint(switchVal)
-
 	matchFound := false
 
-	// Buscar coincidencia en los case
 	for _, caseCtx := range ctx.AllCaseBlock() {
 		caseVal := v.Visit(caseCtx.Expresion())
 		if fmt.Sprint(caseVal) == valStr {
 			matchFound = true
 			for _, decl := range caseCtx.AllDeclaraciones() {
-				v.Visit(decl)
+				res := v.Visit(decl)
+				if str, ok := res.(string); ok && str == "break" {
+					return "break" // ✅ SE PROPAGA EL BREAK
+				}
 			}
-			break // solo el primer match se ejecuta
+			return nil
 		}
 	}
 
-	// Si no se encontró ningún case, ejecutar default
 	if !matchFound && ctx.DefaultBlock() != nil {
 		for _, decl := range ctx.DefaultBlock().AllDeclaraciones() {
-			v.Visit(decl)
+			res := v.Visit(decl)
+			if str, ok := res.(string); ok && str == "break" {
+				return "break"
+			}
 		}
 	}
+
 	return nil
 }
 
