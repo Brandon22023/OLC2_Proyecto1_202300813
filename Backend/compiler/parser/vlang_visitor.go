@@ -100,6 +100,9 @@ type VlangVisitor interface {
 	// Visit a parse tree produced by VlangParser#forCondicionUnica.
 	VisitForCondicionUnica(ctx *ForCondicionUnicaContext) interface{}
 
+	// Visit a parse tree produced by VlangParser#forRangeSlice.
+	VisitForRangeSlice(ctx *ForRangeSliceContext) interface{}
+
 	// Visit a parse tree produced by VlangParser#asignacion.
 	VisitAsignacion(ctx *AsignacionContext) interface{}
 

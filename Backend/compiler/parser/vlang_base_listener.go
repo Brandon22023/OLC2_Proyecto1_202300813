@@ -210,6 +210,12 @@ func (s *BaseVlangListener) EnterForCondicionUnica(ctx *ForCondicionUnicaContext
 // ExitForCondicionUnica is called when production forCondicionUnica is exited.
 func (s *BaseVlangListener) ExitForCondicionUnica(ctx *ForCondicionUnicaContext) {}
 
+// EnterForRangeSlice is called when production forRangeSlice is entered.
+func (s *BaseVlangListener) EnterForRangeSlice(ctx *ForRangeSliceContext) {}
+
+// ExitForRangeSlice is called when production forRangeSlice is exited.
+func (s *BaseVlangListener) ExitForRangeSlice(ctx *ForRangeSliceContext) {}
+
 // EnterAsignacion is called when production asignacion is entered.
 func (s *BaseVlangListener) EnterAsignacion(ctx *AsignacionContext) {}
 

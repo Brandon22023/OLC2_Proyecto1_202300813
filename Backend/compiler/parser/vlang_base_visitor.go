@@ -131,6 +131,10 @@ func (v *BaseVlangVisitor) VisitForCondicionUnica(ctx *ForCondicionUnicaContext)
 	return v.VisitChildren(ctx)
 }
 
+func (v *BaseVlangVisitor) VisitForRangeSlice(ctx *ForRangeSliceContext) interface{} {
+	return v.VisitChildren(ctx)
+}
+
 func (v *BaseVlangVisitor) VisitAsignacion(ctx *AsignacionContext) interface{} {
 	return v.VisitChildren(ctx)
 }

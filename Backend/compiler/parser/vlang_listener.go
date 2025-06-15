@@ -100,6 +100,9 @@ type VlangListener interface {
 	// EnterForCondicionUnica is called when entering the forCondicionUnica production.
 	EnterForCondicionUnica(c *ForCondicionUnicaContext)
 
+	// EnterForRangeSlice is called when entering the forRangeSlice production.
+	EnterForRangeSlice(c *ForRangeSliceContext)
+
 	// EnterAsignacion is called when entering the asignacion production.
 	EnterAsignacion(c *AsignacionContext)
 
@@ -333,6 +336,9 @@ type VlangListener interface {
 
 	// ExitForCondicionUnica is called when exiting the forCondicionUnica production.
 	ExitForCondicionUnica(c *ForCondicionUnicaContext)
+
+	// ExitForRangeSlice is called when exiting the forRangeSlice production.
+	ExitForRangeSlice(c *ForRangeSliceContext)
 
 	// ExitAsignacion is called when exiting the asignacion production.
 	ExitAsignacion(c *AsignacionContext)

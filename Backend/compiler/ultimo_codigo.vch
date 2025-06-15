@@ -1,46 +1,26 @@
-fn main() {
-       // 7. Break (3 puntos)
-	  print("\n==== Break ====")
-	mut puntosBreak int = 0
+print("\n==== For Range ====")
+	mut puntosForRange int = 0
 
-	print("Break en for infinito")
-	mut contador int = 0
-        suma = 0
+	print("For range con slice")
+	numeros = []int{10, 20, 30, 40, 50}
+	mut suma int = 0
+	mut sumaIndices int = 0
 
-	for true {
-		  print("contador =", contador)
-		suma = suma + contador
-		contador = contador + 1
-
-		if contador >= 5 {
-			break
-		}
+	for i, valor = range numeros {
+		  print("Índice", i, "=", valor)
+		suma = suma + valor
+		sumaIndices = sumaIndices + i
 	}
-
-	if suma == 10 {
-		puntosBreak = puntosBreak + 1
-		  println("OK Break en for infinito: correcto")
+if suma == 150 {
+		puntosForRange = puntosForRange + 2
+		  print("OK For range con slice: correcto")
 	} else {
-		  println("X Break en for infinito: incorrecto")
+		  print("X For range con slice: incorrecto")
 	}
 
-	  println("\nBreak en for clásico")
-	suma = 0
-
-	for i = 0; i < 10; i++ {
-		  println("i =", i)
-		suma = suma + i
-
-		if i >= 4 {
-			break
-		}
-	}
-
-	if suma == 10 {
-		puntosBreak = puntosBreak + 2
-		  println("OK Break en for clásico: correcto")
+	if sumaIndices == 10 {
+		puntosForRange = puntosForRange + 1
+		  print("OK For range con índices: correcto")
 	} else {
-		  println("X Break en for clásico: incorrecto")
+		  print("X For range con índices: incorrecto")
 	}
-
-}

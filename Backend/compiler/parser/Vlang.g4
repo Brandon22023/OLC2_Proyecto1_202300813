@@ -92,6 +92,7 @@ elseCondicional
 forDcl
     : FOR asignacion SEMICOLON expresion SEMICOLON (stmt)? block  #forClasico
     | FOR expresion block                                      #forCondicionUnica
+    | FOR ID COMMA ID ASSIGN 'range' ID block                        #forRangeSlice
     ;
 asignacion
     : ID ASSIGN expresion

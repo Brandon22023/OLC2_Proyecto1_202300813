@@ -155,7 +155,7 @@ func (v *ReplVisitor) VisitContinueStatement(ctx *parser.ContinueStatementContex
 	}
 	if !v.inForLoop {
 		//fmt.Printf("Error: 'continue' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-		
+
 		return nil
 	}
 	return "continue" // Señal para saltar a la siguiente iteración
@@ -167,8 +167,8 @@ func (v *ReplVisitor) VisitBreakStatement(ctx *parser.BreakStatementContext) int
 		return nil
 	}
 	//if !v.inForLoop {
-		//fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
-		//return nil
+	//fmt.Printf("Error: 'break' fuera de un bucle for en la línea %d\n", ctx.GetStart().GetLine())
+	//return nil
 	//}
 	return "break" // Señal para salir del bucle
 }
@@ -312,14 +312,14 @@ func (v *ReplVisitor) VisitVariableDeclaration(ctx *parser.VariableDeclarationCo
 		}
 	}
 
-    // ⬇️ Aquí revisa si ya existe y muestra error
-    _, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
-    if errMsg != "" {
+	// ⬇️ Aquí revisa si ya existe y muestra error
+	_, errMsg := v.ScopeTrace.AddVariable(varName, varType, valueObj, false, false, ctx.GetStart())
+	if errMsg != "" {
 		fmt.Printf("SEMANTICO por la variable: %s\n", errMsg)
-        v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
-        v.HasSemanticError = true
-        return nil
-    }
+		v.SemanticErrors.NewSemanticError(ctx.GetStart(), fmt.Sprintf("La variable '%s' ya está declarada en este ámbito", varName))
+		v.HasSemanticError = true
+		return nil
+	}
 
 	return nil
 }
@@ -1264,6 +1264,55 @@ func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContex
 				} else if str == "break" {
 					v.ScopeTrace.PopScope()
 					return nil
+				}
+			}
+		}
+		v.ScopeTrace.PopScope()
+	}
+
+	return nil
+}
+
+func (v *ReplVisitor) VisitForRangeSlice(ctx *parser.ForRangeSliceContext) interface{} {
+	v.ScopeTrace.PushScope("FOR_RANGE")
+	defer v.ScopeTrace.PopScope()
+
+	v.inForLoop = true
+	defer func() { v.inForLoop = false }()
+
+	indexName := ctx.ID(0).GetText() // i
+	valueName := ctx.ID(1).GetText() // valor
+	sliceName := ctx.ID(2).GetText() // numeros
+
+	sliceVar := v.ScopeTrace.GetVariable(sliceName)
+	if sliceVar == nil || !strings.HasPrefix(sliceVar.Type, "slice_") {
+		fmt.Printf("SEMANTICO: La variable '%s' no es un slice válido\n", sliceName)
+		return nil
+	}
+	slice := sliceVar.Value.(*value.SliceValue)
+
+	// Declarar variables del loop solo 1 vez
+	v.ScopeTrace.AddVariable(indexName, value.IVOR_INT, value.NewIntValue(0), false, false, ctx.GetStart())
+	v.ScopeTrace.AddVariable(valueName, slice.ElementType, slice.Elements[0], false, false, ctx.GetStart())
+
+	// Accede directamente al mapa de variables
+	for i, elem := range slice.Elements {
+		if variable, ok := v.ScopeTrace.CurrentScope.variables[indexName]; ok {
+			variable.Value = value.NewIntValue(i)
+		}
+		if variable, ok := v.ScopeTrace.CurrentScope.variables[valueName]; ok {
+			variable.Value = elem
+		}
+
+		v.ScopeTrace.PushScope("FOR_ITER")
+		for _, decl := range ctx.Block().AllDeclaraciones() {
+			res := v.Visit(decl)
+			if str, ok := res.(string); ok {
+				if str == "break" {
+					v.ScopeTrace.PopScope()
+					return nil
+				} else if str == "continue" {
+					break
 				}
 			}
 		}
