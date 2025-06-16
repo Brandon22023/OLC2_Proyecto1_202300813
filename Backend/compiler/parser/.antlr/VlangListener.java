@@ -359,6 +359,18 @@ public interface VlangListener extends ParseTreeListener {
 	 */
 	void exitForCondicionUnica(VlangParser.ForCondicionUnicaContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code forRangeSlice}
+	 * labeled alternative in {@link VlangParser#forDcl}.
+	 * @param ctx the parse tree
+	 */
+	void enterForRangeSlice(VlangParser.ForRangeSliceContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code forRangeSlice}
+	 * labeled alternative in {@link VlangParser#forDcl}.
+	 * @param ctx the parse tree
+	 */
+	void exitForRangeSlice(VlangParser.ForRangeSliceContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link VlangParser#asignacion}.
 	 * @param ctx the parse tree
 	 */

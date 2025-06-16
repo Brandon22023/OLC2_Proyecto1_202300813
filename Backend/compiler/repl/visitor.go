@@ -1254,44 +1254,45 @@ func (v *ReplVisitor) VisitIfDcl(ctx *parser.IfDclContext) interface{} {
 
 // El For tiene error no repite el ciclo :') pero si lo lee el programa
 func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{} {
-	if v.HasSemanticError {
-		return nil
-	}
-	v.ScopeTrace.PushScope("FOR_CLASICO")
-	defer v.ScopeTrace.PopScope()
+    if v.HasSemanticError {
+        return nil
+    }
+    v.ScopeTrace.PushScope("FOR_CLASICO")
+    defer v.ScopeTrace.PopScope()
 
-	v.inForLoop = true
-	defer func() { v.inForLoop = false }()
+    v.inForLoop = true
+    defer func() { v.inForLoop = false }()
 
-	varName := ctx.Asignacion().ID().GetText()
-	initVal := v.Visit(ctx.Asignacion().Expresion())
+    varName := ctx.Asignacion().ID().GetText()
+    initVal := v.Visit(ctx.Asignacion().Expresion())
 
-	varType := value.IVOR_INT
-	varVal := value.NewIntValue(0)
+    varType := value.IVOR_INT
+    varVal := value.NewIntValue(0)
 
-	switch val := initVal.(type) {
-	case int:
-		varType = value.IVOR_INT
-		varVal = value.NewIntValue(val)
-	case float64:
-		varType = value.IVOR_FLOAT
-		varVal = value.NewFloatValue(val)
-	case string:
-		varType = value.IVOR_STRING
-		varVal = value.NewStringValue(val)
-	case bool:
-		varType = value.IVOR_BOOL
-		varVal = value.NewBoolValue(val)
-	case rune:
-		varType = value.IVOR_CHARACTER
-		varVal = value.NewCharValue(val)
-	default:
-		fmt.Printf("❌ Tipo no soportado para la variable '%s'\n", varName)
-	}
+    switch val := initVal.(type) {
+    case int:
+        varType = value.IVOR_INT
+        varVal = value.NewIntValue(val)
+    case float64:
+        varType = value.IVOR_FLOAT
+        varVal = value.NewFloatValue(val)
+    case string:
+        varType = value.IVOR_STRING
+        varVal = value.NewStringValue(val)
+    case bool:
+        varType = value.IVOR_BOOL
+        varVal = value.NewBoolValue(val)
+    case rune:
+        varType = value.IVOR_CHARACTER
+        varVal = value.NewCharValue(val)
+    default:
+        fmt.Printf("❌ Tipo no soportado para la variable '%s'\n", varName)
+    }
 
-	v.ScopeTrace.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
+    v.ScopeTrace.AddVariable(varName, varType, varVal, false, false, ctx.GetStart())
 
-	for {
+
+    for {
 		condVal := v.Visit(ctx.Expresion())
 		if fmt.Sprint(condVal) != "true" {
 			break
@@ -1299,10 +1300,14 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 
 		v.ScopeTrace.PushScope("FOR_ITER")
 		for _, decl := range ctx.Block().AllDeclaraciones() {
+			//fmt.Printf("[DEBUG] Ejecutando declaración #%d en el for clásico\n", idx)
 			res := v.Visit(decl)
+			//fmt.Printf("[DEBUG] Declaración #%d retornó: %v (tipo: %T)\n", idx, res, res)
 			if str, ok := res.(string); ok {
+				//fmt.Printf("[DEBUG] Resultado de declaración #%d: %s\n", idx, str)
 				if str == "continue" {
-					break // salimos del bloque, NO del ciclo
+					v.ScopeTrace.PopScope()
+					goto CONTINUE_FOR
 				} else if str == "break" {
 					v.ScopeTrace.PopScope()
 					return nil
@@ -1311,13 +1316,16 @@ func (v *ReplVisitor) VisitForClasico(ctx *parser.ForClasicoContext) interface{}
 		}
 		v.ScopeTrace.PopScope()
 
-		// ✅ Incrementar SIEMPRE (no depende de continue)
+		// Incremento SIEMPRE
 		if ctx.Stmt() != nil {
 			v.Visit(ctx.Stmt())
 		}
+
+	CONTINUE_FOR:
+		continue
 	}
 
-	return nil
+    return nil
 }
 
 func (v *ReplVisitor) VisitForCondicionUnica(ctx *parser.ForCondicionUnicaContext) interface{} {

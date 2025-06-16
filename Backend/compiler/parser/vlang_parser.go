@@ -123,8 +123,8 @@ func vlangParserInit() {
 		35, 1, 35, 1, 35, 1, 35, 3, 35, 553, 8, 35, 1, 35, 0, 1, 60, 36, 0, 2,
 		4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40,
 		42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 0, 7, 2, 0,
-		43, 43, 47, 47, 1, 0, 40, 41, 1, 0, 44, 46, 1, 0, 42, 43, 1, 0, 52, 55,
-		1, 0, 50, 51, 1, 0, 48, 49, 609, 0, 75, 1, 0, 0, 0, 2, 80, 1, 0, 0, 0,
+		43, 43, 47, 47, 1, 0, 40, 41, 1, 0, 44, 46, 1, 0, 42, 43, 1, 0, 50, 51,
+		1, 0, 52, 55, 1, 0, 48, 49, 609, 0, 75, 1, 0, 0, 0, 2, 80, 1, 0, 0, 0,
 		4, 86, 1, 0, 0, 0, 6, 98, 1, 0, 0, 0, 8, 112, 1, 0, 0, 0, 10, 160, 1, 0,
 		0, 0, 12, 162, 1, 0, 0, 0, 14, 166, 1, 0, 0, 0, 16, 188, 1, 0, 0, 0, 18,
 		194, 1, 0, 0, 0, 20, 202, 1, 0, 0, 0, 22, 204, 1, 0, 0, 0, 24, 223, 1,
@@ -268,7 +268,7 @@ func vlangParserInit() {
 		431, 1, 0, 0, 0, 433, 436, 1, 0, 0, 0, 434, 432, 1, 0, 0, 0, 434, 435,
 		1, 0, 0, 0, 435, 437, 1, 0, 0, 0, 436, 434, 1, 0, 0, 0, 437, 438, 5, 60,
 		0, 0, 438, 59, 1, 0, 0, 0, 439, 440, 6, 30, -1, 0, 440, 441, 7, 0, 0, 0,
-		441, 502, 3, 60, 30, 19, 442, 502, 3, 66, 33, 0, 443, 444, 5, 57, 0, 0,
+		441, 502, 3, 60, 30, 18, 442, 502, 3, 66, 33, 0, 443, 444, 5, 57, 0, 0,
 		444, 445, 3, 60, 30, 0, 445, 446, 5, 58, 0, 0, 446, 502, 1, 0, 0, 0, 447,
 		448, 5, 59, 0, 0, 448, 449, 3, 60, 30, 0, 449, 450, 5, 60, 0, 0, 450, 502,
 		1, 0, 0, 0, 451, 452, 5, 37, 0, 0, 452, 453, 5, 59, 0, 0, 453, 454, 3,
@@ -294,8 +294,8 @@ func vlangParserInit() {
 		0, 0, 501, 475, 1, 0, 0, 0, 501, 479, 1, 0, 0, 0, 501, 482, 1, 0, 0, 0,
 		501, 496, 1, 0, 0, 0, 502, 520, 1, 0, 0, 0, 503, 504, 10, 21, 0, 0, 504,
 		505, 7, 2, 0, 0, 505, 519, 3, 60, 30, 22, 506, 507, 10, 20, 0, 0, 507,
-		508, 7, 3, 0, 0, 508, 519, 3, 60, 30, 21, 509, 510, 10, 18, 0, 0, 510,
-		511, 7, 4, 0, 0, 511, 519, 3, 60, 30, 19, 512, 513, 10, 17, 0, 0, 513,
+		508, 7, 3, 0, 0, 508, 519, 3, 60, 30, 21, 509, 510, 10, 19, 0, 0, 510,
+		511, 7, 4, 0, 0, 511, 519, 3, 60, 30, 20, 512, 513, 10, 17, 0, 0, 513,
 		514, 7, 5, 0, 0, 514, 519, 3, 60, 30, 18, 515, 516, 10, 16, 0, 0, 516,
 		517, 7, 6, 0, 0, 517, 519, 3, 60, 30, 17, 518, 503, 1, 0, 0, 0, 518, 506,
 		1, 0, 0, 0, 518, 509, 1, 0, 0, 0, 518, 512, 1, 0, 0, 0, 518, 515, 1, 0,
@@ -9652,7 +9652,7 @@ func (p *VlangParser) expresion(_p int) (localctx IExpresionContext) {
 		}
 		{
 			p.SetState(441)
-			p.expresion(19)
+			p.expresion(18)
 		}
 
 	case 2:
@@ -10175,12 +10175,12 @@ func (p *VlangParser) expresion(_p int) (localctx IExpresionContext) {
 				}
 
 			case 3:
-				localctx = NewRelacionalesContext(p, NewExpresionContext(p, _parentctx, _parentState))
+				localctx = NewIgualdadContext(p, NewExpresionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, VlangParserRULE_expresion)
 				p.SetState(509)
 
-				if !(p.Precpred(p.GetParserRuleContext(), 18)) {
-					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 18)", ""))
+				if !(p.Precpred(p.GetParserRuleContext(), 19)) {
+					p.SetError(antlr.NewFailedPredicateException(p, "p.Precpred(p.GetParserRuleContext(), 19)", ""))
 					goto errorExit
 				}
 				{
@@ -10188,14 +10188,14 @@ func (p *VlangParser) expresion(_p int) (localctx IExpresionContext) {
 
 					var _lt = p.GetTokenStream().LT(1)
 
-					localctx.(*RelacionalesContext).op = _lt
+					localctx.(*IgualdadContext).op = _lt
 
 					_la = p.GetTokenStream().LA(1)
 
-					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&67553994410557440) != 0) {
+					if !(_la == VlangParserEQ || _la == VlangParserNEQ) {
 						var _ri = p.GetErrorHandler().RecoverInline(p)
 
-						localctx.(*RelacionalesContext).op = _ri
+						localctx.(*IgualdadContext).op = _ri
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
 						p.Consume()
@@ -10203,11 +10203,11 @@ func (p *VlangParser) expresion(_p int) (localctx IExpresionContext) {
 				}
 				{
 					p.SetState(511)
-					p.expresion(19)
+					p.expresion(20)
 				}
 
 			case 4:
-				localctx = NewIgualdadContext(p, NewExpresionContext(p, _parentctx, _parentState))
+				localctx = NewRelacionalesContext(p, NewExpresionContext(p, _parentctx, _parentState))
 				p.PushNewRecursionContext(localctx, _startState, VlangParserRULE_expresion)
 				p.SetState(512)
 
@@ -10220,14 +10220,14 @@ func (p *VlangParser) expresion(_p int) (localctx IExpresionContext) {
 
 					var _lt = p.GetTokenStream().LT(1)
 
-					localctx.(*IgualdadContext).op = _lt
+					localctx.(*RelacionalesContext).op = _lt
 
 					_la = p.GetTokenStream().LA(1)
 
-					if !(_la == VlangParserEQ || _la == VlangParserNEQ) {
+					if !((int64(_la) & ^0x3f) == 0 && ((int64(1)<<_la)&67553994410557440) != 0) {
 						var _ri = p.GetErrorHandler().RecoverInline(p)
 
-						localctx.(*IgualdadContext).op = _ri
+						localctx.(*RelacionalesContext).op = _ri
 					} else {
 						p.GetErrorHandler().ReportMatch(p)
 						p.Consume()
@@ -11375,7 +11375,7 @@ func (p *VlangParser) Expresion_Sempred(localctx antlr.RuleContext, predIndex in
 		return p.Precpred(p.GetParserRuleContext(), 20)
 
 	case 2:
-		return p.Precpred(p.GetParserRuleContext(), 18)
+		return p.Precpred(p.GetParserRuleContext(), 19)
 
 	case 3:
 		return p.Precpred(p.GetParserRuleContext(), 17)

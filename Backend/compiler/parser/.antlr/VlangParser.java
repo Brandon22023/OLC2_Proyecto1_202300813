@@ -1,4 +1,4 @@
-// Generated from /home/vboxuser/Documents/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
+// Generated from /home/brandon/Escritorio/OLC2_Proyecto1_202300813/Backend/compiler/parser/Vlang.g4 by ANTLR 4.13.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -2713,7 +2713,7 @@ public class VlangParser extends Parser {
 					consume();
 				}
 				setState(441);
-				expresion(19);
+				expresion(18);
 				}
 				break;
 			case 2:
@@ -2995,15 +2995,15 @@ public class VlangParser extends Parser {
 						break;
 					case 3:
 						{
-						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(509);
-						if (!(precpred(_ctx, 18))) throw new FailedPredicateException(this, "precpred(_ctx, 18)");
+						if (!(precpred(_ctx, 19))) throw new FailedPredicateException(this, "precpred(_ctx, 19)");
 						setState(510);
-						((RelacionalesContext)_localctx).op = _input.LT(1);
+						((IgualdadContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 67553994410557440L) != 0)) ) {
-							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						if ( !(_la==EQ || _la==NEQ) ) {
+							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -3011,20 +3011,20 @@ public class VlangParser extends Parser {
 							consume();
 						}
 						setState(511);
-						expresion(19);
+						expresion(20);
 						}
 						break;
 					case 4:
 						{
-						_localctx = new IgualdadContext(new ExpresionContext(_parentctx, _parentState));
+						_localctx = new RelacionalesContext(new ExpresionContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_expresion);
 						setState(512);
 						if (!(precpred(_ctx, 17))) throw new FailedPredicateException(this, "precpred(_ctx, 17)");
 						setState(513);
-						((IgualdadContext)_localctx).op = _input.LT(1);
+						((RelacionalesContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
-						if ( !(_la==EQ || _la==NEQ) ) {
-							((IgualdadContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 67553994410557440L) != 0)) ) {
+							((RelacionalesContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 						}
 						else {
 							if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -3399,7 +3399,7 @@ public class VlangParser extends Parser {
 		case 1:
 			return precpred(_ctx, 20);
 		case 2:
-			return precpred(_ctx, 18);
+			return precpred(_ctx, 19);
 		case 3:
 			return precpred(_ctx, 17);
 		case 4:
@@ -3497,7 +3497,7 @@ public class VlangParser extends Parser {
 		"\t\"\u0001#\u0001#\u0001#\u0001#\u0003#\u0229\b#\u0001#\u0000\u0001<$"+
 		"\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a"+
 		"\u001c\u001e \"$&(*,.02468:<>@BDF\u0000\u0007\u0002\u0000++//\u0001\u0000"+
-		"()\u0001\u0000,.\u0001\u0000*+\u0001\u000047\u0001\u000023\u0001\u0000"+
+		"()\u0001\u0000,.\u0001\u0000*+\u0001\u000023\u0001\u000047\u0001\u0000"+
 		"01\u0261\u0000K\u0001\u0000\u0000\u0000\u0002P\u0001\u0000\u0000\u0000"+
 		"\u0004V\u0001\u0000\u0000\u0000\u0006b\u0001\u0000\u0000\u0000\bp\u0001"+
 		"\u0000\u0000\u0000\n\u00a0\u0001\u0000\u0000\u0000\f\u00a2\u0001\u0000"+
@@ -3709,7 +3709,7 @@ public class VlangParser extends Parser {
 		"\u0000\u0000\u01b3\u01b5\u0001\u0000\u0000\u0000\u01b4\u01b2\u0001\u0000"+
 		"\u0000\u0000\u01b5\u01b6\u0005<\u0000\u0000\u01b6;\u0001\u0000\u0000\u0000"+
 		"\u01b7\u01b8\u0006\u001e\uffff\uffff\u0000\u01b8\u01b9\u0007\u0000\u0000"+
-		"\u0000\u01b9\u01f6\u0003<\u001e\u0013\u01ba\u01f6\u0003B!\u0000\u01bb"+
+		"\u0000\u01b9\u01f6\u0003<\u001e\u0012\u01ba\u01f6\u0003B!\u0000\u01bb"+
 		"\u01bc\u00059\u0000\u0000\u01bc\u01bd\u0003<\u001e\u0000\u01bd\u01be\u0005"+
 		":\u0000\u0000\u01be\u01f6\u0001\u0000\u0000\u0000\u01bf\u01c0\u0005;\u0000"+
 		"\u0000\u01c0\u01c1\u0003<\u001e\u0000\u01c1\u01c2\u0005<\u0000\u0000\u01c2"+
@@ -3747,8 +3747,8 @@ public class VlangParser extends Parser {
 		"\u0000\u01f6\u0208\u0001\u0000\u0000\u0000\u01f7\u01f8\n\u0015\u0000\u0000"+
 		"\u01f8\u01f9\u0007\u0002\u0000\u0000\u01f9\u0207\u0003<\u001e\u0016\u01fa"+
 		"\u01fb\n\u0014\u0000\u0000\u01fb\u01fc\u0007\u0003\u0000\u0000\u01fc\u0207"+
-		"\u0003<\u001e\u0015\u01fd\u01fe\n\u0012\u0000\u0000\u01fe\u01ff\u0007"+
-		"\u0004\u0000\u0000\u01ff\u0207\u0003<\u001e\u0013\u0200\u0201\n\u0011"+
+		"\u0003<\u001e\u0015\u01fd\u01fe\n\u0013\u0000\u0000\u01fe\u01ff\u0007"+
+		"\u0004\u0000\u0000\u01ff\u0207\u0003<\u001e\u0014\u0200\u0201\n\u0011"+
 		"\u0000\u0000\u0201\u0202\u0007\u0005\u0000\u0000\u0202\u0207\u0003<\u001e"+
 		"\u0012\u0203\u0204\n\u0010\u0000\u0000\u0204\u0205\u0007\u0006\u0000\u0000"+
 		"\u0205\u0207\u0003<\u001e\u0011\u0206\u01f7\u0001\u0000\u0000\u0000\u0206"+

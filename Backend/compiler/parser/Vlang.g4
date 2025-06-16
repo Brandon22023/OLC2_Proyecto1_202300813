@@ -169,9 +169,9 @@ whileDcl
 expresion
     : expresion op=(MUL | DIV | MOD) expresion             #multdivmod
     | expresion op=(PLUS | MINUS) expresion                #sumres
+    | expresion op=(EQ | NEQ) expresion                    #igualdad
     | op=(NOT | MINUS) expresion                           #unario
     |expresion op=(LT | LE | GE | GT) expresion           #relacionales
-    | expresion op=(EQ | NEQ) expresion                    #igualdad
     | expresion op=(AND | OR) expresion                    #OPERADORESLOGICOS
     | valor                                                #valorexpr         
     | LPAREN expresion RPAREN                              #parentesisexpre

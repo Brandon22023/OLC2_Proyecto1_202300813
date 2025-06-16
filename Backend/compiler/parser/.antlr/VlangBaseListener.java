@@ -388,6 +388,18 @@ public class VlangBaseListener implements VlangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterForRangeSlice(VlangParser.ForRangeSliceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForRangeSlice(VlangParser.ForRangeSliceContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAsignacion(VlangParser.AsignacionContext ctx) { }
 	/**
 	 * {@inheritDoc}
