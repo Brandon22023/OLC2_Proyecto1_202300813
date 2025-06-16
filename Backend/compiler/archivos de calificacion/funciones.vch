@@ -103,7 +103,8 @@ fn main() {
 	// 4. strconv.Atoi (simulado)
 	mut puntos_atoi int = 0
 	print("\n==== strconv.Atoi ====")
-	mut val int = Atoi("123") // llamado simulado
+	mut val int
+        val = Atoi("123")
 	print("123 convertido a int: ", val)
 	if val == 123 {
 		puntos_atoi += 1
@@ -121,8 +122,10 @@ fn main() {
 	*/
 	mut puntos_parse int = 0
 	print("\n==== strconv.ParseFloat ====")
-	mut val1 float64= parseFloat("123.45")
-	mut val2 float64= parseFloat("123")
+	mut val1 float64
+        val1 = parseFloat("123.45")
+	mut val2 float64
+        val2 = parseFloat("123")
 	print("123.45 convertido a float64:", val1)
 	print("123 convertido a float64:", val2)
 	if val1 == 123.45 && val2 == 123.0 {
