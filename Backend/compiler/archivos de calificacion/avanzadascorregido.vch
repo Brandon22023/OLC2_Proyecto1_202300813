@@ -40,12 +40,12 @@ fn main() {
 	mut d int = 10
 	if true {
 		// d se redefine en este ámbito
-		d = 20
+		mut d int = 20
 		// modificamos c 
-    c = 50 
+               c = 30
 		
 		// Modificamos d del ámbito local
-		d = 30
+		d = 50
 	}
 	  print("c fuera del if =", c)
 	  print("d fuera del if =", d)

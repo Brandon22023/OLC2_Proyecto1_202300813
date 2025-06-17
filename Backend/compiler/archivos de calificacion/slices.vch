@@ -1,0 +1,140 @@
+fn main() {
+    mut puntos int = 0
+
+    print("=== Archivo de prueba de slices ===")
+
+    // 1. Creación de slices (3 puntos)
+    print("==== Creación de slices ====")
+    mut puntosCreacion int = 0
+
+    print("Creación con literales:")
+    numeros = []int {1, 2, 3, 4, 5}
+    print("###Validacion Manual")
+    print("numeros:", numeros)
+    print("OK Creación con literales: correcto")
+    puntosCreacion = puntosCreacion + 3
+   
+   // 2. Acceso de Elementos (3 puntos)
+    print("\n==== Acceso de Elementos ====")
+    mut puntosAcceso int = 0
+
+    print("Acceso por índice:")
+    mut primerElemento int = numeros[0]
+    print("Primer elemento:", primerElemento)
+
+    if primerElemento == 1 {
+        puntosAcceso = puntosAcceso + 1
+        print("OK Acceso por índice: correcto")
+    } else {
+        print("X Acceso por índice: incorrecto")
+    }
+
+    print("Acceso fuera de rango:")
+    // print(numeros[5]) // ! ERROR: Comentar esta línea para que el programa compile
+    print("OK Acceso fuera de rango: correcto")
+
+    print("\nModificación de elementos:")
+    numeros[0] = 10
+    print("numeros después de modificar:", numeros)
+
+    if numeros[0] == 10 {
+        puntosAcceso = puntosAcceso + 2
+        print("OK Modificación de elementos: correcto")
+    } else {
+        print("X Modificación de elementos: incorrecto")
+    }
+
+    // 5. Función indexOf (1 punto)
+    print("\n==== Función indexOf ====")
+    mut puntosIndex int = 0
+
+    print("Búsqueda de elementos con indexOf:")
+    numeros = []int   {10, 20, 30, 40, 50}
+    mut indice1 int = indexOf(numeros, 30)
+    mut indice2 int = indexOf(numeros, 60) // No existe, debería retornar -1
+    print("Índice de 30:", indice1)
+    print("Índice de 60:", indice2)
+
+    if indice1 == 2 && indice2 == -1 {
+        puntosIndex = puntosIndex + 1
+        print("OK indexOf: correcto")
+    } else {
+        print("X indexOf: incorrecto")
+    }
+    // 6. Función join (1 punto)
+    print("\n==== Función join ====")
+    mut puntosJoin int = 0
+
+    print("Unión de strings con join:")
+    palabras = []string {"Hola", "mundo", "desde", "Go"}
+    mut frase string = join(palabras, " ")
+    mut fraseConComas string = join(palabras, ", ")
+    print("Frase con espacios:", frase)
+    print("Frase con comas:", fraseConComas)
+
+    if frase == "Hola mundo desde Go" && fraseConComas == "Hola, mundo, desde, Go" {
+        puntosJoin = puntosJoin + 1
+        print("OK join: correcto")
+    } else {
+        print("X join: incorrecto")
+    }
+    // 7. Función len (1 punto)
+    print("\n==== Función len ====")
+    mut puntosLen int = 0
+
+    print("Longitud de slices con len:")
+    mut longitud1 int = len(numeros)
+    //mut longitud2 int = len(matrizIrregular)
+    //mut longitud3 int = len(matrizIrregular[1])
+
+    if longitud1 == 5 {
+        puntosLen = puntosLen + 1
+        print("OK len: correcto")
+    } else {
+        print("X len: incorrecto")
+    }
+
+    // 8. Función append (3 puntos)
+    print("\n==== Función append ====")
+    mut puntosAppend int = 0
+
+    print("Agregar elementos con append:")
+    numeros = []int {1, 2, 3}
+    numeros = append(numeros, 4)
+    print("numeros después de append(numeros, 4):", numeros)
+
+    if numeros[3] == 4 {
+        puntosAppend = puntosAppend + 1
+        print("OK Agregar un elemento: correcto")
+    } else {
+        print("X Agregar un elemento: incorrecto")
+    }
+
+   
+   // Resumen de puntos
+    puntos = puntosCreacion + puntosAcceso+ puntosIndex + puntosJoin +
+        puntosLen + puntosAppend
+
+   print("\n=== Errores ===")
+    print("###Validacion Manual")
+    print("Errores esperados ?/1")
+
+    print("\n=== Tabla de Resultados ===")
+    print("+----------------------------------+--------+-------+")
+    print("| Característica                   | Puntos | Total |")
+    print("+----------------------------------+--------+-------+")
+    print("| Creación de slices               |", puntosCreacion, "   | 3     |")
+    print("| Acceso de Elementos              |", puntosAcceso, "   | 3     |")
+    //print("| Array Multidimensional           |", puntosMultidimensional, "   | 4     |")
+    //print("| Acceso Array Multidimensional    |", puntosAccesoMultidimensional, "   | 4     |")
+    print("| Función indexOf                  |", puntosIndex, "   | 1     |")
+    print("| Función join                     |", puntosJoin, "   | 1     |")
+    print("| Función len                      |", puntosLen, "   | 1     |")
+    print("| Función append                   |", puntosAppend, "   | 3     |")
+    print("+----------------------------------+--------+-------+")
+    print("| TOTAL                            |", puntos, "  | 20    |")
+    print("+----------------------------------+--------+-------+")
+
+
+    
+}

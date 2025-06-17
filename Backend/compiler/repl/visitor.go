@@ -1513,16 +1513,16 @@ func (v *ReplVisitor) VisitSliceInitDeclaration(ctx *parser.SliceInitDeclaration
 	}
 	sliceVal := value.NewSliceValue(tipo, elements)
 	v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
-	/*
-			por si la misma palabra se quiere cambiar de valor dentro del slice
-		    existing := v.ScopeTrace.GetVariable(varName)
-		    if existing != nil {
-		        existing.Type = sliceType
-		        existing.Value = sliceVal
-		    } else {
-		        v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
-		    }
-	*/
+	
+			//por si la misma palabra se quiere cambiar de valor dentro del slice
+	existing := v.ScopeTrace.GetVariable(varName)
+	if existing != nil {
+	    existing.Type = sliceType
+	    existing.Value = sliceVal
+	} else {
+	    v.ScopeTrace.AddVariable(varName, sliceType, sliceVal, false, false, ctx.GetStart())
+	}
+	
 	//esto se cambio ahora veremos que tal antes retornaba nill
 	return value.NewSliceValue(tipo, elements)
 }
@@ -1616,7 +1616,11 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 		}
 		sliceArg := v.Visit(args[0])
 		searchVal := v.Visit(args[1])
+
+		//fmt.Printf("[indexOf] sliceArg: %#v\n", sliceArg)
+        //fmt.Printf("[indexOf] searchVal: %#v (tipo: %T)\n", searchVal, searchVal)
 		slice, ok := sliceArg.(*value.SliceValue)
+
 		if !ok {
 			fmt.Println("SEMANTICO: el primer argumento de indexOf debe ser un slice")
 			v.SemanticErrors.NewSemanticError(ctx.GetStart(), "el primer argumento de indexOf debe ser un slice")
@@ -1628,6 +1632,7 @@ func (v *ReplVisitor) VisitLlamadaFuncion(ctx *parser.LlamadaFuncionContext) int
 				return i
 			}
 		}
+		//fmt.Println("[indexOf] No se encontró coincidencia, retorna -1")
 		return -1
 
 	case "join":
