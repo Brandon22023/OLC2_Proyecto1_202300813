@@ -450,16 +450,23 @@ Verifica que tengas permisos de ejecución y que tu sistema operativo sea compat
 
 ---
 
-## Información Adicional
+# FLUJO DE LAS FUNCIONALIDADES DEL SISTEMA
 
-### Soporte y Contacto
-Para reportar bugs o solicitar nuevas funcionalidades, contacta al equipo de desarrollo.
+- como primer punto levantamos el backend como el frontend a la vez
+![alt text](image-1.png)
 
-### Versión del Manual
-**Versión:** 1.0  
-**Fecha de actualización:** [Fecha actual]  
-**Compatible con:** V-lang Cherry Interpreter v1.0+
+- Luego de eso procedera a mostrarse el frontend,donde veremos unos botones antes explicados, sin embargo, el que nos importa ahora es el de abri archivo, donde nos mostrara un explorador y es donde procederemos a buscar un archivo.vch
+![alt text](image-2.png)
 
----
+- Luego se vera como se cargara el texto de dicho archivo al frontend donde ahora lo que sigue es darle al boton de ejecutar para empezar el proceso, *nos mostrara una salida*
+![alt text](image-3.png)
 
-*Este manual está diseñado para ayudarte a aprovechar al máximo el intérprete V-lang Cherry. ¡Feliz programación!* 🚀
+- Ahora podemos comprobar que la salida es la correcta por lo que ha sido todo un exito, si ponemos algo como comparar un bool y un string seria un error semantico
+![alt text](image-4.png)
+![alt text](image-5.png)
+
+- ahora vemos la tabla de simbolos
+![alt text](image-6.png)
+
+- ahora el arbol, aunque si esta algo grande
+![alt text](image-7.png)
